@@ -15,11 +15,11 @@
  */
 package com.baomidou.mybatisplus.annotation;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * MybatisPlus 数据库类型
@@ -101,7 +101,7 @@ public enum DbType {
      */
     private String dialect;
 
-    private static Map<String,DbType> DB_CACHE_MAP = new ConcurrentHashMap<>();
+    private static Map<String, DbType> DB_CACHE_MAP = new ConcurrentHashMap<>();
 
     static {
         for (DbType dbType : DbType.values()) {

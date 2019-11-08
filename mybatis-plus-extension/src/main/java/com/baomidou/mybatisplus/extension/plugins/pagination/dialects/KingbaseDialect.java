@@ -22,4 +22,5 @@ package com.baomidou.mybatisplus.extension.plugins.pagination.dialects;
  * @since 2019-10-12
  */
 public class KingbaseDialect extends PostgreDialect {
+
 }

@@ -23,7 +23,8 @@ import com.baomidou.mybatisplus.annotation.DbType;
  * @author halower
  * @since 2019-06-27
  */
-public class DMQuery  extends AbstractDbQuery{
+public class DMQuery extends AbstractDbQuery {
+
     @Override
     public DbType dbType() {
         return DbType.DM;
@@ -57,6 +58,7 @@ public class DMQuery  extends AbstractDbQuery{
     public String tableName() {
         return "TABLE_NAME";
     }
+
     @Override
     public String tableComment() {
         return "TABLE_COMMENT";

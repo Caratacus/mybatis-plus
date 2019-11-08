@@ -15,16 +15,17 @@
  */
 package com.baomidou.mybatisplus.core.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * SQL 解析测试
@@ -51,13 +52,11 @@ class JSqlParserTest {
         assertThat(select.toString()).isEqualTo(targetSql);
     }
 
-
     @Test
     void updateWhereParser() throws Exception {
         Update update = (Update) CCJSqlParserUtil.parse("Update tableName t SET t.a=(select c from tn where tn.id=t.id),b=2,c=3 ");
         Assertions.assertNull(update.getWhere());
     }
-
 
     @Test
     void deleteWhereParser() throws Exception {

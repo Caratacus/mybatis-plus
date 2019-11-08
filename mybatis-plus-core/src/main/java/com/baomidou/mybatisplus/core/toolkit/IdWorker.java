@@ -15,14 +15,14 @@
  */
 package com.baomidou.mybatisplus.core.toolkit;
 
-import com.baomidou.mybatisplus.core.config.GlobalConfig;
-import com.baomidou.mybatisplus.core.incrementer.SnowflakeIdGenerator;
-import com.baomidou.mybatisplus.core.incrementer.IdGenerator;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
+import com.baomidou.mybatisplus.core.incrementer.IdGenerator;
+import com.baomidou.mybatisplus.core.incrementer.SnowflakeIdGenerator;
 
 /**
  * 高效GUID产生算法(sequence),基于Snowflake实现64位自增ID算法。
@@ -35,6 +35,7 @@ public class IdWorker {
 
     /**
      * 主机和进程的机器码
+     *
      * @deprecated 3.2.1
      */
     @Deprecated
@@ -77,6 +78,7 @@ public class IdWorker {
     /**
      * 时间 ID = Time + ID
      * <p>例如：可用于商品订单 ID</p>
+     *
      * @deprecated 3.2.1  spring应用可以通过@IdGenerator,非spring应用请自行控制IdGenerator的实例化
      */
     @Deprecated

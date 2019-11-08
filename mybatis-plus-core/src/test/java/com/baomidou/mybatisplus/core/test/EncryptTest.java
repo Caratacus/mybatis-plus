@@ -15,6 +15,9 @@
  */
 package com.baomidou.mybatisplus.core.test;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -22,9 +25,8 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.EncryptUtils;
+
 import lombok.Data;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 /**
  * 加密测试
@@ -59,6 +61,7 @@ class EncryptTest {
 
     @Data
     private static class Xx {
+
         private Long id;
         @TableField(fill = FieldFill.INSERT)
         private String x1;

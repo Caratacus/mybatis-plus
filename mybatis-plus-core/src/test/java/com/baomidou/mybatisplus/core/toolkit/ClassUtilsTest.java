@@ -15,11 +15,11 @@
  */
 package com.baomidou.mybatisplus.core.toolkit;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * 测试
@@ -38,12 +38,14 @@ class ClassUtilsTest {
         Demo demo = ClassUtils.newInstance(Demo.class);
         Assertions.assertNotNull(demo);
 
-        Map<?,?> map = ClassUtils.newInstance(HashMap.class);
+        Map<?, ?> map = ClassUtils.newInstance(HashMap.class);
         Assertions.assertNotNull(map);
     }
 
     /**
      * 实例化的 demo class
      */
-    private static class Demo {}
+    private static class Demo {
+
+    }
 }

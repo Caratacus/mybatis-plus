@@ -1,8 +1,9 @@
 package com.baomidou.mybatisplus.test.toolkit;
 
+import org.junit.jupiter.api.Test;
+
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import org.junit.jupiter.api.Test;
 
 /**
  * 测试 StringUtils工具类测试

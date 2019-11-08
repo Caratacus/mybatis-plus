@@ -37,11 +37,11 @@ public final class ClassUtils {
      * 代理 class 的名称
      */
     private static final List<String> PROXY_CLASS_NAMES = Arrays.asList("net.sf.cglib.proxy.Factory"
-            // cglib
-            , "org.springframework.cglib.proxy.Factory"
-            , "javassist.util.proxy.ProxyObject"
-            // javassist
-            , "org.apache.ibatis.javassist.util.proxy.ProxyObject");
+        // cglib
+        , "org.springframework.cglib.proxy.Factory"
+        , "javassist.util.proxy.ProxyObject"
+        // javassist
+        , "org.apache.ibatis.javassist.util.proxy.ProxyObject");
 
     private ClassUtils() {
     }
@@ -135,7 +135,6 @@ public final class ClassUtils {
             throw ExceptionUtils.mpe("找不到指定的class！请仅在明确确定会有 class 的时候，调用该方法", e);
         }
     }
-
 
     /**
      * Determine the name of the package of the given class,

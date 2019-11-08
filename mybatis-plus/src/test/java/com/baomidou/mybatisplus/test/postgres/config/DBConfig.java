@@ -15,6 +15,10 @@
  */
 package com.baomidou.mybatisplus.test.postgres.config;
 
+import java.io.IOException;
+
+import javax.sql.DataSource;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -24,10 +28,6 @@ import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import java.io.IOException;
-
-import javax.sql.DataSource;
 
 /**
  * @author miemie

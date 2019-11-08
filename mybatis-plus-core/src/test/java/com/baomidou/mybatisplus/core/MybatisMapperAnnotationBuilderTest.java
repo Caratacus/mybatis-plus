@@ -15,17 +15,22 @@
  */
 package com.baomidou.mybatisplus.core;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.*;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * @author miemie

@@ -15,16 +15,21 @@
  */
 package com.baomidou.mybatisplus.core.test;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+
 import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
-import java.util.*;
 
 class WrapperTest {
 
@@ -57,15 +62,17 @@ class WrapperTest {
     @Test
     void test1() {
         QueryWrapper<User> ew = new QueryWrapper<User>() {
-          /**
-           *  serialVersionUID
-           */
-          private static final long serialVersionUID = 4719966531503901490L;
-        {
-            eq("xxx", 123);
-            and(i -> i.eq("andx", 65444).le("ande", 66666));
-            ne("xxx", 222);
-        }};
+            /**
+             *  serialVersionUID
+             */
+            private static final long serialVersionUID = 4719966531503901490L;
+
+            {
+                eq("xxx", 123);
+                and(i -> i.eq("andx", 65444).le("ande", 66666));
+                ne("xxx", 222);
+            }
+        };
         log(ew.getSqlSegment());
         log(ew.getSqlSegment());
         ew.gt("x22", 333);

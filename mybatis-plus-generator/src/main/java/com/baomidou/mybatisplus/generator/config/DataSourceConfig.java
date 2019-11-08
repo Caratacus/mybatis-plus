@@ -15,16 +15,33 @@
  */
 package com.baomidou.mybatisplus.generator.config;
 
-import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
-import com.baomidou.mybatisplus.generator.config.converts.*;
-import com.baomidou.mybatisplus.generator.config.querys.*;
-import lombok.Data;
-import lombok.experimental.Accessors;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
+import com.baomidou.mybatisplus.generator.config.converts.DB2TypeConvert;
+import com.baomidou.mybatisplus.generator.config.converts.DmTypeConvert;
+import com.baomidou.mybatisplus.generator.config.converts.KingbaseESTypeConvert;
+import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
+import com.baomidou.mybatisplus.generator.config.converts.OracleTypeConvert;
+import com.baomidou.mybatisplus.generator.config.converts.PostgreSqlTypeConvert;
+import com.baomidou.mybatisplus.generator.config.converts.SqlServerTypeConvert;
+import com.baomidou.mybatisplus.generator.config.converts.SqliteTypeConvert;
+import com.baomidou.mybatisplus.generator.config.querys.DB2Query;
+import com.baomidou.mybatisplus.generator.config.querys.DMQuery;
+import com.baomidou.mybatisplus.generator.config.querys.H2Query;
+import com.baomidou.mybatisplus.generator.config.querys.KingbaseESQuery;
+import com.baomidou.mybatisplus.generator.config.querys.MariadbQuery;
+import com.baomidou.mybatisplus.generator.config.querys.MySqlQuery;
+import com.baomidou.mybatisplus.generator.config.querys.OracleQuery;
+import com.baomidou.mybatisplus.generator.config.querys.PostgreSqlQuery;
+import com.baomidou.mybatisplus.generator.config.querys.SqlServerQuery;
+import com.baomidou.mybatisplus.generator.config.querys.SqliteQuery;
+
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * 数据库配置

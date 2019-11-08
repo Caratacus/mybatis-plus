@@ -15,12 +15,13 @@
  */
 package com.baomidou.mybatisplus.extension;
 
-import com.baomidou.mybatisplus.extension.handlers.MybatisMapWrapper;
+import java.util.Map;
+
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapper;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 
-import java.util.Map;
+import com.baomidou.mybatisplus.extension.handlers.MybatisMapWrapper;
 
 /**
  * 开启返回map结果集的下划线转驼峰

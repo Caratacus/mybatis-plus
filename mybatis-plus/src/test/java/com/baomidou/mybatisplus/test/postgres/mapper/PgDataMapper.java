@@ -15,11 +15,13 @@
  */
 package com.baomidou.mybatisplus.test.postgres.mapper;
 
-import com.baomidou.mybatisplus.test.postgres.entity.PgData;
 import com.baomidou.mybatisplus.test.base.mapper.MyBaseMapper;
+import com.baomidou.mybatisplus.test.postgres.entity.PgData;
 
 /**
  * @author miemie
  * @since 2018-08-06
  */
-public interface PgDataMapper extends MyBaseMapper<PgData> {}
+public interface PgDataMapper extends MyBaseMapper<PgData> {
+
+}

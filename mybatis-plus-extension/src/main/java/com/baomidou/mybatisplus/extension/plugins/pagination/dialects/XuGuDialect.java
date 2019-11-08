@@ -22,4 +22,5 @@ package com.baomidou.mybatisplus.extension.plugins.pagination.dialects;
  * @since 2019-08-29
  */
 public class XuGuDialect extends MySqlDialect {
+
 }

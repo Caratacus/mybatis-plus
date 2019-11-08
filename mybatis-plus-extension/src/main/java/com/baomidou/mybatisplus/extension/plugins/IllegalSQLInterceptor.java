@@ -15,11 +15,39 @@
  */
 package com.baomidou.mybatisplus.extension.plugins;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.ibatis.executor.statement.StatementHandler;
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.SqlCommandType;
+import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.plugin.Intercepts;
+import org.apache.ibatis.plugin.Invocation;
+import org.apache.ibatis.plugin.Plugin;
+import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
+
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.parser.SqlParserHelper;
 import com.baomidou.mybatisplus.core.toolkit.EncryptUtils;
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+
 import lombok.Data;
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
@@ -37,22 +65,6 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.update.Update;
-import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.logging.LogFactory;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlCommandType;
-import org.apache.ibatis.plugin.*;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
-
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 由于开发人员水平参差不齐，即使订了开发规范很多人也不遵守
@@ -77,6 +89,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>5.where条件使用了 not 关键字</p>
  * <p>6.where条件使用了 or 关键字</p>
  * <p>7.where条件使用了 使用子查询</p>
+ *
  * @author willenfoo
  * @date 2018-03-22
  */
@@ -135,8 +148,8 @@ public class IllegalSQLInterceptor implements Interceptor {
     /**
      * 如果SQL用了 left Join，验证是否有or、not等等，并且验证是否使用了索引
      *
-     * @param joins ignore
-     * @param table ignore
+     * @param joins      ignore
+     * @param table      ignore
      * @param connection ignore
      */
     private static void validJoins(List<Join> joins, Table table, Connection connection) {
@@ -153,7 +166,7 @@ public class IllegalSQLInterceptor implements Interceptor {
     /**
      * 检查是否使用索引
      *
-     * @param table ignore
+     * @param table      ignore
      * @param columnName ignore
      * @param connection ignore
      */
@@ -188,7 +201,7 @@ public class IllegalSQLInterceptor implements Interceptor {
      * 验证where条件的字段，是否有not、or等等，并且where的第一个字段，必须使用索引
      *
      * @param expression ignore
-     * @param table ignore
+     * @param table      ignore
      * @param connection ignore
      */
     private static void validWhere(Expression expression, Table table, Connection connection) {
@@ -199,8 +212,8 @@ public class IllegalSQLInterceptor implements Interceptor {
      * 验证where条件的字段，是否有not、or等等，并且where的第一个字段，必须使用索引
      *
      * @param expression ignore
-     * @param table ignore
-     * @param joinTable ignore
+     * @param table      ignore
+     * @param joinTable  ignore
      * @param connection ignore
      */
     private static void validWhere(Expression expression, Table table, Table joinTable, Connection connection) {
@@ -240,9 +253,9 @@ public class IllegalSQLInterceptor implements Interceptor {
     /**
      * 得到表的索引信息
      *
-     * @param dbName ignore
+     * @param dbName    ignore
      * @param tableName ignore
-     * @param conn ignore
+     * @param conn      ignore
      * @return ignore
      */
     public static List<IndexInfo> getIndexInfos(String dbName, String tableName, Connection conn) {
@@ -252,10 +265,10 @@ public class IllegalSQLInterceptor implements Interceptor {
     /**
      * 得到表的索引信息
      *
-     * @param key ignore
-     * @param dbName ignore
+     * @param key       ignore
+     * @param dbName    ignore
      * @param tableName ignore
-     * @param conn ignore
+     * @param conn      ignore
      * @return ignore
      */
     public static List<IndexInfo> getIndexInfos(String key, String dbName, String tableName, Connection conn) {

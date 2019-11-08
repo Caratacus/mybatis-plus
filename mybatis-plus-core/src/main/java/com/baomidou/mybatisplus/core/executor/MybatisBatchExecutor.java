@@ -15,6 +15,14 @@
  */
 package com.baomidou.mybatisplus.core.executor;
 
+import java.sql.BatchUpdateException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.BatchExecutorException;
 import org.apache.ibatis.executor.BatchResult;
@@ -29,20 +37,13 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 
-import java.sql.BatchUpdateException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * 重写执行器 {@link org.apache.ibatis.executor.BatchExecutor}
  *
  * @author nieqiurong 2019/4/14.
  */
 public class MybatisBatchExecutor extends AbstractBaseExecutor {
+
     public static final int BATCH_UPDATE_RETURN_VALUE = Integer.MIN_VALUE + 1002;
 
     private final List<Statement> statementList = new ArrayList<>();

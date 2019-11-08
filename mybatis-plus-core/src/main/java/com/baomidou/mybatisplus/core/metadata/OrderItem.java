@@ -15,14 +15,14 @@
  */
 package com.baomidou.mybatisplus.core.metadata;
 
-import lombok.Data;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import lombok.Data;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 /**
  * 排序元素载体

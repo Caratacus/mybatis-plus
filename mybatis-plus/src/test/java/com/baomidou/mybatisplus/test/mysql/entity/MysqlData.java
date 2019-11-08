@@ -16,6 +16,7 @@
 package com.baomidou.mybatisplus.test.mysql.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 

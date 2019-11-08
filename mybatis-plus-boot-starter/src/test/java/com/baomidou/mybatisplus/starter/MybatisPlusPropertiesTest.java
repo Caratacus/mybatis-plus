@@ -15,9 +15,10 @@
  */
 package com.baomidou.mybatisplus.starter;
 
-import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 
 /**
  * 属性测试
@@ -25,7 +26,7 @@ import org.junit.jupiter.api.Test;
  * @author nieqiurong 2019/5/4.
  */
 class MybatisPlusPropertiesTest {
-    
+
     @Test
     void resolveMapperLocationsTest() {
         MybatisPlusProperties mybatisPlusProperties = new MybatisPlusProperties();
@@ -36,5 +37,5 @@ class MybatisPlusPropertiesTest {
         mybatisPlusProperties.setMapperLocations(new String[]{"classpath:mybatis-plus/*.xml"});
         Assertions.assertEquals(mybatisPlusProperties.resolveMapperLocations().length, 0);
     }
-    
+
 }

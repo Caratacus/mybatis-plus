@@ -15,11 +15,11 @@
  */
 package com.baomidou.mybatisplus.core.conditions.segments;
 
-import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
-import com.baomidou.mybatisplus.core.enums.SqlKeyword;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
+import com.baomidou.mybatisplus.core.enums.SqlKeyword;
 
 /**
  * 普通片段

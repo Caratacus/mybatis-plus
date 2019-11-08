@@ -1,13 +1,5 @@
 package com.baomidou.mybatisplus.test.h2;
 
-import com.baomidou.mybatisplus.test.h2.keygenerator.mapper.ExtendKeyGeneratorMapper;
-import com.baomidou.mybatisplus.test.h2.keygenerator.mapper.KeyGeneratorMapper;
-import com.baomidou.mybatisplus.test.h2.keygenerator.mapper.LongKeyGeneratorMapper;
-import com.baomidou.mybatisplus.test.h2.keygenerator.mapper.StringKeyGeneratorMapper;
-import com.baomidou.mybatisplus.test.h2.keygenerator.model.ExtendKeyGeneratorModel;
-import com.baomidou.mybatisplus.test.h2.keygenerator.model.KeyGeneratorModel;
-import com.baomidou.mybatisplus.test.h2.keygenerator.model.LongKeyGeneratorModel;
-import com.baomidou.mybatisplus.test.h2.keygenerator.model.StringKeyGeneratorModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -16,6 +8,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import com.baomidou.mybatisplus.test.h2.keygenerator.mapper.ExtendKeyGeneratorMapper;
+import com.baomidou.mybatisplus.test.h2.keygenerator.mapper.KeyGeneratorMapper;
+import com.baomidou.mybatisplus.test.h2.keygenerator.mapper.LongKeyGeneratorMapper;
+import com.baomidou.mybatisplus.test.h2.keygenerator.mapper.StringKeyGeneratorMapper;
+import com.baomidou.mybatisplus.test.h2.keygenerator.model.ExtendKeyGeneratorModel;
+import com.baomidou.mybatisplus.test.h2.keygenerator.model.KeyGeneratorModel;
+import com.baomidou.mybatisplus.test.h2.keygenerator.model.LongKeyGeneratorModel;
+import com.baomidou.mybatisplus.test.h2.keygenerator.model.StringKeyGeneratorModel;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(SpringExtension.class)

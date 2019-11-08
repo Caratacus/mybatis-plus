@@ -26,6 +26,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParser
  * @since 2018-07-22
  */
 public class SqlParserUtils {
+
     private static ISqlParser COUNT_SQL_PARSER = null;
 
     /**

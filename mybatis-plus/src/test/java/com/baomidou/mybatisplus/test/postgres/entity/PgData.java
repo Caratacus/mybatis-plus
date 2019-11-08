@@ -16,6 +16,7 @@
 package com.baomidou.mybatisplus.test.postgres.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 

@@ -15,9 +15,11 @@
  */
 package com.baomidou.mybatisplus.core.executor;
 
-import com.baomidou.mybatisplus.core.metadata.CachePage;
-import com.baomidou.mybatisplus.core.metadata.CachePageResult;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.cache.TransactionalCacheManager;
@@ -25,16 +27,19 @@ import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.ExecutorException;
-import org.apache.ibatis.mapping.*;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ParameterMapping;
+import org.apache.ibatis.mapping.ParameterMode;
+import org.apache.ibatis.mapping.StatementType;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import com.baomidou.mybatisplus.core.metadata.CachePage;
+import com.baomidou.mybatisplus.core.metadata.CachePageResult;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * copy org.apache.ibatis.executor.CachingExecutor 主要修改了分页缓存逻辑

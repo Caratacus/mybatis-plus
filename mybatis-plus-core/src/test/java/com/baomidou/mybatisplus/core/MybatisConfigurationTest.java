@@ -15,6 +15,11 @@
  */
 package com.baomidou.mybatisplus.core;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.ibatis.executor.loader.javassist.JavassistProxyFactory;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.AutoMappingBehavior;
@@ -27,16 +32,11 @@ import org.apache.ibatis.type.JdbcType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * @author nieqiurong 2019/2/23.
  */
 class MybatisConfigurationTest {
-    
+
     @Test
     void testXml() throws IOException {
         Reader reader = Resources.getResourceAsReader("mybatis-config-empty.xml");
@@ -48,30 +48,30 @@ class MybatisConfigurationTest {
         Assertions.assertTrue(configuration.isMultipleResultSetsEnabled());
         Assertions.assertTrue(configuration.isUseColumnLabel());
         Assertions.assertFalse(configuration.isUseGeneratedKeys());
-        Assertions.assertEquals(AutoMappingBehavior.PARTIAL,configuration.getAutoMappingBehavior());
-        Assertions.assertEquals(AutoMappingUnknownColumnBehavior.NONE,configuration.getAutoMappingUnknownColumnBehavior());
-        Assertions.assertEquals(ExecutorType.SIMPLE,configuration.getDefaultExecutorType());
+        Assertions.assertEquals(AutoMappingBehavior.PARTIAL, configuration.getAutoMappingBehavior());
+        Assertions.assertEquals(AutoMappingUnknownColumnBehavior.NONE, configuration.getAutoMappingUnknownColumnBehavior());
+        Assertions.assertEquals(ExecutorType.SIMPLE, configuration.getDefaultExecutorType());
         Assertions.assertNull(configuration.getDefaultStatementTimeout());
         Assertions.assertNull(configuration.getDefaultFetchSize());
         Assertions.assertFalse(configuration.isSafeRowBoundsEnabled());
         Assertions.assertTrue(configuration.isSafeResultHandlerEnabled());
         //这里原生的是false
         Assertions.assertTrue(configuration.isMapUnderscoreToCamelCase());
-        Assertions.assertEquals(LocalCacheScope.SESSION,configuration.getLocalCacheScope());
-        Assertions.assertEquals(JdbcType.OTHER,configuration.getJdbcTypeForNull());
-        Assertions.assertEquals(Stream.of("equals","clone","hashCode","toString").collect(Collectors.toSet()), configuration.getLazyLoadTriggerMethods());
-        Assertions.assertEquals(MybatisXMLLanguageDriver.class,configuration.getDefaultScriptingLanguageInstance().getClass());
+        Assertions.assertEquals(LocalCacheScope.SESSION, configuration.getLocalCacheScope());
+        Assertions.assertEquals(JdbcType.OTHER, configuration.getJdbcTypeForNull());
+        Assertions.assertEquals(Stream.of("equals", "clone", "hashCode", "toString").collect(Collectors.toSet()), configuration.getLazyLoadTriggerMethods());
+        Assertions.assertEquals(MybatisXMLLanguageDriver.class, configuration.getDefaultScriptingLanguageInstance().getClass());
         Assertions.assertFalse(configuration.isCallSettersOnNulls());
         Assertions.assertFalse(configuration.isReturnInstanceForEmptyRow());
         Assertions.assertNull(configuration.getLogPrefix());
         Assertions.assertNull(configuration.getLogImpl());
-        Assertions.assertEquals(JavassistProxyFactory.class,configuration.getProxyFactory().getClass());
+        Assertions.assertEquals(JavassistProxyFactory.class, configuration.getProxyFactory().getClass());
         Assertions.assertNull(configuration.getVfsImpl());
         Assertions.assertTrue(configuration.isUseActualParamName());
         Assertions.assertNull(configuration.getConfigurationFactory());
-        
+
     }
-    
+
     @Test
     void testBean() {
         MybatisConfiguration configuration = new MybatisConfiguration();
@@ -81,24 +81,24 @@ class MybatisConfigurationTest {
         Assertions.assertTrue(configuration.isMultipleResultSetsEnabled());
         Assertions.assertTrue(configuration.isUseColumnLabel());
         Assertions.assertFalse(configuration.isUseGeneratedKeys());
-        Assertions.assertEquals(AutoMappingBehavior.PARTIAL,configuration.getAutoMappingBehavior());
-        Assertions.assertEquals(AutoMappingUnknownColumnBehavior.NONE,configuration.getAutoMappingUnknownColumnBehavior());
-        Assertions.assertEquals(ExecutorType.SIMPLE,configuration.getDefaultExecutorType());
+        Assertions.assertEquals(AutoMappingBehavior.PARTIAL, configuration.getAutoMappingBehavior());
+        Assertions.assertEquals(AutoMappingUnknownColumnBehavior.NONE, configuration.getAutoMappingUnknownColumnBehavior());
+        Assertions.assertEquals(ExecutorType.SIMPLE, configuration.getDefaultExecutorType());
         Assertions.assertNull(configuration.getDefaultStatementTimeout());
         Assertions.assertNull(configuration.getDefaultFetchSize());
         Assertions.assertFalse(configuration.isSafeRowBoundsEnabled());
         Assertions.assertTrue(configuration.isSafeResultHandlerEnabled());
         //这里原生的是false
         Assertions.assertTrue(configuration.isMapUnderscoreToCamelCase());
-        Assertions.assertEquals(LocalCacheScope.SESSION,configuration.getLocalCacheScope());
-        Assertions.assertEquals(JdbcType.OTHER,configuration.getJdbcTypeForNull());
-        Assertions.assertEquals(Stream.of("equals","clone","hashCode","toString").collect(Collectors.toSet()), configuration.getLazyLoadTriggerMethods());
-        Assertions.assertEquals(MybatisXMLLanguageDriver.class,configuration.getDefaultScriptingLanguageInstance().getClass());
+        Assertions.assertEquals(LocalCacheScope.SESSION, configuration.getLocalCacheScope());
+        Assertions.assertEquals(JdbcType.OTHER, configuration.getJdbcTypeForNull());
+        Assertions.assertEquals(Stream.of("equals", "clone", "hashCode", "toString").collect(Collectors.toSet()), configuration.getLazyLoadTriggerMethods());
+        Assertions.assertEquals(MybatisXMLLanguageDriver.class, configuration.getDefaultScriptingLanguageInstance().getClass());
         Assertions.assertFalse(configuration.isCallSettersOnNulls());
         Assertions.assertFalse(configuration.isReturnInstanceForEmptyRow());
         Assertions.assertNull(configuration.getLogPrefix());
         Assertions.assertNull(configuration.getLogImpl());
-        Assertions.assertEquals(JavassistProxyFactory.class,configuration.getProxyFactory().getClass());
+        Assertions.assertEquals(JavassistProxyFactory.class, configuration.getProxyFactory().getClass());
         Assertions.assertNull(configuration.getVfsImpl());
         Assertions.assertTrue(configuration.isUseActualParamName());
         Assertions.assertNull(configuration.getConfigurationFactory());

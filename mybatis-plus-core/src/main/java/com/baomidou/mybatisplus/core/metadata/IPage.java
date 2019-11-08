@@ -15,12 +15,12 @@
  */
 package com.baomidou.mybatisplus.core.metadata;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * 分页 Page 对象接口

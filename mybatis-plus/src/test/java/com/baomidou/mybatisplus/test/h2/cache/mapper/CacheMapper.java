@@ -15,9 +15,10 @@
  */
 package com.baomidou.mybatisplus.test.h2.cache.mapper;
 
+import org.apache.ibatis.annotations.CacheNamespace;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.test.h2.cache.model.CacheModel;
-import org.apache.ibatis.annotations.CacheNamespace;
 
 @CacheNamespace
 public interface CacheMapper extends BaseMapper<CacheModel> {

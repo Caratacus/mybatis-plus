@@ -15,7 +15,6 @@
  */
 package com.baomidou.mybatisplus.core.enums;
 
-
 import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 

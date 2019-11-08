@@ -15,6 +15,18 @@
  */
 package com.baomidou.mybatisplus.generator.engine;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -26,14 +38,6 @@ import com.baomidou.mybatisplus.generator.config.TemplateConfig;
 import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.FileType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 
 /**
  * 模板引擎抽象类
@@ -49,7 +53,6 @@ public abstract class AbstractTemplateEngine {
      */
     private ConfigBuilder configBuilder;
 
-
     /**
      * 模板引擎初始化
      */
@@ -57,7 +60,6 @@ public abstract class AbstractTemplateEngine {
         this.configBuilder = configBuilder;
         return this;
     }
-
 
     /**
      * 输出 java xml 文件
@@ -133,7 +135,6 @@ public abstract class AbstractTemplateEngine {
         return this;
     }
 
-
     /**
      * 将模板转化成为文件
      *
@@ -159,7 +160,6 @@ public abstract class AbstractTemplateEngine {
         return this;
     }
 
-
     /**
      * 打开输出目录
      */
@@ -183,7 +183,6 @@ public abstract class AbstractTemplateEngine {
             }
         }
     }
-
 
     /**
      * 渲染对象 MAP 信息
@@ -255,7 +254,6 @@ public abstract class AbstractTemplateEngine {
         return classPath.substring(classPath.lastIndexOf(StringPool.DOT) + 1);
     }
 
-
     /**
      * 模板真实文件路径
      *
@@ -263,7 +261,6 @@ public abstract class AbstractTemplateEngine {
      * @return ignore
      */
     public abstract String templateFilePath(String filePath);
-
 
     /**
      * 检测文件是否存在
@@ -292,7 +289,6 @@ public abstract class AbstractTemplateEngine {
     protected String suffixJavaOrKt() {
         return getConfigBuilder().getGlobalConfig().isKotlin() ? ConstVal.KT_SUFFIX : ConstVal.JAVA_SUFFIX;
     }
-
 
     public ConfigBuilder getConfigBuilder() {
         return configBuilder;

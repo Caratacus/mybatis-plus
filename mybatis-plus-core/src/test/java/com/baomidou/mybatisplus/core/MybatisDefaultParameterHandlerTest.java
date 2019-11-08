@@ -1,12 +1,8 @@
 package com.baomidou.mybatisplus.core;
 
-import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.core.incrementer.SnowflakeIdGenerator;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -16,9 +12,14 @@ import org.apache.ibatis.session.Configuration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.baomidou.mybatisplus.core.incrementer.SnowflakeIdGenerator;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 class MybatisDefaultParameterHandlerTest {
 
@@ -57,7 +58,7 @@ class MybatisDefaultParameterHandlerTest {
             }
         });
         Model model = new Model("坦克");
-        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(configuration,""), Model.class);
+        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(configuration, ""), Model.class);
         //查询
         mappedStatement = new MappedStatement.Builder(configuration, "***", staticSqlSource, SqlCommandType.SELECT).build();
         MybatisDefaultParameterHandler.processBatch(mappedStatement, model);

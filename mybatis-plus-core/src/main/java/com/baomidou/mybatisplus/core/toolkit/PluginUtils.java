@@ -15,11 +15,11 @@
  */
 package com.baomidou.mybatisplus.core.toolkit;
 
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
-
 import java.lang.reflect.Proxy;
 import java.util.Properties;
+
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
 
 /**
  * 插件工具类
@@ -28,6 +28,7 @@ import java.util.Properties;
  * @since 2017-06-20
  */
 public final class PluginUtils {
+
     public static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
 
     private PluginUtils() {

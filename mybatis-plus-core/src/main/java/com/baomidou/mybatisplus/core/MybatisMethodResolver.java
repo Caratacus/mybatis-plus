@@ -15,10 +15,10 @@
  */
 package com.baomidou.mybatisplus.core;
 
+import java.lang.reflect.Method;
+
 import org.apache.ibatis.builder.annotation.MapperAnnotationBuilder;
 import org.apache.ibatis.builder.annotation.MethodResolver;
-
-import java.lang.reflect.Method;
 
 /**
  * 继承 {@link MethodResolver}

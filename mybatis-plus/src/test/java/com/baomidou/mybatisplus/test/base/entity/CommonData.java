@@ -15,17 +15,19 @@
  */
 package com.baomidou.mybatisplus.test.base.entity;
 
+import java.time.LocalDateTime;
+
+import org.apache.ibatis.type.JdbcType;
+
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.test.base.enums.TestEnum;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import org.apache.ibatis.type.JdbcType;
-
-import java.time.LocalDateTime;
 
 /**
  * 包含功能:

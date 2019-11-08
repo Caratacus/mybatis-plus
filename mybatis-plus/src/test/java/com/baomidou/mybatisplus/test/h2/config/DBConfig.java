@@ -44,7 +44,7 @@ public class DBConfig {
     private String locationPattern = "classpath:/h2/*.sql";
 
     @Bean
-    public DataSource dataSource(){
+    public DataSource dataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
         dataSource.setDriver(new Driver());
         dataSource.setUrl("jdbc:h2:mem:test;MODE=mysql;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
@@ -77,7 +77,7 @@ public class DBConfig {
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate(DataSource ds){
+    public JdbcTemplate jdbcTemplate(DataSource ds) {
         return new JdbcTemplate(ds);
     }
 

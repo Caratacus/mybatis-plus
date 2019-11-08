@@ -16,6 +16,7 @@
 package com.baomidou.mybatisplus.extension.plugins;
 
 import java.util.Properties;
+
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.logging.Log;
@@ -30,12 +31,15 @@ import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.RowBounds;
+
 import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 // TODO 苗神来改个名
+
 /**
  * 防止全表更新与删除
  *
@@ -49,7 +53,7 @@ import lombok.experimental.Accessors;
 public class SqlExplainInterceptor extends AbstractSqlParserHandler implements Interceptor {
 
     @SuppressWarnings("unused")
-	private static final Log logger = LogFactory.getLog(SqlExplainInterceptor.class);
+    private static final Log logger = LogFactory.getLog(SqlExplainInterceptor.class);
 
     private Properties properties;
 

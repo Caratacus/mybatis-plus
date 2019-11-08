@@ -15,16 +15,17 @@
  */
 package com.baomidou.mybatisplus.test.base.entity;
 
+import java.util.List;
+import java.util.Map;
+
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.test.base.type.JsonTypeHandler;
 import com.baomidou.mybatisplus.test.base.type.ListTypeHandler;
 import com.baomidou.mybatisplus.test.base.type.MapTypeHandler;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author miemie

@@ -15,11 +15,11 @@
  */
 package com.baomidou.mybatisplus.extension.handlers;
 
-import org.mockito.Mock;
-
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import org.mockito.Mock;
 
 public abstract class BaseTypeHandlerTest {
 

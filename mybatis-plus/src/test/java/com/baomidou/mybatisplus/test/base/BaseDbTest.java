@@ -15,6 +15,34 @@
  */
 package com.baomidou.mybatisplus.test.base;
 
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -33,24 +61,6 @@ import com.baomidou.mybatisplus.test.base.mapper.commons.CommonDataCopyMapper;
 import com.baomidou.mybatisplus.test.base.mapper.commons.CommonDataMapper;
 import com.baomidou.mybatisplus.test.base.mapper.commons.CommonLogicDataMapper;
 import com.baomidou.mybatisplus.test.base.mapper.commons.ResultMapEntityMapper;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.annotation.Resource;
-import java.util.*;
-
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author miemie
@@ -60,6 +70,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 @ExtendWith(SpringExtension.class)
 public abstract class BaseDbTest {
+
     protected final int success = 1;
     protected final int fail = 0;
 
@@ -332,14 +343,12 @@ public abstract class BaseDbTest {
         System.out.println(JSON.toJSONString(dataPage));
         System.out.println(JSON.toJSON(dataPage.convert(CommonData::getId)));
 
-
         Page<CommonLogicData> logicPage = new Page<>(1, 5);
         IPage<CommonLogicData> logicDataPage = commonLogicDataMapper.selectPage(logicPage, null);
         assertSame(logicDataPage, logicPage);
         assertNotEquals(0, logicDataPage.getRecords().size());
         assertTrue(CollectionUtils.isNotEmpty(logicDataPage.getRecords()));
         System.out.println(JSON.toJSONString(logicDataPage));
-
 
         Page<CommonData> commonDataPage = new Page<>(1, 5);
         commonDataPage.addOrder(OrderItem.descs("c_time", "u_time"));
@@ -349,7 +358,6 @@ public abstract class BaseDbTest {
         assertTrue(CollectionUtils.isNotEmpty(commonDataDataPage.getRecords()));
         System.out.println(JSON.toJSONString(commonDataDataPage));
         System.out.println(JSON.toJSON(commonDataDataPage.convert(CommonData::getId)));
-
 
         Page<ResultMapEntity> resultMapEntityPage = new Page<>(1, 5);
         IPage<ResultMapEntity> resultMapEntityDataPage = resultMapEntityMapper.selectPage(resultMapEntityPage, null);

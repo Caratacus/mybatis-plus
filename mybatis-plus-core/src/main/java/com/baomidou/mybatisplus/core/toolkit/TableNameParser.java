@@ -68,6 +68,7 @@ public final class TableNameParser {
 
     /**
      * Extracts table names out of SQL
+     *
      * @param sql
      */
     public TableNameParser(final String sql) {

@@ -15,12 +15,12 @@
  */
 package com.baomidou.mybatisplus.core.conditions.segments;
 
-import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 
 /**
  * SQL 片段集合 处理的抽象类

@@ -15,12 +15,12 @@
  */
 package com.baomidou.mybatisplus.core.conditions.interfaces;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * 查询条件封装

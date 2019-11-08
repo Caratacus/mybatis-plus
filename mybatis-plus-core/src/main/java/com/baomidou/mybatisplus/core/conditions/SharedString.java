@@ -15,13 +15,14 @@
  */
 package com.baomidou.mybatisplus.core.conditions;
 
+import java.io.Serializable;
+
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-
-import java.io.Serializable;
 
 /**
  * 共享查询字段
@@ -34,6 +35,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SharedString implements Serializable {
+
     private static final long serialVersionUID = -1536422416594422874L;
 
     /**

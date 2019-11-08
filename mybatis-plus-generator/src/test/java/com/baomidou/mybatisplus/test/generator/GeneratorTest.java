@@ -17,7 +17,6 @@ package com.baomidou.mybatisplus.test.generator;
 
 import java.util.Scanner;
 
-
 /**
  * Generator test
  *

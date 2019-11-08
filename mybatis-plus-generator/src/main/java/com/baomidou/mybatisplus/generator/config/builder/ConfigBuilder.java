@@ -15,18 +15,6 @@
  */
 package com.baomidou.mybatisplus.generator.config.builder;
 
-import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.generator.InjectionConfig;
-import com.baomidou.mybatisplus.generator.config.*;
-import com.baomidou.mybatisplus.generator.config.po.TableField;
-import com.baomidou.mybatisplus.generator.config.po.TableFill;
-import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-import com.baomidou.mybatisplus.generator.config.querys.H2Query;
-import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,6 +28,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.generator.InjectionConfig;
+import com.baomidou.mybatisplus.generator.config.ConstVal;
+import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
+import com.baomidou.mybatisplus.generator.config.GlobalConfig;
+import com.baomidou.mybatisplus.generator.config.IDbQuery;
+import com.baomidou.mybatisplus.generator.config.INameConvert;
+import com.baomidou.mybatisplus.generator.config.PackageConfig;
+import com.baomidou.mybatisplus.generator.config.StrategyConfig;
+import com.baomidou.mybatisplus.generator.config.TemplateConfig;
+import com.baomidou.mybatisplus.generator.config.po.TableField;
+import com.baomidou.mybatisplus.generator.config.po.TableFill;
+import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.querys.H2Query;
+import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 
 /**
  * 配置汇总 传递给文件生成工具
@@ -160,7 +167,6 @@ public class ConfigBuilder {
         return packageInfo;
     }
 
-
     /**
      * 所有路径配置
      *
@@ -170,16 +176,13 @@ public class ConfigBuilder {
         return pathInfo;
     }
 
-
     public String getSuperEntityClass() {
         return superEntityClass;
     }
 
-
     public String getSuperMapperClass() {
         return superMapperClass;
     }
-
 
     /**
      * 获取超类定义
@@ -190,16 +193,13 @@ public class ConfigBuilder {
         return superServiceClass;
     }
 
-
     public String getSuperServiceImplClass() {
         return superServiceImplClass;
     }
 
-
     public String getSuperControllerClass() {
         return superControllerClass;
     }
-
 
     /**
      * 表信息
@@ -214,7 +214,6 @@ public class ConfigBuilder {
         this.tableInfoList = tableInfoList;
         return this;
     }
-
 
     /**
      * 模板路径配置信息
@@ -277,7 +276,6 @@ public class ConfigBuilder {
         dbQuery = config.getDbQuery();
     }
 
-
     /**
      * 处理数据库表 加载数据库表、列、注释相关数据集
      *
@@ -287,7 +285,6 @@ public class ConfigBuilder {
         processTypes(config);
         tableInfoList = getTablesInfo(config);
     }
-
 
     /**
      * 处理superClassName,IdClassType,IdStrategy配置
@@ -313,7 +310,6 @@ public class ConfigBuilder {
         superEntityClass = config.getSuperEntityClass();
         superControllerClass = config.getSuperControllerClass();
     }
-
 
     /**
      * 处理表对应的类名称
@@ -398,7 +394,6 @@ public class ConfigBuilder {
             });
         }
     }
-
 
     /**
      * 获取所有的数据库表信息
@@ -543,7 +538,6 @@ public class ConfigBuilder {
         return processTable(includeTableList, config.getNaming(), config);
     }
 
-
     /**
      * 表名匹配
      *
@@ -673,7 +667,6 @@ public class ConfigBuilder {
         return tableInfo;
     }
 
-
     /**
      * 连接路径字符串
      *
@@ -692,7 +685,6 @@ public class ConfigBuilder {
         return parentDir + packageName;
     }
 
-
     /**
      * 连接父子包名
      *
@@ -707,7 +699,6 @@ public class ConfigBuilder {
         return parent + StringPool.DOT + subPackage;
     }
 
-
     /**
      * 处理字段名称
      *
@@ -716,7 +707,6 @@ public class ConfigBuilder {
     private String processName(String name, NamingStrategy strategy) {
         return processName(name, strategy, strategyConfig.getFieldPrefix());
     }
-
 
     /**
      * 处理表/字段名称
@@ -750,33 +740,27 @@ public class ConfigBuilder {
         return propertyName;
     }
 
-
     public StrategyConfig getStrategyConfig() {
         return strategyConfig;
     }
-
 
     public ConfigBuilder setStrategyConfig(StrategyConfig strategyConfig) {
         this.strategyConfig = strategyConfig;
         return this;
     }
 
-
     public GlobalConfig getGlobalConfig() {
         return globalConfig;
     }
-
 
     public ConfigBuilder setGlobalConfig(GlobalConfig globalConfig) {
         this.globalConfig = globalConfig;
         return this;
     }
 
-
     public InjectionConfig getInjectionConfig() {
         return injectionConfig;
     }
-
 
     public ConfigBuilder setInjectionConfig(InjectionConfig injectionConfig) {
         this.injectionConfig = injectionConfig;

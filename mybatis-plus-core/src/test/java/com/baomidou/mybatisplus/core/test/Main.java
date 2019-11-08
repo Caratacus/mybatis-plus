@@ -26,7 +26,6 @@ public class Main {
     public static void query() {
     }
 
-
     public static class Test {
 
         private Long id;

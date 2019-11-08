@@ -32,7 +32,7 @@ class StringUtilsTest {
     }
 
     @Test
-    void isCapitalModeTest(){
+    void isCapitalModeTest() {
         Assertions.assertFalse(StringUtils.isCapitalMode("test"));
         Assertions.assertFalse(StringUtils.isCapitalMode("Test"));
         Assertions.assertFalse(StringUtils.isCapitalMode("teSt"));

@@ -26,7 +26,6 @@ import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
  */
 public interface ITypeConvert {
 
-
     /**
      * 执行类型转换
      *
@@ -38,7 +37,6 @@ public interface ITypeConvert {
         // 该方法提供重写
         return processTypeConvert(globalConfig, tableField.getType());
     }
-
 
     /**
      * 执行类型转换

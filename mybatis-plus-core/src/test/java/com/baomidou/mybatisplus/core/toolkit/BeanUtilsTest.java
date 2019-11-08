@@ -17,10 +17,11 @@ package com.baomidou.mybatisplus.core.toolkit;
 
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 测试 bean utils
@@ -55,6 +56,7 @@ class BeanUtilsTest {
     @Getter
     @Setter
     public static class User {
+
         private String name;
         private int id;
     }

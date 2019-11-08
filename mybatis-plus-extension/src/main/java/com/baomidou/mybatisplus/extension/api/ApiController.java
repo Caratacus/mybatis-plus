@@ -28,7 +28,6 @@ public class ApiController {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-
     /**
      * 请求成功
      *

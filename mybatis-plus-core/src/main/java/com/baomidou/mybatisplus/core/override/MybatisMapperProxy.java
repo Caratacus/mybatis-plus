@@ -15,10 +15,6 @@
  */
 package com.baomidou.mybatisplus.core.override;
 
-import org.apache.ibatis.binding.MapperProxy;
-import org.apache.ibatis.reflection.ExceptionUtil;
-import org.apache.ibatis.session.SqlSession;
-
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -26,6 +22,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
+
+import org.apache.ibatis.binding.MapperProxy;
+import org.apache.ibatis.reflection.ExceptionUtil;
+import org.apache.ibatis.session.SqlSession;
 
 /**
  * <p> 从 {@link MapperProxy}  copy 过来 </p>

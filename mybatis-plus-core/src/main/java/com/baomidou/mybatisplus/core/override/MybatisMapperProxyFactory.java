@@ -15,14 +15,15 @@
  */
 package com.baomidou.mybatisplus.core.override;
 
-import lombok.Getter;
-import org.apache.ibatis.binding.MapperProxyFactory;
-import org.apache.ibatis.session.SqlSession;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.ibatis.binding.MapperProxyFactory;
+import org.apache.ibatis.session.SqlSession;
+
+import lombok.Getter;
 
 /**
  * <p>从 {@link MapperProxyFactory} copy 过来 </p>

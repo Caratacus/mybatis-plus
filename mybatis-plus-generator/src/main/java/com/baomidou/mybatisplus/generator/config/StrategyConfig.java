@@ -15,18 +15,19 @@
  */
 package com.baomidou.mybatisplus.generator.config;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.generator.config.po.TableFill;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 策略配置项
@@ -37,6 +38,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class StrategyConfig {
+
     /**
      * 是否大写命名
      */
@@ -229,7 +231,6 @@ public class StrategyConfig {
         this.superEntityClass = superEntityClass;
         return this;
     }
-
 
     /**
      * <p>

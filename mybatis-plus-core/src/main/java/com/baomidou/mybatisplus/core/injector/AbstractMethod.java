@@ -15,12 +15,13 @@
  */
 package com.baomidou.mybatisplus.core.injector;
 
-import com.baomidou.mybatisplus.core.enums.SqlMethod;
-import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
+import static java.util.stream.Collectors.joining;
+
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
@@ -33,12 +34,12 @@ import org.apache.ibatis.mapping.StatementType;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
 
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.joining;
+import com.baomidou.mybatisplus.core.enums.SqlMethod;
+import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
 
 /**
  * 抽象的注入方法类
@@ -47,6 +48,7 @@ import static java.util.stream.Collectors.joining;
  * @since 2018-04-06
  */
 public abstract class AbstractMethod implements Constants {
+
     protected static final Log logger = LogFactory.getLog(AbstractMethod.class);
 
     protected Configuration configuration;
@@ -332,8 +334,8 @@ public abstract class AbstractMethod implements Constants {
      * 获取自定义方法名，未设置采用默认方法名
      * https://gitee.com/baomidou/mybatis-plus/pulls/88
      *
-     * @author 义陆无忧
      * @return method
+     * @author 义陆无忧
      */
     public String getMethod(SqlMethod sqlMethod) {
         return sqlMethod.getMethod();

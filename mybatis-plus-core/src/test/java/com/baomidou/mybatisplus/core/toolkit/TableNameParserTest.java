@@ -15,14 +15,13 @@
  */
 package com.baomidou.mybatisplus.core.toolkit;
 
-
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 /**
  * TableNameParser Test
@@ -40,7 +39,6 @@ public class TableNameParserTest {
         + "  WHERE  strat.src_id               = prodGrp.struct_doc_sect_id"
         + "           AND strat.module_type   IN ('sdfdsf','assdf')"
         + ")";
-
 
     private static final String SQL_SELECT_THREE_JOIN_WITH_ALIASE = "select c.name, s.name, s.id, r.result"
         + " from colleges c "
@@ -199,7 +197,7 @@ public class TableNameParserTest {
     @Test
     public void testSelectThreeTables() {
         String sql = "SELECT name, age FROM table1,table2,table3 group by xyx";
-        assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("table1", "table2","table3"));
+        assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("table1", "table2", "table3"));
     }
 
     @Test
@@ -226,7 +224,6 @@ public class TableNameParserTest {
         assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("table1", "table2", "table3"));
     }
 
-
     @Test
     public void testSelectWithSubQuery() {
         assertThat(new TableNameParser(SQL_SELECT_SUB_QUERY).tables()).isEqualTo(asSet("strategy", "doc_sect_ver"));
@@ -250,19 +247,16 @@ public class TableNameParserTest {
         assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("table1", "table2"));
     }
 
-
     @Test
     public void testShouldIgnoreDual() {
         String sql = "select * from dual";
         assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet());
     }
 
-
     @Test
     public void testSelectTwoJoinWithAliase() {
         assertThat(new TableNameParser(SQL_SELECT_THREE_JOIN_WITH_ALIASE).tables()).isEqualTo(asSet("colleges", "students", "results"));
     }
-
 
     @Test
     public void testInsertWithValues() {
@@ -355,7 +349,7 @@ public class TableNameParserTest {
 
     @Test
     public void testMergeComplexQuery() {
-        assertThat(new TableNameParser(SQL_MERGE_COMPLEX).tables()).isEqualTo(asSet("non_strategy_comps","cf_procedure", "struct_doc_Sect_ver", "cf_period", "cf_component", "cf_strategy", "tier_basis_ver", "non_strategy_details", "cf_procedure", "non_strat_periods"));
+        assertThat(new TableNameParser(SQL_MERGE_COMPLEX).tables()).isEqualTo(asSet("non_strategy_comps", "cf_procedure", "struct_doc_Sect_ver", "cf_period", "cf_component", "cf_strategy", "tier_basis_ver", "non_strategy_details", "cf_procedure", "non_strat_periods"));
     }
 
     @Test
@@ -390,7 +384,7 @@ public class TableNameParserTest {
     @Test
     public void testCreateView2() {
         String sql = "CREATE VIEW division1_staff AS SELECT ename, empno, job, dname FROM emp, dept WHERE emp.deptno IN (10, 30) AND emp.deptno = dept.deptno;";
-        assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("dept","emp"));
+        assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("dept", "emp"));
     }
 
     @Test
@@ -462,19 +456,19 @@ public class TableNameParserTest {
     @Test
     public void testSqlWithMultipleCommentsInTheMiddle() {
         String sql = "select * -- I like stars \n from foo f -- I like foo \n join bar b -- I also like bar \n on f.id = b.id";
-        assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("foo","bar"));
+        assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("foo", "bar"));
     }
 
     @Test
     public void testSqlWithMultipleCommentsAndNewlines() {
         String sql = "select * -- I like stars \n from foo f -- I like foo \n\n join bar b -- I also like bar \n on f.id = b.id";
-        assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("foo","bar"));
+        assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("foo", "bar"));
     }
 
     @Test
     public void testSqlWithMultipleCommentsInTheMiddleAndEnd() {
         String sql = "select * -- I like stars \n from foo f -- I like foo \n join bar b -- I also like bar \n on f.id = b.id -- comment ending with update";
-        assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("foo","bar"));
+        assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("foo", "bar"));
     }
 
     private static Collection<String> asSet(String... a) {

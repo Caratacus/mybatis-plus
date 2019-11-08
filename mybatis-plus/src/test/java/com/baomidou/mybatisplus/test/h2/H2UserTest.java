@@ -15,6 +15,27 @@
  */
 package com.baomidou.mybatisplus.test.h2;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.AbstractList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.exceptions.PersistenceException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
@@ -22,19 +43,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.test.h2.entity.H2User;
 import com.baomidou.mybatisplus.test.h2.enums.AgeEnum;
 import com.baomidou.mybatisplus.test.h2.service.IH2UserService;
+
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.Select;
-import org.apache.ibatis.exceptions.PersistenceException;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
 
 /**
  * Mybatis Plus H2 Junit Test
@@ -76,7 +87,6 @@ class H2UserTest extends BaseTest {
         int row = userService.myInsertWithoutParam(name, version);
         Assertions.assertEquals(1, row);
     }
-
 
     @Test
     @Order(6)
@@ -324,10 +334,10 @@ class H2UserTest extends BaseTest {
         Assertions.assertNotEquals(0L, userService.lambdaQuery().like(H2User::getName, "a").count().longValue());
 
         List<H2User> users = userService.lambdaQuery().like(H2User::getName, "T")
-                .ne(H2User::getAge, AgeEnum.TWO)
-                .ge(H2User::getVersion, 1)
-                .isNull(H2User::getPrice)
-                .list();
+            .ne(H2User::getAge, AgeEnum.TWO)
+            .ge(H2User::getVersion, 1)
+            .isNull(H2User::getPrice)
+            .list();
         Assertions.assertTrue(users.isEmpty());
     }
 
@@ -340,14 +350,13 @@ class H2UserTest extends BaseTest {
         userService.lambdaUpdate().set(H2User::getName, "Tom").eq(H2User::getName, "Tomcat").update();
     }
 
-
     @Test
     @Order(28)
     void testSaveBatchException() {
         try {
             userService.saveBatch(Arrays.asList(
-                    new H2User(1L, "tom"),
-                    new H2User(1L, "andy")
+                new H2User(1L, "tom"),
+                new H2User(1L, "andy")
             ));
         } catch (Exception e) {
             Assertions.assertTrue(e instanceof PersistenceException);
@@ -377,11 +386,9 @@ class H2UserTest extends BaseTest {
         final Select select = (Select) CCJSqlParserUtil.parse(targetSql1);
         Assertions.assertEquals(select.toString(), targetSql1);
 
-
         final String targetSql2 = "SELECT * FROM user WHERE id NOT IN (?)";
         final Select select2 = (Select) CCJSqlParserUtil.parse(targetSql2);
         Assertions.assertEquals(select2.toString(), targetSql2);
-
 
         final String targetSql3 = "SELECT * FROM user WHERE id IS NOT NULL";
         final Select select3 = (Select) CCJSqlParserUtil.parse(targetSql3);

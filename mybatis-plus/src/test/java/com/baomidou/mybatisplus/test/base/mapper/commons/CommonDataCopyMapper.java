@@ -15,10 +15,11 @@
  */
 package com.baomidou.mybatisplus.test.base.mapper.commons;
 
-import com.baomidou.mybatisplus.test.base.entity.CommonData;
+import java.util.Optional;
+
 import org.apache.ibatis.annotations.Select;
 
-import java.util.Optional;
+import com.baomidou.mybatisplus.test.base.entity.CommonData;
 
 /**
  * @author miemie

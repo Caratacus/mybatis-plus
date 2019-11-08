@@ -34,6 +34,7 @@ import lombok.Getter;
  * @since 2018-10-31
  */
 public class DialectModel {
+
     private static final String FIRST_PARAM_NAME = "mybatis_plus_first";
     private static final String SECOND_PARAM_NAME = "mybatis_plus_second";
 

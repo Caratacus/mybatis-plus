@@ -15,7 +15,6 @@
  */
 package com.baomidou.mybatisplus.core.incrementer;
 
-
 /**
  * 表主键生成器接口 (sql)
  *

@@ -15,12 +15,12 @@
  */
 package com.baomidou.mybatisplus.core.conditions.segments;
 
-import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
+import static com.baomidou.mybatisplus.core.enums.SqlKeyword.ORDER_BY;
+import static java.util.stream.Collectors.joining;
 
 import java.util.List;
 
-import static com.baomidou.mybatisplus.core.enums.SqlKeyword.ORDER_BY;
-import static java.util.stream.Collectors.joining;
+import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
 
 /**
  * Order By SQL 片段

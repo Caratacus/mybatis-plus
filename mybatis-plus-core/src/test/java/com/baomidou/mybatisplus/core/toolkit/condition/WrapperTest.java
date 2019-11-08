@@ -15,8 +15,9 @@
  */
 package com.baomidou.mybatisplus.core.toolkit.condition;
 
-import lombok.Getter;
 import org.junit.jupiter.api.Test;
+
+import lombok.Getter;
 
 class WrapperTest {
 

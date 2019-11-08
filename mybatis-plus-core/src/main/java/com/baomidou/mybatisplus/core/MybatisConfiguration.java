@@ -15,14 +15,6 @@
  */
 package com.baomidou.mybatisplus.core;
 
-import com.baomidou.mybatisplus.core.config.GlobalConfig;
-import com.baomidou.mybatisplus.core.executor.MybatisBatchExecutor;
-import com.baomidou.mybatisplus.core.executor.MybatisCachingExecutor;
-import com.baomidou.mybatisplus.core.executor.MybatisReuseExecutor;
-import com.baomidou.mybatisplus.core.executor.MybatisSimpleExecutor;
-import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.ibatis.binding.MapperRegistry;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.logging.Log;
@@ -35,6 +27,16 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.transaction.Transaction;
 
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
+import com.baomidou.mybatisplus.core.executor.MybatisBatchExecutor;
+import com.baomidou.mybatisplus.core.executor.MybatisCachingExecutor;
+import com.baomidou.mybatisplus.core.executor.MybatisReuseExecutor;
+import com.baomidou.mybatisplus.core.executor.MybatisSimpleExecutor;
+import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
+
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * replace default Configuration class
  * <p>Caratacus 2016/9/25 replace mapperRegistry</p>
@@ -43,6 +45,7 @@ import org.apache.ibatis.transaction.Transaction;
  * @since 2016-01-23
  */
 public class MybatisConfiguration extends Configuration {
+
     private static final Log logger = LogFactory.getLog(MybatisConfiguration.class);
     /**
      * Mapper 注册

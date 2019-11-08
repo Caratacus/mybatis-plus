@@ -15,9 +15,12 @@
  */
 package com.baomidou.mybatisplus.core.override;
 
-import com.baomidou.mybatisplus.core.metadata.CachePage;
-import com.baomidou.mybatisplus.core.metadata.CachePageResult;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.cursor.Cursor;
@@ -28,11 +31,9 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import com.baomidou.mybatisplus.core.metadata.CachePage;
+import com.baomidou.mybatisplus.core.metadata.CachePageResult;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * 从  {@link MapperMethod} copy 过来 </br>
@@ -44,6 +45,7 @@ import java.util.Optional;
  * @since 2018-06-09
  */
 public class MybatisMapperMethod {
+
     private final MapperMethod.SqlCommand command;
     private final MapperMethod.MethodSignature method;
 

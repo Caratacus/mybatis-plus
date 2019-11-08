@@ -72,6 +72,7 @@ public class SystemClock {
     }
 
     private static class InstanceHolder {
+
         public static final SystemClock INSTANCE = new SystemClock(1);
     }
 }

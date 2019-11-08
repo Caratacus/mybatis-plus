@@ -15,13 +15,14 @@
  */
 package com.baomidou.mybatisplus.core.conditions.segments;
 
-import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import lombok.AccessLevel;
-import lombok.Getter;
-
 import java.util.Arrays;
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * 合并 SQL 片段

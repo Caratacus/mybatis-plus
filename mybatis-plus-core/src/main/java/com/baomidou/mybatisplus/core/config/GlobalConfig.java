@@ -15,6 +15,12 @@
  */
 package com.baomidou.mybatisplus.core.config;
 
+import java.io.Serializable;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+
+import org.apache.ibatis.session.SqlSessionFactory;
+
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
@@ -23,15 +29,11 @@ import com.baomidou.mybatisplus.core.incrementer.IdGenerator;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.core.mapper.Mapper;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.apache.ibatis.session.SqlSessionFactory;
-
-import java.io.Serializable;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * Mybatis 全局缓存
@@ -97,6 +99,7 @@ public class GlobalConfig implements Serializable {
      * 主键生成器
      */
     private IdGenerator idGenerator;
+
     /**
      * 标记全局设置 (统一所有入口)
      */
@@ -106,6 +109,7 @@ public class GlobalConfig implements Serializable {
 
     @Data
     public static class DbConfig {
+
         /**
          * 主键类型（默认 ID_WORKER）
          */

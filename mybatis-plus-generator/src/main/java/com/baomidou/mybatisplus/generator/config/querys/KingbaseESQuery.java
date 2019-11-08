@@ -25,18 +25,15 @@ import com.baomidou.mybatisplus.annotation.DbType;
  */
 public class KingbaseESQuery extends AbstractDbQuery {
 
-
     @Override
     public DbType dbType() {
         return DbType.KINGBASE_ES;
     }
 
-
     @Override
     public String tablesSql() {
         return "SELECT A.tablename, obj_description(relfilenode, 'sys_class') AS comments FROM sys_tables A, sys_class B WHERE A.schemaname='%s' AND A.tablename = B.relname";
     }
-
 
     @Override
     public String tableFieldsSql() {
@@ -45,36 +42,30 @@ public class KingbaseESQuery extends AbstractDbQuery {
             "WHERE  A.attrelid = '%s.%s'::regclass AND A.attnum > 0 AND NOT A.attisdropped ORDER  BY A.attnum";
     }
 
-
     @Override
     public String tableName() {
         return "tablename";
     }
-
 
     @Override
     public String tableComment() {
         return "comments";
     }
 
-
     @Override
     public String fieldName() {
         return "name";
     }
-
 
     @Override
     public String fieldType() {
         return "type";
     }
 
-
     @Override
     public String fieldComment() {
         return "comment";
     }
-
 
     @Override
     public String fieldKey() {

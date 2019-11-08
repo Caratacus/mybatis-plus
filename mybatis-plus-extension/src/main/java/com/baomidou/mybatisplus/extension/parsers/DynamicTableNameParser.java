@@ -64,7 +64,6 @@ public class DynamicTableNameParser implements ISqlParser {
         return null;
     }
 
-
     /**
      * 判断是否允许执行
      * <p>例如：逻辑删除只解析 delete , update 操作</p>

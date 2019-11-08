@@ -1,9 +1,9 @@
 package com.baomidou.mybatisplus.extension.plugins.pagination.optimize;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.ibatis.reflection.MetaObject;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author miemie

@@ -15,8 +15,12 @@
  */
 package com.baomidou.mybatisplus.core.toolkit;
 
-import java.io.*;
-
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * <p>copy from org.springframework.util.SerializationUtils</p>
@@ -48,6 +52,7 @@ public class SerializationUtils {
 
     /**
      * Serialize the given object to a byte array.
+     *
      * @param object the object to serialize
      * @return an array of bytes representing the object in a portable fashion
      */

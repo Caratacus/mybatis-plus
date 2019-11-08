@@ -141,7 +141,6 @@ public final class StringUtils {
         return src;
     }
 
-
     /**
      * 判断字符串是不是驼峰命名
      *
@@ -157,7 +156,6 @@ public final class StringUtils {
         }
         return Character.isLowerCase(str.charAt(0));
     }
-
 
     /**
      * 判断字符串是否符合数据库字段的命名
@@ -344,7 +342,7 @@ public final class StringUtils {
      */
     public static String quotaMarkList(Collection<?> coll) {
         return coll.stream().map(StringUtils::quotaMark)
-                .collect(joining(StringPool.COMMA, StringPool.LEFT_BRACKET, StringPool.RIGHT_BRACKET));
+            .collect(joining(StringPool.COMMA, StringPool.LEFT_BRACKET, StringPool.RIGHT_BRACKET));
     }
 
     /**
@@ -605,8 +603,8 @@ public final class StringUtils {
         char lastChar = 'a';
         for (char c : s.toCharArray()) {
             if ((Character.isWhitespace(lastChar)) && (!Character.isWhitespace(c))
-                    && ('-' != c) && (buf.length() > 0)
-                    && (buf.charAt(buf.length() - 1) != '-')) {
+                && ('-' != c) && (buf.length() > 0)
+                && (buf.charAt(buf.length() - 1) != '-')) {
                 buf.append(StringPool.DASH);
             }
             if ('_' == c) {

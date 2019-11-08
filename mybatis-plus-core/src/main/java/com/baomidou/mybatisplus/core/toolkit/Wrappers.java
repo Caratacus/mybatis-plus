@@ -15,15 +15,15 @@
  */
 package com.baomidou.mybatisplus.core.toolkit;
 
+import java.util.Collections;
+import java.util.Map;
+
 import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * Wrapper 条件构造

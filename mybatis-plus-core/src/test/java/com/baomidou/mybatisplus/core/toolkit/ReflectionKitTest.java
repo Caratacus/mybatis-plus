@@ -15,14 +15,15 @@
  */
 package com.baomidou.mybatisplus.core.toolkit;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 反射工具类测试

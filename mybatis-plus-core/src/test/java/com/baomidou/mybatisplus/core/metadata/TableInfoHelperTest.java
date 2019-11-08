@@ -1,11 +1,13 @@
 package com.baomidou.mybatisplus.core.metadata;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.Data;
+import java.util.Arrays;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import com.baomidou.mybatisplus.annotation.TableId;
+
+import lombok.Data;
 
 class TableInfoHelperTest {
 

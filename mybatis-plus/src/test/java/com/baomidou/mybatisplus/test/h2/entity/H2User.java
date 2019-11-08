@@ -15,14 +15,18 @@
  */
 package com.baomidou.mybatisplus.test.h2.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import java.math.BigDecimal;
+import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.test.h2.enums.AgeEnum;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * 测试用户类
@@ -37,11 +41,11 @@ import java.util.Date;
 public class H2User extends SuperEntity {
 
     /**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 2043176352335589747L;
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 2043176352335589747L;
 
-	/* 测试忽略验证 */
+    /* 测试忽略验证 */
     private String name;
 
     private AgeEnum age;
@@ -70,7 +74,6 @@ public class H2User extends SuperEntity {
 
     @TableLogic
     private Integer deleted;
-
 
     public H2User() {
 

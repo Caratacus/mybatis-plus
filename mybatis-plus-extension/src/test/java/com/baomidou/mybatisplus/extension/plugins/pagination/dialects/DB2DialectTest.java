@@ -15,8 +15,9 @@
  */
 package com.baomidou.mybatisplus.extension.plugins.pagination.dialects;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.junit.jupiter.api.Test;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
  * @author miemie

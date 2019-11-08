@@ -15,7 +15,6 @@
  */
 package com.baomidou.mybatisplus.extension.plugins.tenant;
 
-
 import com.baomidou.mybatisplus.core.parser.AbstractJsqlParser;
 
 import lombok.Data;

@@ -84,8 +84,8 @@ public class H2UserServiceImpl extends ServiceImpl<H2UserMapper, H2User> impleme
     }
 
     @Override
-    public List<Map<?,?>> mySelectMaps() {
-        Page<H2User> page = new Page<>(1,3);
+    public List<Map<?, ?>> mySelectMaps() {
+        Page<H2User> page = new Page<>(1, 3);
         page.addOrder(OrderItem.asc("name"));
         return baseMapper.mySelectMaps(page);
     }
@@ -105,7 +105,6 @@ public class H2UserServiceImpl extends ServiceImpl<H2UserMapper, H2User> impleme
         save(new H2User("simple2", 0));
         throw new MybatisPlusException("测试普通插入事务回滚");
     }
-
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)

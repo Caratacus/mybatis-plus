@@ -15,6 +15,8 @@
  */
 package com.baomidou.mybatisplus.test.generator;
 
+import org.junit.jupiter.api.Test;
+
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
@@ -24,7 +26,6 @@ import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.mysql.cj.jdbc.Driver;
-import org.junit.jupiter.api.Test;
 
 /**
  * 代码生成器 示例

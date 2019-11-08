@@ -15,11 +15,13 @@
  */
 package com.baomidou.mybatisplus.core.toolkit;
 
-import com.baomidou.mybatisplus.core.toolkit.support.SerializedLambda;
-import lombok.Getter;
 import org.apache.ibatis.reflection.property.PropertyNamer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import com.baomidou.mybatisplus.core.toolkit.support.SerializedLambda;
+
+import lombok.Getter;
 
 /**
  * 测试 Lambda 解析类
@@ -57,6 +59,7 @@ class LambdaUtilsTest {
 
     @Getter
     private static class TestModel {
+
         private int id;
     }
 

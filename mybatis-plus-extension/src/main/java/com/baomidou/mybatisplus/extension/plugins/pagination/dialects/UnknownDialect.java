@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
 
 /**
  * 未知方言
+ *
  * @author nieqiuqiu
  */
 public class UnknownDialect implements IDialect {

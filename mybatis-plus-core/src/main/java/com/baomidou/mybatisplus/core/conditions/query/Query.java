@@ -33,7 +33,7 @@ public interface Query<Children, T, R> extends Serializable {
      * @return children
      */
     @SuppressWarnings("unchecked")
-	Children select(R... columns);
+    Children select(R... columns);
 
     /**
      * ignore

@@ -15,14 +15,15 @@
  */
 package com.baomidou.mybatisplus.core.parser;
 
-import com.baomidou.mybatisplus.annotation.SqlParser;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.reflection.MetaObject;
-
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.reflection.MetaObject;
+
+import com.baomidou.mybatisplus.annotation.SqlParser;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 
 /**
  * SQL 解析辅助类

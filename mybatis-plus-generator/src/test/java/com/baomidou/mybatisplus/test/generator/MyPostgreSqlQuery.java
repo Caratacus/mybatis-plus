@@ -19,7 +19,6 @@ import com.baomidou.mybatisplus.generator.config.querys.PostgreSqlQuery;
 
 public class MyPostgreSqlQuery extends PostgreSqlQuery {
 
-
     @Override
     public String tableFieldsSql() {
         // 固定 abc  def 内容，实际可以查询字段大小等信息
@@ -27,7 +26,6 @@ public class MyPostgreSqlQuery extends PostgreSqlQuery {
             "FROM pg_attribute A LEFT JOIN pg_constraint C ON A.attnum = C.conkey[1] AND A.attrelid = C.conrelid " +
             "WHERE  A.attrelid = '%s.%s'::regclass AND A.attnum > 0 AND NOT A.attisdropped ORDER  BY A.attnum";
     }
-
 
     @Override
     public String[] fieldCustom() {

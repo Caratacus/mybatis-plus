@@ -15,6 +15,11 @@
  */
 package com.baomidou.mybatisplus.extension.service.additional;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.interfaces.Compare;
@@ -23,11 +28,6 @@ import com.baomidou.mybatisplus.core.conditions.interfaces.Join;
 import com.baomidou.mybatisplus.core.conditions.interfaces.Nested;
 import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
 import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 
 /**
  * 所有包装类都继承此抽象类,此抽象类代理了大部分生成 where 条件的方法

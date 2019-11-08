@@ -15,13 +15,13 @@
  */
 package com.baomidou.mybatisplus.core.conditions.segments;
 
-import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
-import com.baomidou.mybatisplus.core.enums.SqlKeyword;
+import static com.baomidou.mybatisplus.core.enums.SqlKeyword.HAVING;
+import static java.util.stream.Collectors.joining;
 
 import java.util.List;
 
-import static com.baomidou.mybatisplus.core.enums.SqlKeyword.HAVING;
-import static java.util.stream.Collectors.joining;
+import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
+import com.baomidou.mybatisplus.core.enums.SqlKeyword;
 
 /**
  * Having SQL 片段

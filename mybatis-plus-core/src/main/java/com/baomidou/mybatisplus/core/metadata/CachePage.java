@@ -15,12 +15,12 @@
  */
 package com.baomidou.mybatisplus.core.metadata;
 
+import java.io.Serializable;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * 缓存分页数据(二级缓存)

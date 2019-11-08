@@ -15,11 +15,12 @@
  */
 package com.baomidou.mybatisplus.extension.handlers;
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import java.util.Map;
+
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.wrapper.MapWrapper;
 
-import java.util.Map;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 
 /**
  * 返回Map结果集，下划线转驼峰

@@ -25,16 +25,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 对象工厂
+ *
  * @author nieqiurong 2018/8/14 13:12.
  */
 public class ExampleObjectFactory extends DefaultObjectFactory {
 
     /**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = -2878759377109110945L;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExampleObjectFactory.class);
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = -2878759377109110945L;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExampleObjectFactory.class);
 
     public <T> T create(Class<T> type) {
         LOGGER.debug("生成一个对象 type = [" + type + "]");
@@ -51,6 +52,7 @@ public class ExampleObjectFactory extends DefaultObjectFactory {
         LOGGER.debug("设置属性 properties = [" + properties + "]");
         super.setProperties(properties);
     }
+
     public <T> boolean isCollection(Class<T> type) {
         return Collection.class.isAssignableFrom(type);
     }

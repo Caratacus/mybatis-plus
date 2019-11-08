@@ -15,6 +15,13 @@
  */
 package com.baomidou.mybatisplus.core.conditions;
 
+import static java.util.stream.Collectors.joining;
+
+import java.util.Arrays;
+import java.util.Map;
+
+import org.apache.ibatis.reflection.property.PropertyNamer;
+
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
@@ -22,12 +29,6 @@ import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.support.ColumnCache;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.core.toolkit.support.SerializedLambda;
-import org.apache.ibatis.reflection.property.PropertyNamer;
-
-import java.util.Arrays;
-import java.util.Map;
-
-import static java.util.stream.Collectors.joining;
 
 /**
  * Lambda 语法使用 Wrapper

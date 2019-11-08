@@ -15,11 +15,11 @@
  */
 package com.baomidou.mybatisplus.core.metadata;
 
+import java.util.ArrayList;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.ArrayList;
 
 /**
  * 受限于SqlSession#selectList(java.lang.String, java.lang.Object)

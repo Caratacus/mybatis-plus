@@ -16,6 +16,7 @@
 package com.baomidou.mybatisplus.test.base.enums;
 
 import com.baomidou.mybatisplus.core.enums.IEnum;
+
 import lombok.Getter;
 
 /**
