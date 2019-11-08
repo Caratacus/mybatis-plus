@@ -26,6 +26,7 @@ import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.ColumnCache;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.core.toolkit.support.SerializedLambda;
@@ -42,7 +43,18 @@ public abstract class AbstractLambdaWrapper<T, Children extends AbstractLambdaWr
     extends AbstractWrapper<T, SFunction<T, ?>, Children> {
 
     private Map<String, ColumnCache> columnMap = null;
+
     private boolean initColumnMap = false;
+
+    private boolean debug = false;
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
 
     @Override
     protected void initEntityClass() {
@@ -86,6 +98,9 @@ public abstract class AbstractLambdaWrapper<T, Children extends AbstractLambdaWr
      * @see SerializedLambda#getImplMethodName()
      */
     private String getColumn(SerializedLambda lambda, boolean onlyColumn) throws MybatisPlusException {
+        if (isDebug()) {
+            return StringUtils.resolveFieldName(lambda.getImplMethodName());
+        }
         String fieldName = PropertyNamer.methodToProperty(lambda.getImplMethodName());
         Class aClass = lambda.getInstantiatedMethodType();
         if (!initColumnMap) {
@@ -97,4 +112,5 @@ public abstract class AbstractLambdaWrapper<T, Children extends AbstractLambdaWr
             fieldName, aClass.getName());
         return onlyColumn ? columnCache.getColumn() : columnCache.getColumnSelect();
     }
+
 }

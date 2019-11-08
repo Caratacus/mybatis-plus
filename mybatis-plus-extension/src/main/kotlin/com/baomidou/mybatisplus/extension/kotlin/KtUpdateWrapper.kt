@@ -20,7 +20,6 @@ import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments
 import com.baomidou.mybatisplus.core.conditions.update.Update
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils
 import com.baomidou.mybatisplus.core.toolkit.StringPool
-import com.baomidou.mybatisplus.core.toolkit.StringUtils
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.stream.Collectors.joining
 import kotlin.reflect.KProperty
@@ -66,7 +65,7 @@ class KtUpdateWrapper<T : Any> : AbstractKtWrapper<T, KtUpdateWrapper<T>>, Updat
 
     override fun set(condition: Boolean, column: KProperty<*>, value: Any): KtUpdateWrapper<T> {
         if (condition) {
-            sqlSet.add(String.format("%s=%s", columnToString(column), formatSql("{0}", value)))
+            sqlSet.add(String.format("%s=%s", columnToString(column), value.toString()))
         }
         return typedThis
     }
