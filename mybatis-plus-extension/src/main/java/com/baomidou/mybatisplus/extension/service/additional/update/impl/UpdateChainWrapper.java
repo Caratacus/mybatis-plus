@@ -47,12 +47,6 @@ public class UpdateChainWrapper<T> extends AbstractChainWrapper<T, String, Updat
     }
 
     @Override
-    public UpdateChainWrapper<T> setSql(boolean condition, String sql) {
-        wrapperChildren.setSql(condition, sql);
-        return typedThis;
-    }
-
-    @Override
     public String getSqlSet() {
         throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getSqlSet");
     }

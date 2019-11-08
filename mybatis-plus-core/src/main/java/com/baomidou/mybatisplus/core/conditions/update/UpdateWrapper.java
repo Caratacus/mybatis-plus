@@ -15,17 +15,16 @@
  */
 package com.baomidou.mybatisplus.core.conditions.update;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.SharedString;
 import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Update 条件封装
@@ -76,15 +75,7 @@ public class UpdateWrapper<T> extends AbstractWrapper<T, String, UpdateWrapper<T
     @Override
     public UpdateWrapper<T> set(boolean condition, String column, Object val) {
         if (condition) {
-            sqlSet.add(String.format("%s=%s", column, formatSql("{0}", val)));
-        }
-        return typedThis;
-    }
-
-    @Override
-    public UpdateWrapper<T> setSql(boolean condition, String sql) {
-        if (condition && StringUtils.isNotBlank(sql)) {
-            sqlSet.add(sql);
+            sqlSet.add(String.format("%s=%s", column, val.toString()));
         }
         return typedThis;
     }

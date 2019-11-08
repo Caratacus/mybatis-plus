@@ -41,21 +41,6 @@ public interface Update<Children, R> extends Serializable {
     Children set(boolean condition, R column, Object val);
 
     /**
-     * ignore
-     */
-    default Children setSql(String sql) {
-        return setSql(true, sql);
-    }
-
-    /**
-     * 设置 更新 SQL 的 SET 片段
-     *
-     * @param sql set sql
-     * @return children
-     */
-    Children setSql(boolean condition, String sql);
-
-    /**
      * 获取 更新 SQL 的 SET 片段
      */
     String getSqlSet();

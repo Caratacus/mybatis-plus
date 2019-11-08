@@ -15,24 +15,24 @@
  */
 package com.baomidou.mybatisplus.core.conditions.update;
 
-import com.baomidou.mybatisplus.core.conditions.AbstractLambdaWrapper;
-import com.baomidou.mybatisplus.core.conditions.SharedString;
-import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.baomidou.mybatisplus.core.conditions.AbstractLambdaWrapper;
+import com.baomidou.mybatisplus.core.conditions.SharedString;
+import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+
 /**
+ * <p>
  * Lambda 更新封装
+ * </p>
  *
  * @author hubin miemie HCL
- * @since 2018-05-30
  */
 @SuppressWarnings("serial")
 public class LambdaUpdateWrapper<T> extends AbstractLambdaWrapper<T, LambdaUpdateWrapper<T>>
@@ -78,15 +78,7 @@ public class LambdaUpdateWrapper<T> extends AbstractLambdaWrapper<T, LambdaUpdat
     @Override
     public LambdaUpdateWrapper<T> set(boolean condition, SFunction<T, ?> column, Object val) {
         if (condition) {
-            sqlSet.add(String.format("%s=%s", columnToString(column), formatSql("{0}", val)));
-        }
-        return typedThis;
-    }
-
-    @Override
-    public LambdaUpdateWrapper<T> setSql(boolean condition, String sql) {
-        if (condition && StringUtils.isNotBlank(sql)) {
-            sqlSet.add(sql);
+            sqlSet.add(String.format("%s=%s", columnToString(column), val.toString()));
         }
         return typedThis;
     }
