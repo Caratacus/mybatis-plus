@@ -52,8 +52,9 @@ public abstract class AbstractLambdaWrapper<T, Children extends AbstractLambdaWr
         return debug;
     }
 
-    public void setDebug(boolean debug) {
-        this.debug = debug;
+    public Children debug() {
+        this.debug = true;
+        return typedThis;
     }
 
     @Override

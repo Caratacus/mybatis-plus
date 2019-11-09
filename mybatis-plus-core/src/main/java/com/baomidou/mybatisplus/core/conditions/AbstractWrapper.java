@@ -99,6 +99,11 @@ public abstract class AbstractWrapper<T, R, Children extends AbstractWrapper<T, 
      * 实体类型
      */
     protected Class<T> entityClass;
+    /**
+     * De
+     */
+    private boolean debug = false;
+
 
     @Override
     public T getEntity() {
