@@ -289,30 +289,29 @@ class H2UserTest extends BaseTest {
 
     @Test
     @Order(21)
-    void testSaveBatch() {
-        Assertions.assertTrue(userService.saveBatch(Arrays.asList(new H2User("saveBatch1"), new H2User("saveBatch2"), new H2User("saveBatch3"), new H2User("saveBatch4"))));
-        Assertions.assertTrue(userService.saveBatch(Arrays.asList(new H2User("saveBatch5"), new H2User("saveBatch6"), new H2User("saveBatch7"), new H2User("saveBatch8")), 2));
+    void testSaveBatch() { userService.saveBatch(Arrays.asList(new H2User("saveBatch1"), new H2User("saveBatch2"), new H2User("saveBatch3"), new H2User("saveBatch4")));
+        userService.saveBatch(Arrays.asList(new H2User("saveBatch5"), new H2User("saveBatch6"), new H2User("saveBatch7"), new H2User("saveBatch8")));
     }
 
     @Test
     @Order(22)
     void testUpdateBatch() {
-        Assertions.assertTrue(userService.updateBatchById(Arrays.asList(new H2User(1010L, "batch1010"), new H2User(1011L, "batch1011"), new H2User(1010L, "batch1010"), new H2User(1012L, "batch1012"))));
-        Assertions.assertTrue(userService.updateBatchById(Arrays.asList(new H2User(1010L, "batch1010A"), new H2User(1011L, "batch1011A"), new H2User(1010L, "batch1010"), new H2User(1012L, "batch1012")), 1));
+        userService.updateBatchById(Arrays.asList(new H2User(1010L, "batch1010"), new H2User(1011L, "batch1011"), new H2User(1010L, "batch1010"), new H2User(1012L, "batch1012")));
+       userService.updateBatchById(Arrays.asList(new H2User(1010L, "batch1010A"), new H2User(1011L, "batch1011A"), new H2User(1010L, "batch1010"), new H2User(1012L, "batch1012")));
     }
 
     @Test
     @Order(23)
     void testSaveOrUpdateBatch() {
-        Assertions.assertTrue(userService.saveOrUpdateBatch(Arrays.asList(new H2User(1010L, "batch1010"), new H2User("batch1011"), new H2User(1010L, "batch1010"), new H2User("batch1015"))));
-        Assertions.assertTrue(userService.saveOrUpdateBatch(Arrays.asList(new H2User(1010L, "batch1010A"), new H2User("batch1011A"), new H2User(1010L, "batch1010"), new H2User("batch1016")), 1));
+        userService.saveOrUpdateBatch(Arrays.asList(new H2User(1010L, "batch1010"), new H2User("batch1011"), new H2User(1010L, "batch1010"), new H2User("batch1015")));
+        userService.saveOrUpdateBatch(Arrays.asList(new H2User(1010L, "batch1010A"), new H2User("batch1011A"), new H2User(1010L, "batch1010"), new H2User("batch1016")));
     }
 
     @Test
     @Order(24)
     void testSimpleAndBatch() {
         Assertions.assertTrue(userService.save(new H2User("testSimpleAndBatch1", 0)));
-        Assertions.assertTrue(userService.saveOrUpdateBatch(Arrays.asList(new H2User("testSimpleAndBatch2"), new H2User("testSimpleAndBatch3"), new H2User("testSimpleAndBatch4")), 1));
+        userService.saveOrUpdateBatch(Arrays.asList(new H2User("testSimpleAndBatch2"), new H2User("testSimpleAndBatch3"), new H2User("testSimpleAndBatch4")));
     }
 
     @Test
@@ -329,11 +328,11 @@ class H2UserTest extends BaseTest {
     @Test
     @Order(26)
     void testServiceImplInnerLambdaQuery() {
-        H2User tomcat = userService.lambdaQuery().eq(H2User::getName, "Tomcat").one();
+        H2User tomcat = userService.query().eq(H2User::getName, "Tomcat").getOne();
         Assertions.assertNotNull(tomcat);
-        Assertions.assertNotEquals(0L, userService.lambdaQuery().like(H2User::getName, "a").count().longValue());
+        Assertions.assertNotEquals(0L, userService.query().like(H2User::getName, "a").count().longValue());
 
-        List<H2User> users = userService.lambdaQuery().like(H2User::getName, "T")
+        List<H2User> users = userService.query().like(H2User::getName, "T")
             .ne(H2User::getAge, AgeEnum.TWO)
             .ge(H2User::getVersion, 1)
             .isNull(H2User::getPrice)
@@ -344,10 +343,7 @@ class H2UserTest extends BaseTest {
     @Test
     @Order(27)
     void testServiceChainQuery() {
-        H2User tomcat = userService.query().eq("name", "Tomcat").one();
-        Assertions.assertNotNull(tomcat, "tomcat should not be null");
-        userService.query().nested(i -> i.eq("name", "Tomcat")).list();
-        userService.lambdaUpdate().set(H2User::getName, "Tom").eq(H2User::getName, "Tomcat").update();
+        userService.update().set(H2User::getName, "Tom").eq(H2User::getName, "Tomcat").execute();
     }
 
     @Test

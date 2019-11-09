@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -131,28 +130,7 @@ public abstract class BaseDbTest {
 
     protected abstract void insertBatch(int size);
 
-    @Test
-    void a03_deleteById() {
-        long id = 1L;
-        assertEquals(success, commonDataMapper.deleteById(id));
-        assertEquals(success, commonLogicDataMapper.deleteById(id));
-        this.deleteById(id);
-    }
 
-    protected abstract void deleteById(long id);
-
-    @Test
-    void a04_deleteByMap() {
-        long id = 2L;
-        Map<String, Object> map = new HashMap<>();
-        map.put("id", id);
-        map.put("test_int", 5);
-        assertEquals(fail, commonDataMapper.deleteByMap(map));
-        assertEquals(fail, commonLogicDataMapper.deleteByMap(map));
-        this.deleteByMap_fail(id);
-    }
-
-    protected abstract void deleteByMap_fail(long id);
 
     @Test
     void a05_delete() {
@@ -168,15 +146,6 @@ public abstract class BaseDbTest {
 
     protected abstract void delete(long id);
 
-    @Test
-    void a06_deleteBatchIds() {
-        List<Long> ids = Arrays.asList(3L, 4L);
-        assertEquals(ids.size(), commonDataMapper.deleteBatchIds(ids));
-        assertEquals(ids.size(), commonLogicDataMapper.deleteBatchIds(ids));
-        this.deleteBatchIds(ids);
-    }
-
-    protected abstract void deleteBatchIds(List<Long> ids);
 
     //    @Test
 //    void b5_deleteByIdWithFill() {
@@ -241,49 +210,11 @@ public abstract class BaseDbTest {
 
     protected abstract void selectById(long id);
 
-    @Test
-    void a11_selectBatchIds() {
-        List<Long> ids = Arrays.asList(7L, 8L);
-
-        List<CommonData> commonData = commonDataMapper.selectBatchIds(ids);
-        assertTrue(CollectionUtils.isNotEmpty(commonData));
-        assertEquals(ids.size(), commonData.size());
-
-        List<CommonLogicData> commonLogicData = commonLogicDataMapper.selectBatchIds(ids);
-        assertTrue(CollectionUtils.isNotEmpty(commonLogicData));
-        assertEquals(ids.size(), commonLogicData.size());
-
-        List<ResultMapEntity> resultMapEntities = resultMapEntityMapper.selectBatchIds(ids);
-        assertTrue(CollectionUtils.isNotEmpty(resultMapEntities));
-        assertEquals(ids.size(), resultMapEntities.size());
-
-        this.selectBatchIds(ids);
-    }
-
     protected abstract void selectBatchIds(List<Long> ids);
 
-    @Test
-    void a12_selectByMap() {
-        long id = 9L;
-        Map<String, Object> map = new HashMap<>();
-        map.put("id", id);
-        map.put("test_int", 9);
-        assertTrue(CollectionUtils.isNotEmpty(commonDataMapper.selectByMap(map)));
-        assertTrue(CollectionUtils.isNotEmpty(commonLogicDataMapper.selectByMap(map)));
-        this.selectByMap(id);
-    }
 
     protected abstract void selectByMap(long id);
 
-    @Test
-    void a13_selectOne() {
-        long id = 10L;
-        assertNotNull(commonDataMapper.selectOne(Wrappers.<CommonData>lambdaQuery()
-            .eq(CommonData::getId, id).eq(CommonData::getTestInt, 10)));
-        assertNotNull(commonLogicDataMapper.selectOne(Wrappers.<CommonLogicData>lambdaQuery()
-            .eq(CommonLogicData::getId, id).eq(CommonLogicData::getTestInt, 10)));
-        this.selectOne(id);
-    }
 
     protected abstract void selectOne(long id);
 
@@ -336,19 +267,6 @@ public abstract class BaseDbTest {
     void a16_selectPage() {
         Page<CommonData> page = new Page<>(1, 5);
         page.addOrder(OrderItem.descs("c_time", "u_time"));
-        IPage<CommonData> dataPage = commonDataMapper.selectPage(page, null);
-        assertSame(dataPage, page);
-        assertNotEquals(0, dataPage.getRecords().size());
-        assertTrue(CollectionUtils.isNotEmpty(dataPage.getRecords()));
-        System.out.println(JSON.toJSONString(dataPage));
-        System.out.println(JSON.toJSON(dataPage.convert(CommonData::getId)));
-
-        Page<CommonLogicData> logicPage = new Page<>(1, 5);
-        IPage<CommonLogicData> logicDataPage = commonLogicDataMapper.selectPage(logicPage, null);
-        assertSame(logicDataPage, logicPage);
-        assertNotEquals(0, logicDataPage.getRecords().size());
-        assertTrue(CollectionUtils.isNotEmpty(logicDataPage.getRecords()));
-        System.out.println(JSON.toJSONString(logicDataPage));
 
         Page<CommonData> commonDataPage = new Page<>(1, 5);
         commonDataPage.addOrder(OrderItem.descs("c_time", "u_time"));
@@ -358,15 +276,6 @@ public abstract class BaseDbTest {
         assertTrue(CollectionUtils.isNotEmpty(commonDataDataPage.getRecords()));
         System.out.println(JSON.toJSONString(commonDataDataPage));
         System.out.println(JSON.toJSON(commonDataDataPage.convert(CommonData::getId)));
-
-        Page<ResultMapEntity> resultMapEntityPage = new Page<>(1, 5);
-        IPage<ResultMapEntity> resultMapEntityDataPage = resultMapEntityMapper.selectPage(resultMapEntityPage, null);
-        assertSame(resultMapEntityDataPage, resultMapEntityPage);
-        assertNotEquals(0, resultMapEntityDataPage.getRecords().size());
-        assertTrue(CollectionUtils.isNotEmpty(resultMapEntityDataPage.getRecords()));
-        System.out.println(JSON.toJSONString(resultMapEntityDataPage));
-
-        this.selectPage();
     }
 
     protected abstract void selectPage();

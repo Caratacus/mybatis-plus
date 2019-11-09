@@ -15,11 +15,6 @@
  */
 package com.baomidou.mybatisplus.test.postgres;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import org.junit.jupiter.api.Assertions;
@@ -30,12 +25,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.test.base.entity.CommonData;
 import com.baomidou.mybatisplus.test.base.entity.CommonLogicData;
 import com.baomidou.mybatisplus.test.base.enums.TestEnum;
@@ -80,19 +72,6 @@ class PostgresTestDataMapperTest {
         Assertions.assertEquals(1, pgMapper.deleteById(1L));
     }
 
-    @Test
-    void b2_deleteByMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("id", 2L);
-        map.put("test_int", 5);
-        Assertions.assertEquals(0, commonMapper.deleteByMap(map));
-        Assertions.assertEquals(0, commonLogicMapper.deleteByMap(map));
-        Map<String, Object> map2 = new HashMap<>();
-        map2.put("id", 2L);
-        map2.put("\"group\"", 5);
-        map2.put("\"pgInt\"", 5);
-        Assertions.assertEquals(0, pgMapper.deleteByMap(map2));
-    }
 
     @Test
     void b3_delete() {
@@ -107,13 +86,6 @@ class PostgresTestDataMapperTest {
             .eq(PgData::getGroup, 2).eq(PgData::getPgInt, 2)));
     }
 
-    @Test
-    void b4_deleteBatchIds() {
-        List<Long> ids = Arrays.asList(3L, 4L);
-        Assertions.assertEquals(2, commonMapper.deleteBatchIds(ids));
-        Assertions.assertEquals(2, commonLogicMapper.deleteBatchIds(ids));
-        Assertions.assertEquals(2, pgMapper.deleteBatchIds(ids));
-    }
 
     @Test
     void c1_updateById() {
@@ -158,38 +130,6 @@ class PostgresTestDataMapperTest {
     }
 
     @Test
-    void d3_selectBatchIds() {
-        List<Long> ids = Arrays.asList(7L, 8L);
-        Assertions.assertTrue(CollectionUtils.isNotEmpty(commonMapper.selectBatchIds(ids)));
-        Assertions.assertTrue(CollectionUtils.isNotEmpty(commonLogicMapper.selectBatchIds(ids)));
-        Assertions.assertTrue(CollectionUtils.isNotEmpty(pgMapper.selectBatchIds(ids)));
-    }
-
-    @Test
-    void d4_selectByMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("id", 9L);
-        map.put("test_int", 9);
-        Assertions.assertTrue(CollectionUtils.isNotEmpty(commonMapper.selectByMap(map)));
-        Assertions.assertTrue(CollectionUtils.isNotEmpty(commonLogicMapper.selectByMap(map)));
-        Map<String, Object> map2 = new HashMap<>();
-        map2.put("id", 9L);
-        map2.put("\"group\"", 9);
-        map2.put("\"pgInt\"", 9);
-        Assertions.assertTrue(CollectionUtils.isNotEmpty(pgMapper.selectByMap(map2)));
-    }
-
-    @Test
-    void d5_selectOne() {
-        Assertions.assertNotNull(commonMapper.selectOne(new QueryWrapper<CommonData>().lambda()
-            .eq(CommonData::getId, 10L).eq(CommonData::getTestInt, 10)));
-        Assertions.assertNotNull(commonLogicMapper.selectOne(new QueryWrapper<CommonLogicData>().lambda()
-            .eq(CommonLogicData::getId, 10L).eq(CommonLogicData::getTestInt, 10)));
-        Assertions.assertNotNull(pgMapper.selectOne(new QueryWrapper<PgData>().lambda()
-            .eq(PgData::getId, 10L).eq(PgData::getGroup, 10).eq(PgData::getPgInt, 10)));
-    }
-
-    @Test
     void d6_selectList() {
         Assertions.assertTrue(CollectionUtils.isNotEmpty(commonMapper.selectList(new QueryWrapper<CommonData>()
             .lambda().eq(CommonData::getTestInt, 10))));
@@ -199,30 +139,6 @@ class PostgresTestDataMapperTest {
             .lambda().eq(PgData::getId, 10L).eq(PgData::getGroup, 10).eq(PgData::getPgInt, 10))));
     }
 
-    @Test
-    void d7_selectPage() {
-        IPage<CommonData> page = new Page<>(1, 5);
-        IPage<CommonData> dataPage = commonMapper.selectPage(page, null);
-        Assertions.assertSame(dataPage, page);
-        Assertions.assertNotEquals(0, dataPage.getRecords().size());
-        Assertions.assertTrue(CollectionUtils.isNotEmpty(dataPage.getRecords()));
-        System.out.println(JSON.toJSONString(dataPage));
-
-        IPage<CommonLogicData> logicPage = new Page<>(1, 5);
-        IPage<CommonLogicData> logicDataPage = commonLogicMapper.selectPage(logicPage, null);
-        Assertions.assertSame(logicDataPage, logicPage);
-        Assertions.assertNotEquals(0, logicDataPage.getRecords().size());
-        Assertions.assertTrue(CollectionUtils.isNotEmpty(logicDataPage.getRecords()));
-        System.out.println(JSON.toJSONString(logicDataPage));
-
-        IPage<PgData> pgPage = new Page<>(1, 5);
-        page.setSize(5).setCurrent(1);
-        IPage<PgData> pgDataPage = pgMapper.selectPage(pgPage, null);
-        Assertions.assertSame(pgDataPage, pgPage);
-        Assertions.assertNotEquals(0, pgDataPage.getRecords().size());
-        Assertions.assertTrue(CollectionUtils.isNotEmpty(pgDataPage.getRecords()));
-        System.out.println(JSON.toJSONString(pgDataPage));
-    }
 
     @Test
     void d8_testApply() {

@@ -95,13 +95,6 @@ class WrapperTest {
         log(ew.getSqlSegment());
     }
 
-    @Test
-    void test3() {
-        UpdateWrapper<User> ew = new UpdateWrapper<User>()
-            .setSql("abc=1,def=2").set("sets", 1111).eq("id", 1).ge("age", 3);
-        log(ew.getSqlSet());
-        log(ew.getSqlSegment());
-    }
 
     @Test
     void testQueryWrapper() {
