@@ -80,8 +80,8 @@ ext {
 }
 
 allprojects {
-    group = 'com.baomidou'
-    version = "3.2.1.0-SNAPSHOT"
+    group = 'io.github.Caratacus'
+    version = "1.0.0-SNAPSHOT"
 }
 
 description = "Mybatis 增强工具包 - 只做增强不做改变，简化CRUD操作"
@@ -213,12 +213,12 @@ subprojects {
                     name = 'mybatis-plus'
                     packaging 'jar'
                     description = 'An enhanced toolkit of Mybatis to simplify development.'
-                    url = 'https://github.com/baomidou/mybatis-plus'
+                    url = 'https://github.com/Caratacus/mybatis-plus'
 
                     scm {
                         connection = 'scm:git@github.com:Codearte/gradle-nexus-staging-plugin.git'
                         developerConnection = 'scm:git@github.com:Codearte/gradle-nexus-staging-plugin.git'
-                        url = 'https://github.com/baomidou/mybatis-plus'
+                        url = 'https://github.com/Caratacus/mybatis-plus'
                     }
 
                     licenses {
@@ -230,9 +230,9 @@ subprojects {
 
                     developers {
                         developer {
-                            id = 'baomidou'
-                            name = 'hubin'
-                            email = 'jobob@qq.com'
+                            id = 'Caratacus'
+                            name = 'Caratacus'
+                            email = 'caratacus@qq.com'
                         }
                     }
 
