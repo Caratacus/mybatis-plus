@@ -81,7 +81,7 @@ ext {
 
 allprojects {
     group = 'io.github.Caratacus'
-    version = "1.0.0-SNAPSHOT"
+    version = "1.0.1-SNAPSHOT"
 }
 
 description = "Mybatis 增强工具包 - 只做增强不做改变，简化CRUD操作"

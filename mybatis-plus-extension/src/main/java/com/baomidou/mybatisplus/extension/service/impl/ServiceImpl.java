@@ -39,6 +39,7 @@ import org.springframework.util.ReflectionUtils;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
@@ -212,5 +213,10 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
 
     private String getColumn(SerializedLambda lambda) {
         return StringUtils.resolveFieldName(lambda.getImplMethodName());
+    }
+
+    @Override
+    public IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper) {
+        return baseMapper.selectPage(page, queryWrapper);
     }
 }

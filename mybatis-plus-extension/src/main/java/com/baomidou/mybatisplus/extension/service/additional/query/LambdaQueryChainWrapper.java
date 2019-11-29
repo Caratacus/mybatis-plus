@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.Query;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
@@ -76,6 +77,10 @@ public class LambdaQueryChainWrapper<T> extends AbstractChainWrapper<T, SFunctio
 
     public List<T> list() {
         return baseService.list(getWrapper());
+    }
+
+    public IPage<T> page(IPage<T> page) {
+        return baseService.page(page, getWrapper());
     }
 
     public <R> List<R> listObjs(Function<? super Object, R> mapper) {

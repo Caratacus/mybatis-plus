@@ -30,6 +30,7 @@ import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
@@ -367,6 +368,24 @@ public interface IService<T> {
      * @return 转换后的map
      */
     <K> Map<K, T> list2Map(Wrapper<T> wrapper, SFunction<T, K> column);
+
+    /**
+     * 翻页查询
+     *
+     * @param page         翻页对象
+     * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+     */
+    IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper);
+
+    /**
+     * 无条件翻页查询
+     *
+     * @param page 翻页对象
+     * @see Wrappers#emptyWrapper()
+     */
+    default IPage<T> page(IPage<T> page) {
+        return page(page, Wrappers.emptyWrapper());
+    }
 
     default LambdaQueryChainWrapper<T> query() {
         return new LambdaQueryChainWrapper<>(this);
