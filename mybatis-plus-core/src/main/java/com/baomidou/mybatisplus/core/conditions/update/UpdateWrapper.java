@@ -25,6 +25,7 @@ import com.baomidou.mybatisplus.core.conditions.SharedString;
 import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 
 /**
  * Update 条件封装
@@ -76,6 +77,14 @@ public class UpdateWrapper<T> extends AbstractWrapper<T, String, UpdateWrapper<T
     public UpdateWrapper<T> set(boolean condition, String column, Object val) {
         if (condition) {
             sqlSet.add(String.format("%s=%s", column, val.toString()));
+        }
+        return typedThis;
+    }
+
+    @Override
+    public UpdateWrapper<T> setSql(boolean condition, String sql) {
+        if (condition && StringUtils.isNotBlank(sql)) {
+            sqlSet.add(sql);
         }
         return typedThis;
     }
