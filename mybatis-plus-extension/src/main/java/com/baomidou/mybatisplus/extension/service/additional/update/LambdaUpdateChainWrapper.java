@@ -53,6 +53,12 @@ public class LambdaUpdateChainWrapper<T> extends AbstractChainWrapper<T, SFuncti
         throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getSqlSet");
     }
 
+    @Override
+    public LambdaUpdateChainWrapper<T> setSql(boolean condition, String sql) {
+        wrapperChildren.setSql(condition, sql);
+        return typedThis;
+    }
+
     public boolean execute(T entity) {
         return baseService.update(entity, getWrapper());
     }
