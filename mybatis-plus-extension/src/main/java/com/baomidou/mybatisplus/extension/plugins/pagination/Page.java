@@ -15,10 +15,13 @@
  */
 package com.baomidou.mybatisplus.extension.plugins.pagination;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
@@ -342,5 +345,18 @@ public class Page<T> implements IPage<T> {
     public Page<T> setOptimizeCountSql(boolean optimizeCountSql) {
         this.optimizeCountSql = optimizeCountSql;
         return this;
+    }
+
+    /**
+     * Page 的泛型转换
+     *
+     * @param mapper 转换函数
+     * @param <R>    转换后的泛型
+     * @return 转换泛型后的 IPage
+     */
+    @SuppressWarnings("unchecked")
+    public <R> Page<R> convert(Function<? super T, ? extends R> mapper) {
+        List<R> collect = this.getRecords().stream().map(mapper).collect(toList());
+        return ((Page<R>) this).setRecords(collect);
     }
 }
