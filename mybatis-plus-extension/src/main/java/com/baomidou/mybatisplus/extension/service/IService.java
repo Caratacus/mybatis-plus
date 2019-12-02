@@ -34,6 +34,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.additional.delete.LambdaDeleteChainWrapper;
 import com.baomidou.mybatisplus.extension.service.additional.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.additional.update.LambdaUpdateChainWrapper;
@@ -375,7 +376,7 @@ public interface IService<T> {
      * @param page         翻页对象
      * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
      */
-    IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper);
+    Page<T> page(IPage<T> page, Wrapper<T> queryWrapper);
 
     /**
      * 无条件翻页查询
@@ -383,7 +384,7 @@ public interface IService<T> {
      * @param page 翻页对象
      * @see Wrappers#emptyWrapper()
      */
-    default IPage<T> page(IPage<T> page) {
+    default Page<T> page(IPage<T> page) {
         return page(page, Wrappers.emptyWrapper());
     }
 

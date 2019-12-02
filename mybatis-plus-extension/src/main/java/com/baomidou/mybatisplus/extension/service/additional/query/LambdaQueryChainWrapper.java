@@ -32,6 +32,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper;
 
@@ -79,7 +80,7 @@ public class LambdaQueryChainWrapper<T> extends AbstractChainWrapper<T, SFunctio
         return baseService.list(getWrapper());
     }
 
-    public IPage<T> page(IPage<T> page) {
+    public Page<T> page(IPage<T> page) {
         return baseService.page(page, getWrapper());
     }
 

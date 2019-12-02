@@ -49,6 +49,7 @@ import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.core.toolkit.support.SerializedLambda;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 
@@ -216,7 +217,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
     }
 
     @Override
-    public IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper) {
-        return baseMapper.selectPage(page, queryWrapper);
+    public Page<T> page(IPage<T> page, Wrapper<T> queryWrapper) {
+        return (Page<T>) baseMapper.selectPage(page, queryWrapper);
     }
 }
