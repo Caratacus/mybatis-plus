@@ -48,16 +48,16 @@ public class Page<T> implements IPage<T> {
     /**
      * 总数
      */
-    private long total = 0;
+    private int total = 0;
     /**
      * 每页显示条数，默认 10
      */
-    private long size = 10;
+    private int size = 10;
 
     /**
      * 当前页
      */
-    private long current = 1;
+    private int current = 1;
 
     /**
      * 排序字段信息
@@ -82,19 +82,19 @@ public class Page<T> implements IPage<T> {
      * @param current 当前页
      * @param size    每页显示条数
      */
-    public Page(long current, long size) {
+    public Page(int current, int size) {
         this(current, size, 0);
     }
 
-    public Page(long current, long size, long total) {
+    public Page(int current, int size, int total) {
         this(current, size, total, true);
     }
 
-    public Page(long current, long size, boolean isSearchCount) {
+    public Page(int current, int size, boolean isSearchCount) {
         this(current, size, 0, isSearchCount);
     }
 
-    public Page(long current, long size, long total, boolean isSearchCount) {
+    public Page(int current, int size, int total, boolean isSearchCount) {
         if (current > 1) {
             this.current = current;
         }
@@ -133,34 +133,34 @@ public class Page<T> implements IPage<T> {
     }
 
     @Override
-    public long getTotal() {
+    public int getTotal() {
         return this.total;
     }
 
     @Override
-    public Page<T> setTotal(long total) {
+    public Page<T> setTotal(int total) {
         this.total = total;
         return this;
     }
 
     @Override
-    public long getSize() {
+    public int getSize() {
         return this.size;
     }
 
     @Override
-    public Page<T> setSize(long size) {
+    public Page<T> setSize(int size) {
         this.size = size;
         return this;
     }
 
     @Override
-    public long getCurrent() {
+    public int getCurrent() {
         return this.current;
     }
 
     @Override
-    public Page<T> setCurrent(long current) {
+    public Page<T> setCurrent(int current) {
         this.current = current;
         return this;
     }

@@ -41,6 +41,6 @@ public final class CachePage<T> implements Serializable {
     /**
      * 总数
      */
-    private long total;
+    private int total;
 
 }

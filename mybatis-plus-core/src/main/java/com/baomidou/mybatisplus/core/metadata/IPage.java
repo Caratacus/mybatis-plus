@@ -86,18 +86,18 @@ public interface IPage<T> extends Serializable {
     /**
      * 计算当前分页偏移量
      */
-    default long offset() {
+    default int offset() {
         return getCurrent() > 0 ? (getCurrent() - 1) * getSize() : 0;
     }
 
     /**
      * 当前分页总页数
      */
-    default long getPages() {
+    default int getPages() {
         if (getSize() == 0) {
-            return 0L;
+            return 0;
         }
-        long pages = getTotal() / getSize();
+        int pages = getTotal() / getSize();
         if (getTotal() % getSize() != 0) {
             pages++;
         }
@@ -108,7 +108,7 @@ public interface IPage<T> extends Serializable {
      * 内部什么也不干
      * <p>只是为了 json 反序列化时不报错</p>
      */
-    default IPage<T> setPages(long pages) {
+    default IPage<T> setPages(int pages) {
         // to do nothing
         return this;
     }
@@ -130,35 +130,35 @@ public interface IPage<T> extends Serializable {
      *
      * @return 总条数
      */
-    long getTotal();
+    int getTotal();
 
     /**
      * 设置当前满足条件总行数
      */
-    IPage<T> setTotal(long total);
+    IPage<T> setTotal(int total);
 
     /**
      * 当前分页总页数
      *
      * @return 总页数
      */
-    long getSize();
+    int getSize();
 
     /**
      * 设置当前分页总页数
      */
-    IPage<T> setSize(long size);
+    IPage<T> setSize(int size);
 
     /**
      * 当前页，默认 1
      *
      * @return 当前页
      */
-    long getCurrent();
+    int getCurrent();
 
     /**
      * 设置当前页
      */
-    IPage<T> setCurrent(long current);
+    IPage<T> setCurrent(int current);
 
 }

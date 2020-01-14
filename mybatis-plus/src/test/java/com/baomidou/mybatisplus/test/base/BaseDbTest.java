@@ -275,7 +275,6 @@ public abstract class BaseDbTest {
         assertNotEquals(0, commonDataDataPage.getRecords().size());
         assertTrue(CollectionUtils.isNotEmpty(commonDataDataPage.getRecords()));
         System.out.println(JSON.toJSONString(commonDataDataPage));
-        System.out.println(JSON.toJSON(commonDataDataPage.convert(CommonData::getId)));
     }
 
     protected abstract void selectPage();
