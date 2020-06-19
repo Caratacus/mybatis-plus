@@ -83,7 +83,7 @@ public class TableInfo implements Constants {
      * 主键是否有存在字段名与属性名关联
      * <p>true: 表示要进行 as</p>
      */
-    private boolean keyRelated = false;
+    private boolean keyRelated;
     /**
      * 表主键ID 字段名
      */
@@ -116,11 +116,12 @@ public class TableInfo implements Constants {
     /**
      * 是否开启逻辑删除
      */
-    private boolean logicDelete = false;
+    @Setter(AccessLevel.NONE)
+    private boolean logicDelete;
     /**
      * 是否开启下划线转驼峰
      */
-    private boolean underCamel = true;
+    private boolean underCamel;
     /**
      * 缓存包含主键及字段的 sql select
      */
@@ -133,6 +134,38 @@ public class TableInfo implements Constants {
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.NONE)
     private String sqlSelect;
+    /**
+     * 表字段是否启用了插入填充
+     *
+     * @since 3.3.0
+     */
+    @Getter
+    @Setter(AccessLevel.NONE)
+    private boolean withInsertFill;
+    /**
+     * 表字段是否启用了更新填充
+     *
+     * @since 3.3.0
+     */
+    @Getter
+    @Setter(AccessLevel.NONE)
+    private boolean withUpdateFill;
+    /**
+     * 表字段是否启用了乐观锁
+     *
+     * @since 3.3.1
+     */
+    @Getter
+    @Setter(AccessLevel.NONE)
+    private boolean withVersion;
+    /**
+     * 乐观锁字段
+     *
+     * @since 3.3.1
+     */
+    @Getter
+    @Setter(AccessLevel.NONE)
+    private TableFieldInfo versionFieldInfo;
 
     public TableInfo(Class<?> entityType) {
         this.entityType = entityType;
@@ -158,12 +191,12 @@ public class TableInfo implements Constants {
     }
 
     /**
-     * 设置逻辑删除
+     * 是否有主键
+     *
+     * @return 是否有
      */
-    void setLogicDelete(boolean logicDelete) {
-        if (logicDelete) {
-            this.logicDelete = true;
-        }
+    public boolean havePK() {
+        return StringUtils.isNotBlank(keyColumn);
     }
 
     /**
@@ -175,7 +208,7 @@ public class TableInfo implements Constants {
         if (sqlSelect != null) {
             return sqlSelect;
         }
-        if (StringUtils.isNotBlank(keyProperty)) {
+        if (havePK()) {
             sqlSelect = keyColumn;
             if (keyRelated) {
                 sqlSelect += (" AS " + keyProperty);
@@ -226,7 +259,7 @@ public class TableInfo implements Constants {
      */
     public String getKeyInsertSqlProperty(final String prefix, final boolean newLine) {
         final String newPrefix = prefix == null ? EMPTY : prefix;
-        if (StringUtils.isNotBlank(keyProperty)) {
+        if (havePK()) {
             if (idType == IdType.AUTO) {
                 return EMPTY;
             }
@@ -243,7 +276,7 @@ public class TableInfo implements Constants {
      * @return sql 脚本片段
      */
     public String getKeyInsertSqlColumn(final boolean newLine) {
-        if (StringUtils.isNotBlank(keyColumn)) {
+        if (havePK()) {
             if (idType == IdType.AUTO) {
                 return EMPTY;
             }
@@ -330,14 +363,14 @@ public class TableInfo implements Constants {
      * 获取逻辑删除字段的 sql 脚本
      *
      * @param startWithAnd 是否以 and 开头
-     * @param deleteValue  是否需要的是逻辑删除值
+     * @param isWhere      是否需要的是逻辑删除值
      * @return sql 脚本
      */
-    public String getLogicDeleteSql(boolean startWithAnd, boolean deleteValue) {
+    public String getLogicDeleteSql(boolean startWithAnd, boolean isWhere) {
         if (logicDelete) {
             TableFieldInfo field = fieldList.stream().filter(TableFieldInfo::isLogicDelete).findFirst()
                 .orElseThrow(() -> ExceptionUtils.mpe("can't find the logicFiled from table {%s}", tableName));
-            String logicDeleteSql = formatLogicDeleteSql(field, deleteValue);
+            String logicDeleteSql = formatLogicDeleteSql(field, isWhere);
             if (startWithAnd) {
                 logicDeleteSql = " AND " + logicDeleteSql;
             }
@@ -350,16 +383,24 @@ public class TableInfo implements Constants {
      * format logic delete SQL, can be overrided by subclass
      * github #1386
      *
-     * @param field       TableFieldInfo
-     * @param deleteValue true: logicDeleteValue, false: logicNotDeleteValue
+     * @param field   TableFieldInfo
+     * @param isWhere true: logicDeleteValue, false: logicNotDeleteValue
      * @return
      */
-    protected String formatLogicDeleteSql(TableFieldInfo field, boolean deleteValue) {
-        String value = deleteValue ? field.getLogicDeleteValue() : field.getLogicNotDeleteValue();
+    private String formatLogicDeleteSql(TableFieldInfo field, boolean isWhere) {
+        final String value = isWhere ? field.getLogicNotDeleteValue() : field.getLogicDeleteValue();
+        if (isWhere) {
+            if (NULL.equalsIgnoreCase(value)) {
+                return field.getColumn() + " IS NULL";
+            } else {
+                return field.getColumn() + EQUALS + String.format(field.isCharSequence() ? "'%s'" : "%s", value);
+            }
+        }
+        final String targetStr = field.getColumn() + EQUALS;
         if (NULL.equalsIgnoreCase(value)) {
-            return field.getColumn() + " is NULL";
+            return targetStr + NULL;
         } else {
-            return field.getColumn() + EQUALS + String.format(field.isCharSequence() ? "'%s'" : "%s", value);
+            return targetStr + String.format(field.isCharSequence() ? "'%s'" : "%s", value);
         }
     }
 
@@ -370,7 +411,7 @@ public class TableInfo implements Constants {
         if (autoInitResultMap && null == resultMap) {
             String id = currentNamespace + DOT + MYBATIS_PLUS + UNDERSCORE + entityType.getSimpleName();
             List<ResultMapping> resultMappings = new ArrayList<>();
-            if (keyType != null) {
+            if (havePK()) {
                 ResultMapping idMapping = new ResultMapping.Builder(configuration, keyProperty, keyColumn, keyType)
                     .flags(Collections.singletonList(ResultFlag.ID)).build();
                 resultMappings.add(idMapping);
@@ -382,5 +423,24 @@ public class TableInfo implements Constants {
             configuration.addResultMap(resultMap);
             this.resultMap = id;
         }
+    }
+
+    void setFieldList(List<TableFieldInfo> fieldList) {
+        this.fieldList = fieldList;
+        fieldList.forEach(i -> {
+            if (i.isLogicDelete()) {
+                this.logicDelete = true;
+            }
+            if (i.isWithInsertFill()) {
+                this.withInsertFill = true;
+            }
+            if (i.isWithUpdateFill()) {
+                this.withUpdateFill = true;
+            }
+            if (i.isVersion()) {
+                this.withVersion = true;
+                this.versionFieldInfo = i;
+            }
+        });
     }
 }

@@ -16,6 +16,7 @@
 package com.baomidou.mybatisplus.test.h2;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.test.h2.entity.H2User;
@@ -75,6 +77,13 @@ class H2UserMapperTest extends BaseTest {
         }
         Assertions.assertEquals(1, userMapper.deleteById(1L));
 
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "mp0");
+        map.put("age", AgeEnum.ONE);
+
+        Assertions.assertSame(AgeEnum.ONE, h2User.getAge());
+
+
         // 查询列表
         LambdaQueryWrapper<H2User> wrapper = new QueryWrapper<H2User>().lambda().like(H2User::getName, "mp");
         log(wrapper.getSqlSegment());
@@ -92,14 +101,12 @@ class H2UserMapperTest extends BaseTest {
         h2User.setDesc("测试置空");
         Assertions.assertEquals(1, userMapper.update(h2User, new QueryWrapper<H2User>().eq("name", NQQ)));
 
-
         h2User.setAge(AgeEnum.THREE);
         h2User.setDesc(null);
         Assertions.assertTrue(userMapper.update(h2User,
             new UpdateWrapper<H2User>().lambda()
                 .set(H2User::getDesc, "")
                 .eq(H2User::getName, "Jerry")) > 0);
-
 
         Assertions.assertEquals(1, userMapper.insert(h2User));
         // 根据主键更新 age = 18
@@ -111,8 +118,15 @@ class H2UserMapperTest extends BaseTest {
             setTestId(testId);
             setAge(AgeEnum.TWO);
         }}));
-
         log(h2User.toString());
+
+        // 分页查询
+        IPage<H2User> h2UserPage = userMapper.selectPage(new Page<>(1, 10), null);
+        if (null != h2UserPage) {
+            System.out.println(h2UserPage.getTotal());
+            System.out.println(h2UserPage.getSize());
+        }
+        Assertions.assertNotNull(userMapper.selectPage(new Page<>(1, 10), new QueryWrapper<H2User>().orderByAsc("name")));
 
         // 查询结果集，测试 lambda 对象后 QueryWrapper 是否参数继续传递
         QueryWrapper<H2User> qw = new QueryWrapper<>();
@@ -162,6 +176,8 @@ class H2UserMapperTest extends BaseTest {
         Assertions.assertEquals(1, userCount);
         List<H2User> h2UserList = userMapper.selectList(queryWrapper.comment("getUserList"));
         Assertions.assertEquals(1, h2UserList.size());
+        IPage<H2User> h2UserIPage = userMapper.selectPage(new Page<>(1, 10), queryWrapper.comment("getUserPage"));
+        Assertions.assertEquals(1, h2UserIPage.getRecords().size());
         List<Map<String, Object>> selectMaps = userMapper.selectMaps(queryWrapper.comment("getUserMaps"));
         Assertions.assertEquals(1, selectMaps.size());
         List<Object> selectObjs = userMapper.selectObjs(queryWrapper.comment("getUserObjs"));

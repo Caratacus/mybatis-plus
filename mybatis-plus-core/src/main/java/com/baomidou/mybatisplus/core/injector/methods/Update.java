@@ -35,8 +35,7 @@ public class Update extends AbstractMethod {
         SqlMethod sqlMethod = SqlMethod.UPDATE;
         String sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(),
             sqlSet(true, true, tableInfo, true, ENTITY, ENTITY_DOT),
-            sqlWhereEntityWrapper(true, tableInfo),
-            sqlComment());
+            sqlWhereEntityWrapper(true, tableInfo), sqlComment());
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
         return this.addUpdateMappedStatement(mapperClass, modelClass, getMethod(sqlMethod), sqlSource);
     }

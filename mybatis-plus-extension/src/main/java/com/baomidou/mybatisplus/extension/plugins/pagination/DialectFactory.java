@@ -16,16 +16,17 @@
 package com.baomidou.mybatisplus.extension.plugins.pagination;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.ibatis.session.RowBounds;
 
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.ClassUtils;
-import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.DialectRegistry;
 import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
 
 /**
@@ -36,8 +37,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
  */
 public class DialectFactory {
 
+    private static final DialectRegistry DIALECT_REGISTRY = new DialectRegistry();
+
     /**
-     * 方言缓存
+     * 自定义方言缓存
      */
     private static final Map<String, IDialect> DIALECT_CACHE = new ConcurrentHashMap<>();
 
@@ -50,7 +53,9 @@ public class DialectFactory {
      * @param dbType       数据类型
      * @param dialectClazz 数据库方言
      * @return 分页模型
+     * @deprecated 3.3.1
      */
+    @Deprecated
     public static DialectModel buildPaginationSql(IPage<?> page, String buildSql, DbType dbType, String dialectClazz) {
         // fix #196
         return getDialect(dbType, dialectClazz).buildPaginationSql(buildSql, page.offset(), page.getSize());
@@ -62,22 +67,28 @@ public class DialectFactory {
      * @param dbType       数据库类型
      * @param dialectClazz 自定义方言实现类
      * @return ignore
+     * @deprecated 3.3.1 {@link #getDialect(String)}
      */
+    @Deprecated
     private static IDialect getDialect(DbType dbType, String dialectClazz) {
-        return DIALECT_CACHE.computeIfAbsent(dbType.getDb(), key -> {
-            IDialect dialect = null;
-            String dialectClassName = StringUtils.isBlank(dialectClazz) ? dbType.getDialect() : dialectClazz;
-            try {
-                Class<?> clazz = Class.forName(dialectClassName);
-                if (IDialect.class.isAssignableFrom(clazz)) {
-                    dialect = (IDialect) ClassUtils.newInstance(clazz);
-                }
-            } catch (ClassNotFoundException e) {
-                throw ExceptionUtils.mpe("Class : %s is not found", dialectClazz);
-            }
-            /* 未配置方言则抛出异常 */
-            Assert.notNull(dialect, "The value of the dialect property in mybatis configuration.xml is not defined.");
-            return dialect;
-        });
+        //这里需要注意一下，就的版本是把dbType和dialectClazz同时传进来的，所以会存在dbType是一定会有值，dialectClazz可能为空的情况，兼容需要先判断dialectClazz
+        return StringUtils.isBlank(dialectClazz) ? DIALECT_REGISTRY.getDialect(dbType) : DIALECT_CACHE.computeIfAbsent(dialectClazz, ClassUtils::newInstance);
     }
+
+    /**
+     * 获取实现方言
+     *
+     * @param dialectClazz 方言全类名
+     * @return 方言实现对象
+     * @since 3.3.1
+     */
+    public static IDialect getDialect(String dialectClazz) {
+        return DIALECT_CACHE.computeIfAbsent(dialectClazz, ClassUtils::newInstance);
+    }
+
+    public static IDialect getDialect(DbType dbType) {
+        return Optional.ofNullable(DIALECT_REGISTRY.getDialect(dbType))
+            .orElseThrow(() -> new MybatisPlusException(String.format("%s database not supported.", dbType.getDb())));
+    }
+
 }

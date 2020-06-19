@@ -15,8 +15,6 @@
  */
 package com.baomidou.mybatisplus.generator.config.querys;
 
-import com.baomidou.mybatisplus.annotation.DbType;
-
 /**
  * KingbaseES 表数据查询
  *
@@ -24,11 +22,6 @@ import com.baomidou.mybatisplus.annotation.DbType;
  * @since 2019-10-12
  */
 public class KingbaseESQuery extends AbstractDbQuery {
-
-    @Override
-    public DbType dbType() {
-        return DbType.KINGBASE_ES;
-    }
 
     @Override
     public String tablesSql() {

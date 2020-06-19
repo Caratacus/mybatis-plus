@@ -36,8 +36,7 @@ import static com.baomidou.mybatisplus.core.enums.SqlKeyword.NOT;
 import static com.baomidou.mybatisplus.core.enums.SqlKeyword.OR;
 import static com.baomidou.mybatisplus.core.enums.SqlKeyword.ORDER_BY;
 import static com.baomidou.mybatisplus.core.enums.WrapperKeyword.APPLY;
-import static com.baomidou.mybatisplus.core.enums.WrapperKeyword.LEFT_BRACKET;
-import static com.baomidou.mybatisplus.core.enums.WrapperKeyword.RIGHT_BRACKET;
+import static com.baomidou.mybatisplus.core.enums.WrapperKeyword.BRACKET;
 import static java.util.stream.Collectors.joining;
 
 import java.util.Arrays;
@@ -56,10 +55,8 @@ import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
 import com.baomidou.mybatisplus.core.enums.SqlKeyword;
 import com.baomidou.mybatisplus.core.enums.SqlLike;
 import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
-import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
 import com.baomidou.mybatisplus.core.toolkit.SerializationUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -91,14 +88,19 @@ public abstract class AbstractWrapper<T, R, Children extends AbstractWrapper<T, 
      */
     protected SharedString sqlComment;
     /**
+     * SQL起始语句
+     */
+    protected SharedString sqlFirst;
+    /**
+     * ß
      * 数据库表映射实体类
      */
-    protected T entity;
+    private T entity;
     protected MergeSegments expression;
     /**
-     * 实体类型
+     * 实体类型(主要用于确定泛型以及取TableInfo缓存)
      */
-    protected Class<T> entityClass;
+    private Class<T> entityClass;
     /**
      * De
      */
@@ -112,19 +114,21 @@ public abstract class AbstractWrapper<T, R, Children extends AbstractWrapper<T, 
 
     public Children setEntity(T entity) {
         this.entity = entity;
-        this.initEntityClass();
         return typedThis;
     }
 
-    protected void initEntityClass() {
-        if (this.entityClass == null && this.entity != null) {
-            this.entityClass = (Class<T>) entity.getClass();
+    protected Class<T> getEntityClass() {
+        if (entityClass == null && entity != null) {
+            entityClass = (Class<T>) entity.getClass();
         }
+        return entityClass;
     }
 
-    protected Class<T> getCheckEntityClass() {
-        Assert.notNull(entityClass, "entityClass must not null,please set entity before use this method!");
-        return entityClass;
+    public Children setEntityClass(Class<T> entityClass) {
+        if (entityClass != null) {
+            this.entityClass = entityClass;
+        }
+        return typedThis;
     }
 
     @Override
@@ -264,6 +268,14 @@ public abstract class AbstractWrapper<T, R, Children extends AbstractWrapper<T, 
     }
 
     @Override
+    public Children first(boolean condition, String firstSql) {
+        if (condition) {
+            this.sqlFirst.setStringValue(firstSql);
+        }
+        return typedThis;
+    }
+
+    @Override
     public Children exists(boolean condition, String existsSql) {
         return doIt(condition, EXISTS, () -> String.format("(%s)", existsSql));
     }
@@ -329,6 +341,14 @@ public abstract class AbstractWrapper<T, R, Children extends AbstractWrapper<T, 
         return doIt(condition, HAVING, () -> formatSqlIfNeed(condition, sqlHaving, params));
     }
 
+    @Override
+    public Children func(boolean condition, Consumer<Children> consumer) {
+        if (condition) {
+            consumer.accept(typedThis);
+        }
+        return typedThis;
+    }
+
     /**
      * 内部自用
      * <p>NOT 关键词</p>
@@ -371,9 +391,12 @@ public abstract class AbstractWrapper<T, R, Children extends AbstractWrapper<T, 
      * @param condition 查询条件值
      */
     protected Children addNestedCondition(boolean condition, Consumer<Children> consumer) {
-        final Children instance = instance();
-        consumer.accept(instance);
-        return doIt(condition, LEFT_BRACKET, instance, RIGHT_BRACKET);
+        if (condition) {
+            final Children instance = instance();
+            consumer.accept(instance);
+            return doIt(true, BRACKET, instance);
+        }
+        return typedThis;
     }
 
     /**
@@ -438,12 +461,24 @@ public abstract class AbstractWrapper<T, R, Children extends AbstractWrapper<T, 
     /**
      * 必要的初始化
      */
-    protected final void initNeed() {
+    protected void initNeed() {
         paramNameSeq = new AtomicInteger(0);
         paramNameValuePairs = new HashMap<>(16);
         expression = new MergeSegments();
         lastSql = SharedString.emptyString();
         sqlComment = SharedString.emptyString();
+        sqlFirst = SharedString.emptyString();
+    }
+
+    @Override
+    public void clear() {
+        entity = null;
+        paramNameSeq.set(0);
+        paramNameValuePairs.clear();
+        expression.clear();
+        lastSql.toEmpty();
+        sqlComment.toEmpty();
+        sqlFirst.toEmpty();
     }
 
     /**
@@ -462,20 +497,21 @@ public abstract class AbstractWrapper<T, R, Children extends AbstractWrapper<T, 
 
     @Override
     public String getSqlSegment() {
-        String sqlSegment = expression.getSqlSegment();
-        if (StringUtils.isNotBlank(sqlSegment)) {
-            return sqlSegment + lastSql.getStringValue();
-        }
-        if (StringUtils.isNotBlank(lastSql.getStringValue())) {
-            return lastSql.getStringValue();
-        }
-        return null;
+        return expression.getSqlSegment() + lastSql.getStringValue();
     }
 
     @Override
     public String getSqlComment() {
         if (StringUtils.isNotBlank(sqlComment.getStringValue())) {
             return "/*" + StringEscape.escapeRawString(sqlComment.getStringValue()) + "*/";
+        }
+        return null;
+    }
+
+    @Override
+    public String getSqlFirst() {
+        if (StringUtils.isNotBlank(sqlFirst.getStringValue())) {
+            return StringEscape.escapeRawString(sqlFirst.getStringValue());
         }
         return null;
     }
@@ -493,10 +529,7 @@ public abstract class AbstractWrapper<T, R, Children extends AbstractWrapper<T, 
      * 获取 columnName
      */
     protected String columnToString(R column) {
-        if (column instanceof String) {
-            return (String) column;
-        }
-        throw ExceptionUtils.mpe("not support this column !");
+        return (String) column;
     }
 
     /**

@@ -61,7 +61,7 @@ public class TableInfo {
     }
 
     protected TableInfo setConvert(StrategyConfig strategyConfig) {
-        if (strategyConfig.containsTablePrefix(name) || strategyConfig.isEntityTableFieldAnnotationEnable()) {
+        if (strategyConfig.startsWithTablePrefix(name) || strategyConfig.isEntityTableFieldAnnotationEnable()) {
             // 包含前缀
             this.convert = true;
         } else if (strategyConfig.isCapitalModeNaming(name)) {
@@ -123,8 +123,12 @@ public class TableInfo {
     }
 
     public TableInfo setImportPackages(String pkg) {
-        importPackages.add(pkg);
-        return this;
+        if (importPackages.contains(pkg)) {
+            return this;
+        } else {
+            importPackages.add(pkg);
+            return this;
+        }
     }
 
     /**
@@ -144,9 +148,9 @@ public class TableInfo {
             IntStream.range(0, fields.size()).forEach(i -> {
                 TableField fd = fields.get(i);
                 if (i == fields.size() - 1) {
-                    names.append(fd.getName());
+                    names.append(fd.getColumnName());
                 } else {
-                    names.append(fd.getName()).append(", ");
+                    names.append(fd.getColumnName()).append(", ");
                 }
             });
             fieldNames = names.toString();

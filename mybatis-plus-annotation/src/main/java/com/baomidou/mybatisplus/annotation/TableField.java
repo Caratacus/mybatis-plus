@@ -35,11 +35,16 @@ import org.apache.ibatis.type.UnknownTypeHandler;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 public @interface TableField {
 
     /**
-     * 字段值（驼峰命名方式,该值可无）
+     * 数据库字段值,
+     * 不需要配置该值的情况:
+     * <li> 当 {@link com.baomidou.mybatisplus.core.MybatisConfiguration#mapUnderscoreToCamelCase} 为 true 时,
+     * (mp下默认是true,mybatis默认是false), 数据库字段值.replace("_","").toUpperCase() == 实体属性名.toUpperCase() </li>
+     * <li> 当 {@link com.baomidou.mybatisplus.core.MybatisConfiguration#mapUnderscoreToCamelCase} 为 false 时,
+     * 数据库字段值.toUpperCase() == 实体属性名.toUpperCase()</li>
      */
     String value() default "";
 

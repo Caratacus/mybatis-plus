@@ -88,7 +88,7 @@ public interface BaseMapper<T> extends Mapper<T> {
      * 根据 whereEntity 条件，更新记录
      * </p>
      *
-     * @param entity        实体对象 (set 条件值,不能为 null)
+     * @param entity        实体对象 (set 条件值,可以为 null)
      * @param updateWrapper 实体对象封装操作类（可以为 null,里面的 entity 用于生成 where 语句）
      */
     int update(@Param(Constants.ENTITY) T entity, @Param(Constants.WRAPPER) Wrapper<T> updateWrapper);
@@ -107,7 +107,7 @@ public interface BaseMapper<T> extends Mapper<T> {
      * 根据 Wrapper 条件，查询总记录数
      * </p>
      *
-     * @param queryWrapper 实体对象
+     * @param queryWrapper 实体对象封装操作类（可以为 null）
      */
     Integer selectCount(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
 
@@ -132,6 +132,7 @@ public interface BaseMapper<T> extends Mapper<T> {
 
     /**
      * 根据 Wrapper 条件，查询全部记录
+     * <p>注意： 只返回第一个字段的值</p>
      *
      * @param queryWrapper 实体对象封装操作类（可以为 null）
      */
@@ -143,6 +144,6 @@ public interface BaseMapper<T> extends Mapper<T> {
      * @param page         分页查询条件（可以为 RowBounds.DEFAULT）
      * @param queryWrapper 实体对象封装操作类（可以为 null）
      */
-    IPage<T> selectPage(IPage<T> page, @Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
+    <E extends IPage<T>> E selectPage(E page, @Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
 
 }

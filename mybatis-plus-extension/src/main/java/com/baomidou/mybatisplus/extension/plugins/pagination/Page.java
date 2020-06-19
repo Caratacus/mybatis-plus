@@ -43,35 +43,39 @@ public class Page<T> implements IPage<T> {
     /**
      * 查询数据列表
      */
-    private List<T> records = Collections.emptyList();
+    protected List<T> records = Collections.emptyList();
 
     /**
      * 总数
      */
-    private int total = 0;
+    protected int total = 0;
     /**
      * 每页显示条数，默认 10
      */
-    private int size = 10;
+    protected int size = 10;
 
     /**
      * 当前页
      */
-    private int current = 1;
+    protected int current = 1;
 
     /**
      * 排序字段信息
      */
-    private List<OrderItem> orders = new ArrayList<>();
+    protected List<OrderItem> orders = new ArrayList<>();
 
     /**
      * 自动优化 COUNT SQL
      */
-    private boolean optimizeCountSql = true;
+    protected boolean optimizeCountSql = true;
     /**
      * 是否进行 count 查询
      */
-    private boolean isSearchCount = true;
+    protected boolean isSearchCount = true;
+    /**
+     * 是否命中count缓存
+     */
+    protected boolean hitCount = false;
 
     public Page() {
     }
@@ -329,6 +333,10 @@ public class Page<T> implements IPage<T> {
         return optimizeCountSql;
     }
 
+    public boolean isOptimizeCountSql() {
+        return optimizeCountSql();
+    }
+
     @Override
     public boolean isSearchCount() {
         if (total < 0) {
@@ -345,6 +353,20 @@ public class Page<T> implements IPage<T> {
     public Page<T> setOptimizeCountSql(boolean optimizeCountSql) {
         this.optimizeCountSql = optimizeCountSql;
         return this;
+    }
+
+    @Override
+    public void hitCount(boolean hit) {
+        this.hitCount = hit;
+    }
+
+    public void setHitCount(boolean hit) {
+        this.hitCount = hit;
+    }
+
+    @Override
+    public boolean isHitCount() {
+        return hitCount;
     }
 
     /**

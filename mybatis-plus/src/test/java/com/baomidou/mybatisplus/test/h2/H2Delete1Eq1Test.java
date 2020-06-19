@@ -58,7 +58,6 @@ class H2Delete1Eq1Test extends BaseTest {
             logicDeleteMapper.insert(new H2User("mp" + i, AgeEnum.ONE));
         }
         log(logicDeleteMapper.selectList(new QueryWrapper<H2User>().orderByAsc("`desc`")));
-
         H2User h2User = new H2User();
         h2User.setDesc("1");
         h2User.setName("2");
@@ -69,7 +68,6 @@ class H2Delete1Eq1Test extends BaseTest {
         }
         log(logicDeleteMapper.selectList(new QueryWrapper<>(h2User).eq("name", "2").orderByAsc("name")));
         log(defaultMapper.selectList(new QueryWrapper<H2Student>().orderByAsc("id")));
-
         H2Student h2Student = new H2Student();
         h2Student.setId(1L);
         h2Student.setAge(2);

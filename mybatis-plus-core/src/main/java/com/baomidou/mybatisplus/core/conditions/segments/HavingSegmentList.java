@@ -33,7 +33,7 @@ import com.baomidou.mybatisplus.core.enums.SqlKeyword;
 public class HavingSegmentList extends AbstractISegmentList {
 
     @Override
-    protected boolean transformList(List<ISqlSegment> list, ISqlSegment firstSegment) {
+    protected boolean transformList(List<ISqlSegment> list, ISqlSegment firstSegment, ISqlSegment lastSegment) {
         if (!isEmpty()) {
             this.add(SqlKeyword.AND);
         }
