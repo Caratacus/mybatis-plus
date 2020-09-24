@@ -24,7 +24,7 @@ import org.apache.ibatis.annotations.Select;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.test.mysql.MyBaseMapper;
+import com.baomidou.mybatisplus.test.base.mapper.MyBaseMapper;
 import com.baomidou.mybatisplus.test.mysql.entity.MysqlData;
 
 /**

@@ -15,21 +15,19 @@
  */
 package com.baomidou.mybatisplus.generator.config;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.ClassUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.generator.config.po.LikeTable;
 import com.baomidou.mybatisplus.generator.config.po.TableFill;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * 策略配置项
@@ -40,6 +38,7 @@ import java.util.Optional;
 @Data
 @Accessors(chain = true)
 public class StrategyConfig {
+
     /**
      * 是否大写命名
      */
@@ -98,14 +97,12 @@ public class StrategyConfig {
      */
     private String superControllerClass;
     /**
-     * 需要包含的表名，允许正则表达式（与exclude二选一配置）<br/>
-     * 当{@link #enableSqlFilter}为true时，正则表达式无效.
+     * 需要包含的表名，允许正则表达式（与exclude二选一配置）
      */
     @Setter(AccessLevel.NONE)
     private String[] include = null;
     /**
-     * 需要排除的表名，允许正则表达式<br/>
-     * 当{@link #enableSqlFilter}为true时，正则表达式无效.
+     * 需要排除的表名，允许正则表达式
      */
     @Setter(AccessLevel.NONE)
     private String[] exclude = null;
@@ -123,21 +120,8 @@ public class StrategyConfig {
      * 【实体】是否为构建者模型（默认 false）<br>
      * -----------------------------------<br>
      * public User setName(String name) { this.name = name; return this; }
-     *
-     * @deprecated 3.3.2 {@link #chainModel}
      */
-    @Deprecated
     private boolean entityBuilderModel = false;
-    
-    /**
-     * 【实体】是否为链式模型（默认 false）<br>
-     * -----------------------------------<br>
-     * public User setName(String name) { this.name = name; return this; }
-     *
-     * @since 3.3.2
-     */
-    private boolean chainModel = false;
-    
     /**
      * 【实体】是否为lombok模型（默认 false）<br>
      * <a href="https://projectlombok.org/">document</a>
@@ -178,24 +162,6 @@ public class StrategyConfig {
      * 表填充字段
      */
     private List<TableFill> tableFillList = null;
-    /**
-     * 启用sql过滤，语法不能支持使用sql过滤表的话，可以考虑关闭此开关.
-     *
-     * @since 3.3.1
-     */
-    private boolean enableSqlFilter = true;
-    /**
-     * 包含表名
-     *
-     * @since 3.3.0
-     */
-    private LikeTable likeTable;
-    /**
-     * 不包含表名
-     *
-     * @since 3.3.0
-     */
-    private LikeTable notLikeTable;
 
     /**
      * 大写命名、字段符合大写字母数字下划线命名
@@ -205,14 +171,12 @@ public class StrategyConfig {
     public boolean isCapitalModeNaming(String word) {
         return isCapitalMode && StringUtils.isCapitalMode(word);
     }
-    
+
     /**
      * 表名称包含指定前缀
      *
      * @param tableName 表名称
-     * @deprecated 3.3.2 {@link #startsWithTablePrefix(String)}
      */
-    @Deprecated
     public boolean containsTablePrefix(String tableName) {
         if (null != tableName) {
             String[] tps = getTablePrefix();
@@ -222,26 +186,13 @@ public class StrategyConfig {
         }
         return false;
     }
-    
-    /**
-     * 表名称匹配表前缀
-     *
-     * @param tableName 表名称
-     * @since 3.3.2
-     */
-    public boolean startsWithTablePrefix(String tableName) {
-        if (null != tableName) {
-            String[] tps = getTablePrefix();
-            if (null != tps) {
-                return Arrays.stream(tps).anyMatch(tableName::startsWith);
-            }
-        }
-        return false;
-    }
-    
+
     public NamingStrategy getColumnNaming() {
-        // 未指定以 naming 策略为准
-        return Optional.ofNullable(columnNaming).orElse(naming);
+        if (null == columnNaming) {
+            // 未指定以 naming 策略为准
+            return naming;
+        }
+        return columnNaming;
     }
 
     public StrategyConfig setTablePrefix(String... tablePrefix) {
@@ -251,8 +202,7 @@ public class StrategyConfig {
 
     public boolean includeSuperEntityColumns(String fieldName) {
         if (null != superEntityColumns) {
-            // 公共字段判断忽略大小写【 部分数据库大小写不敏感 】
-            return Arrays.stream(superEntityColumns).anyMatch(e -> e.equalsIgnoreCase(fieldName));
+            return Arrays.asList(superEntityColumns).contains(fieldName);
         }
         return false;
     }
@@ -277,21 +227,10 @@ public class StrategyConfig {
         return this;
     }
 
-    /**
-     * 设置实体父类
-     *
-     * @param superEntityClass 类全名称
-     * @return this
-     */
     public StrategyConfig setSuperEntityClass(String superEntityClass) {
-        try {
-            return setSuperEntityClass(ClassUtils.toClassConfident(superEntityClass));
-        } catch (Exception e) {
-            this.superEntityClass = superEntityClass;
-        }
+        this.superEntityClass = superEntityClass;
         return this;
     }
-
 
     /**
      * <p>
@@ -328,34 +267,12 @@ public class StrategyConfig {
         return this;
     }
 
-    public StrategyConfig setSuperServiceClass(Class<?> clazz) {
-        this.superServiceClass = clazz.getName();
-        return this;
-    }
-
-    public StrategyConfig setSuperServiceClass(String superServiceClass) {
-        this.superServiceClass = superServiceClass;
-        return this;
-    }
-    
-    public StrategyConfig setSuperServiceImplClass(Class<?> clazz) {
-        this.superServiceImplClass = clazz.getName();
-        return this;
-    }
-    
-    public StrategyConfig setSuperServiceImplClass(String superServiceImplClass) {
-        this.superServiceImplClass = superServiceImplClass;
-        return this;
-    }
-    
-    public StrategyConfig setSuperControllerClass(Class<?> clazz) {
+    public void setSuperControllerClass(Class<?> clazz) {
         this.superControllerClass = clazz.getName();
-        return this;
     }
 
-    public StrategyConfig setSuperControllerClass(String superControllerClass) {
+    public void setSuperControllerClass(String superControllerClass) {
         this.superControllerClass = superControllerClass;
-        return this;
     }
 
     /**
@@ -374,29 +291,13 @@ public class StrategyConfig {
             return StringUtils.camelToUnderline(field.getName());
         }).distinct().toArray(String[]::new);
     }
-    
-    
+
     /**
-     * 是否为构建者模型
-     *
-     * @return 是否为构建者模型
-     * @deprecated 3.3.2 {@link #isChainModel()}
+     * @deprecated please use `setEntityTableFieldAnnotationEnable`
      */
     @Deprecated
-    public boolean isEntityBuilderModel() {
-        return isChainModel();
+    public StrategyConfig entityTableFieldAnnotationEnable(boolean isEnableAnnotation) {
+        entityTableFieldAnnotationEnable = isEnableAnnotation;
+        return this;
     }
-    
-    /**
-     * 设置是否为构建者模型
-     *
-     * @param entityBuilderModel 是否为构建者模型
-     * @return this
-     * @deprecated 3.3.2 {@link #setChainModel(boolean)}
-     */
-    @Deprecated
-    public StrategyConfig setEntityBuilderModel(boolean entityBuilderModel) {
-        return setChainModel(entityBuilderModel);
-    }
-    
 }

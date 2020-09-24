@@ -15,6 +15,18 @@
  */
 package com.baomidou.mybatisplus.generator.engine;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -26,14 +38,6 @@ import com.baomidou.mybatisplus.generator.config.TemplateConfig;
 import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.FileType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 
 /**
  * 模板引擎抽象类
@@ -49,7 +53,6 @@ public abstract class AbstractTemplateEngine {
      */
     private ConfigBuilder configBuilder;
 
-
     /**
      * 模板引擎初始化
      */
@@ -57,7 +60,6 @@ public abstract class AbstractTemplateEngine {
         this.configBuilder = configBuilder;
         return this;
     }
-
 
     /**
      * 输出 java xml 文件
@@ -78,7 +80,7 @@ public abstract class AbstractTemplateEngine {
                     if (CollectionUtils.isNotEmpty(focList)) {
                         for (FileOutConfig foc : focList) {
                             if (isCreate(FileType.OTHER, foc.outputFile(tableInfo))) {
-                                writerFile(objectMap, foc.getTemplatePath(), foc.outputFile(tableInfo));
+                                writer(objectMap, foc.getTemplatePath(), foc.outputFile(tableInfo));
                             }
                         }
                     }
@@ -88,42 +90,42 @@ public abstract class AbstractTemplateEngine {
                 if (null != entityName && null != pathInfo.get(ConstVal.ENTITY_PATH)) {
                     String entityFile = String.format((pathInfo.get(ConstVal.ENTITY_PATH) + File.separator + "%s" + suffixJavaOrKt()), entityName);
                     if (isCreate(FileType.ENTITY, entityFile)) {
-                        writerFile(objectMap, templateFilePath(template.getEntity(getConfigBuilder().getGlobalConfig().isKotlin())), entityFile);
+                        writer(objectMap, templateFilePath(template.getEntity(getConfigBuilder().getGlobalConfig().isKotlin())), entityFile);
                     }
                 }
                 // MpMapper.java
                 if (null != tableInfo.getMapperName() && null != pathInfo.get(ConstVal.MAPPER_PATH)) {
                     String mapperFile = String.format((pathInfo.get(ConstVal.MAPPER_PATH) + File.separator + tableInfo.getMapperName() + suffixJavaOrKt()), entityName);
                     if (isCreate(FileType.MAPPER, mapperFile)) {
-                        writerFile(objectMap, templateFilePath(template.getMapper()), mapperFile);
+                        writer(objectMap, templateFilePath(template.getMapper()), mapperFile);
                     }
                 }
                 // MpMapper.xml
                 if (null != tableInfo.getXmlName() && null != pathInfo.get(ConstVal.XML_PATH)) {
                     String xmlFile = String.format((pathInfo.get(ConstVal.XML_PATH) + File.separator + tableInfo.getXmlName() + ConstVal.XML_SUFFIX), entityName);
                     if (isCreate(FileType.XML, xmlFile)) {
-                        writerFile(objectMap, templateFilePath(template.getXml()), xmlFile);
+                        writer(objectMap, templateFilePath(template.getXml()), xmlFile);
                     }
                 }
                 // IMpService.java
                 if (null != tableInfo.getServiceName() && null != pathInfo.get(ConstVal.SERVICE_PATH)) {
                     String serviceFile = String.format((pathInfo.get(ConstVal.SERVICE_PATH) + File.separator + tableInfo.getServiceName() + suffixJavaOrKt()), entityName);
                     if (isCreate(FileType.SERVICE, serviceFile)) {
-                        writerFile(objectMap, templateFilePath(template.getService()), serviceFile);
+                        writer(objectMap, templateFilePath(template.getService()), serviceFile);
                     }
                 }
                 // MpServiceImpl.java
                 if (null != tableInfo.getServiceImplName() && null != pathInfo.get(ConstVal.SERVICE_IMPL_PATH)) {
                     String implFile = String.format((pathInfo.get(ConstVal.SERVICE_IMPL_PATH) + File.separator + tableInfo.getServiceImplName() + suffixJavaOrKt()), entityName);
                     if (isCreate(FileType.SERVICE_IMPL, implFile)) {
-                        writerFile(objectMap, templateFilePath(template.getServiceImpl()), implFile);
+                        writer(objectMap, templateFilePath(template.getServiceImpl()), implFile);
                     }
                 }
                 // MpController.java
                 if (null != tableInfo.getControllerName() && null != pathInfo.get(ConstVal.CONTROLLER_PATH)) {
                     String controllerFile = String.format((pathInfo.get(ConstVal.CONTROLLER_PATH) + File.separator + tableInfo.getControllerName() + suffixJavaOrKt()), entityName);
                     if (isCreate(FileType.CONTROLLER, controllerFile)) {
-                        writerFile(objectMap, templateFilePath(template.getController()), controllerFile);
+                        writer(objectMap, templateFilePath(template.getController()), controllerFile);
                     }
                 }
             }
@@ -131,10 +133,6 @@ public abstract class AbstractTemplateEngine {
             logger.error("无法创建文件，请检查配置信息！", e);
         }
         return this;
-    }
-    
-    protected void writerFile(Map<String, Object> objectMap, String templatePath, String outputFile) throws Exception {
-        if (StringUtils.isNotBlank(templatePath)) this.writer(objectMap, templatePath, outputFile);
     }
 
     /**
@@ -162,7 +160,6 @@ public abstract class AbstractTemplateEngine {
         return this;
     }
 
-
     /**
      * 打开输出目录
      */
@@ -187,7 +184,6 @@ public abstract class AbstractTemplateEngine {
         }
     }
 
-
     /**
      * 渲染对象 MAP 信息
      *
@@ -195,14 +191,11 @@ public abstract class AbstractTemplateEngine {
      * @return ignore
      */
     public Map<String, Object> getObjectMap(TableInfo tableInfo) {
-        Map<String, Object> objectMap;
+        Map<String, Object> objectMap = new HashMap<>(30);
         ConfigBuilder config = getConfigBuilder();
         if (config.getStrategyConfig().isControllerMappingHyphenStyle()) {
-            objectMap = CollectionUtils.newHashMapWithExpectedSize(33);
             objectMap.put("controllerMappingHyphenStyle", config.getStrategyConfig().isControllerMappingHyphenStyle());
             objectMap.put("controllerMappingHyphen", StringUtils.camelToHyphen(tableInfo.getEntityPath()));
-        } else {
-            objectMap = CollectionUtils.newHashMapWithExpectedSize(31);
         }
         objectMap.put("restControllerStyle", config.getStrategyConfig().isRestControllerStyle());
         objectMap.put("config", config);
@@ -224,7 +217,6 @@ public abstract class AbstractTemplateEngine {
         objectMap.put("entitySerialVersionUID", config.getStrategyConfig().isEntitySerialVersionUID());
         objectMap.put("entityColumnConstant", config.getStrategyConfig().isEntityColumnConstant());
         objectMap.put("entityBuilderModel", config.getStrategyConfig().isEntityBuilderModel());
-        objectMap.put("chainModel", config.getStrategyConfig().isChainModel());
         objectMap.put("entityLombokModel", config.getStrategyConfig().isEntityLombokModel());
         objectMap.put("entityBooleanColumnRemoveIsPrefix", config.getStrategyConfig().isEntityBooleanColumnRemoveIsPrefix());
         objectMap.put("superEntityClass", getSuperClassName(config.getSuperEntityClass()));
@@ -262,7 +254,6 @@ public abstract class AbstractTemplateEngine {
         return classPath.substring(classPath.lastIndexOf(StringPool.DOT) + 1);
     }
 
-
     /**
      * 模板真实文件路径
      *
@@ -270,7 +261,6 @@ public abstract class AbstractTemplateEngine {
      * @return ignore
      */
     public abstract String templateFilePath(String filePath);
-
 
     /**
      * 检测文件是否存在
@@ -299,7 +289,6 @@ public abstract class AbstractTemplateEngine {
     protected String suffixJavaOrKt() {
         return getConfigBuilder().getGlobalConfig().isKotlin() ? ConstVal.KT_SUFFIX : ConstVal.JAVA_SUFFIX;
     }
-
 
     public ConfigBuilder getConfigBuilder() {
         return configBuilder;

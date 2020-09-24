@@ -58,14 +58,19 @@ public abstract class AbstractChainWrapper<T, R, Children extends AbstractChainW
         return (AbstractWrapper) wrapperChildren;
     }
 
-    public Children setEntity(T entity) {
-        getWrapper().setEntity(entity);
-        return typedThis;
+    @Override
+    public T getEntity() {
+        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getEntity");
     }
 
-    public Children setEntityClass(Class<T> entityClass) {
-        getWrapper().setEntityClass(entityClass);
-        return typedThis;
+    @Override
+    public MergeSegments getExpression() {
+        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getExpression");
+    }
+
+    @Override
+    public String getCustomSqlSegment() {
+        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getCustomSqlSegment");
     }
 
     @Override
@@ -207,12 +212,6 @@ public abstract class AbstractChainWrapper<T, R, Children extends AbstractChainW
     }
 
     @Override
-    public Children func(boolean condition, Consumer<Children> consumer) {
-        getWrapper().func(condition, consumer);
-        return typedThis;
-    }
-
-    @Override
     public Children or(boolean condition) {
         getWrapper().or(condition);
         return typedThis;
@@ -233,12 +232,6 @@ public abstract class AbstractChainWrapper<T, R, Children extends AbstractChainW
     @Override
     public Children comment(boolean condition, String comment) {
         getWrapper().comment(condition, comment);
-        return typedThis;
-    }
-
-    @Override
-    public Children first(boolean condition, String firstSql) {
-        getWrapper().first(condition, firstSql);
         return typedThis;
     }
 
@@ -275,55 +268,5 @@ public abstract class AbstractChainWrapper<T, R, Children extends AbstractChainW
     @Override
     public String getSqlSegment() {
         throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getSqlSegment");
-    }
-
-    @Override
-    public String getSqlFirst() {
-        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getSqlFirst");
-    }
-
-    @Override
-    public String getSqlSelect() {
-        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getSqlSelect");
-    }
-
-    @Override
-    public String getSqlSet() {
-        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getSqlSet");
-    }
-
-    @Override
-    public String getSqlComment() {
-        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getSqlComment");
-    }
-
-    @Override
-    public String getTargetSql() {
-        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getTargetSql");
-    }
-
-    @Override
-    public T getEntity() {
-        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getEntity");
-    }
-
-    @Override
-    public MergeSegments getExpression() {
-        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getExpression");
-    }
-
-    @Override
-    public String getCustomSqlSegment() {
-        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "getCustomSqlSegment");
-    }
-
-    @Override
-    public void clear() {
-        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "clear");
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        throw ExceptionUtils.mpe("can not use this method for \"%s\"", "clone");
     }
 }

@@ -10,9 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 <#if entityLombokModel>
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-    <#if chainModel>
 import lombok.experimental.Accessors;
-    </#if>
 </#if>
 
 /**
@@ -30,9 +28,7 @@ import lombok.experimental.Accessors;
     <#else>
 @EqualsAndHashCode(callSuper = false)
     </#if>
-    <#if chainModel>
 @Accessors(chain = true)
-    </#if>
 </#if>
 <#if table.convert>
 @TableName("${table.name}")
@@ -69,22 +65,22 @@ public class ${entity} implements Serializable {
     <#if field.keyFlag>
         <#-- 主键 -->
         <#if field.keyIdentityFlag>
-    @TableId(value = "${field.annotationColumnName}", type = IdType.AUTO)
+    @TableId(value = "${field.name}", type = IdType.AUTO)
         <#elseif idType??>
-    @TableId(value = "${field.annotationColumnName}", type = IdType.${idType})
+    @TableId(value = "${field.name}", type = IdType.${idType})
         <#elseif field.convert>
-    @TableId("${field.annotationColumnName}")
+    @TableId("${field.name}")
         </#if>
         <#-- 普通字段 -->
     <#elseif field.fill??>
     <#-- -----   存在字段填充设置   ----->
         <#if field.convert>
-    @TableField(value = "${field.annotationColumnName}", fill = FieldFill.${field.fill})
+    @TableField(value = "${field.name}", fill = FieldFill.${field.fill})
         <#else>
     @TableField(fill = FieldFill.${field.fill})
         </#if>
     <#elseif field.convert>
-    @TableField("${field.annotationColumnName}")
+    @TableField("${field.name}")
     </#if>
     <#-- 乐观锁注解 -->
     <#if (versionFieldName!"") == field.name>
@@ -109,13 +105,13 @@ public class ${entity} implements Serializable {
         return ${field.propertyName};
     }
 
-    <#if chainModel>
+    <#if entityBuilderModel>
     public ${entity} set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
     <#else>
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
     </#if>
         this.${field.propertyName} = ${field.propertyName};
-        <#if chainModel>
+        <#if entityBuilderModel>
         return this;
         </#if>
     }

@@ -52,14 +52,15 @@ public class MybatisConfiguration extends Configuration {
      */
     protected final MybatisMapperRegistry mybatisMapperRegistry = new MybatisMapperRegistry(this);
 
+    // TODO 自己的 GlobalConfig
+    @Setter
+    @Getter
+    private GlobalConfig globalConfig = GlobalConfigUtils.defaults();
+
     public MybatisConfiguration(Environment environment) {
         this();
         this.environment = environment;
     }
-
-    @Setter
-    @Getter
-    private GlobalConfig globalConfig = GlobalConfigUtils.defaults();
 
     /**
      * 初始化调用

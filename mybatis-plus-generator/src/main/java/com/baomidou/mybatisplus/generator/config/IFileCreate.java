@@ -15,11 +15,10 @@
  */
 package com.baomidou.mybatisplus.generator.config;
 
+import java.io.File;
 
 import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.rules.FileType;
-
-import java.io.File;
 
 /**
  * 文件覆盖接口

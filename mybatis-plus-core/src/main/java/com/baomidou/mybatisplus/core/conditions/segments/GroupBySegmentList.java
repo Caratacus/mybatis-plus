@@ -32,7 +32,7 @@ import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
 public class GroupBySegmentList extends AbstractISegmentList {
 
     @Override
-    protected boolean transformList(List<ISqlSegment> list, ISqlSegment firstSegment, ISqlSegment lastSegment) {
+    protected boolean transformList(List<ISqlSegment> list, ISqlSegment firstSegment) {
         list.remove(0);
         return true;
     }

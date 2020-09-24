@@ -34,7 +34,14 @@ abstract class AbstractKtWrapper<T, Children : AbstractKtWrapper<T, Children>> :
     /**
      * 列 Map
      */
-    protected lateinit var columnMap: Map<String, ColumnCache>
+    private lateinit var columnMap: Map<String, ColumnCache>
+
+    override fun initEntityClass() {
+        super.initEntityClass()
+        if (!::columnMap.isInitialized) {
+            columnMap = LambdaUtils.getColumnMap(this.checkEntityClass)
+        }
+    }
 
     /**
      * 重载方法，默认 onlyColumn = true
@@ -56,10 +63,4 @@ abstract class AbstractKtWrapper<T, Children : AbstractKtWrapper<T, Children>> :
     fun columnsToString(onlyColumn: Boolean, vararg columns: KProperty<*>): String =
         columns.mapNotNull { columnToString(it, onlyColumn) }.joinToString(separator = StringPool.COMMA)
 
-    override fun initNeed() {
-        super.initNeed()
-        if (!::columnMap.isInitialized) {
-            columnMap = LambdaUtils.getColumnMap(this.entityClass)
-        }
-    }
 }

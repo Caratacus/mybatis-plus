@@ -65,8 +65,6 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
     @Autowired
     protected M baseMapper;
 
-    protected Class<?> entityClass = currentModelClass();
-
     /**
      * <p>
      * 判断数据库操作是否成功
@@ -89,7 +87,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
      * </p>
      */
     protected SqlSession sqlSessionBatch() {
-        return SqlHelper.sqlSessionBatch(entityClass);
+        return SqlHelper.sqlSessionBatch(currentModelClass());
     }
 
     /**
@@ -98,7 +96,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
      * @param sqlSession session
      */
     protected void closeSqlSession(SqlSession sqlSession) {
-        SqlSessionUtils.closeSqlSession(sqlSession, GlobalConfigUtils.currentSessionFactory(entityClass));
+        SqlSessionUtils.closeSqlSession(sqlSession, GlobalConfigUtils.currentSessionFactory(currentModelClass()));
     }
 
     /**
@@ -108,7 +106,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
      * @return
      */
     protected String sqlStatement(SqlMethod sqlMethod) {
-        return SqlHelper.table(entityClass).getSqlStatement(sqlMethod.getMethod());
+        return SqlHelper.table(currentModelClass()).getSqlStatement(sqlMethod.getMethod());
     }
 
     @Transactional(rollbackFor = Exception.class)

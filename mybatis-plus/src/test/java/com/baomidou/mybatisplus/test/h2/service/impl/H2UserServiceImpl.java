@@ -111,8 +111,6 @@ public class H2UserServiceImpl extends ServiceImpl<H2UserMapper, H2User> impleme
     public void testSaveOrUpdateBatchTransactional() {
         saveOrUpdateBatch(Arrays.asList(new H2User("savOrUpdate1", 0), new H2User("savOrUpdate2", 0), new H2User("savOrUpdate3", 0)));
         saveOrUpdateBatch(Arrays.asList(new H2User("savOrUpdate4", 0), new H2User("savOrUpdate5", 0), new H2User("savOrUpdate6", 0)));
-        saveOrUpdateBatch(Arrays.asList(new H2User("savOrUpdate1", 0), new H2User("savOrUpdate2", 0), new H2User("savOrUpdate3", 0)));
-        saveOrUpdateBatch(Arrays.asList(new H2User("savOrUpdate4", 0), new H2User("savOrUpdate5", 0), new H2User("savOrUpdate6", 0)));
         throw new MybatisPlusException("测试普通插入事务回滚");
     }
 
@@ -122,19 +120,6 @@ public class H2UserServiceImpl extends ServiceImpl<H2UserMapper, H2User> impleme
         save(new H2User("simpleAndBatchTx1", 0));
         saveBatch(Arrays.asList(new H2User("simpleAndBatchTx2", 0), new H2User("simpleAndBatchTx3", 0), new H2User("simpleAndBatchTx4", 0)));
         saveOrUpdateBatch(Arrays.asList(new H2User("simpleAndBatchTx5", 0), new H2User("simpleAndBatchTx6", 0), new H2User("simpleAndBatchTx7", 0)));
-        saveBatch(Arrays.asList(new H2User("simpleAndBatchTx2", 0), new H2User("simpleAndBatchTx3", 0), new H2User("simpleAndBatchTx4", 0)));
-        saveOrUpdateBatch(Arrays.asList(new H2User("simpleAndBatchTx5", 0), new H2User("simpleAndBatchTx6", 0), new H2User("simpleAndBatchTx7", 0)));
         throw new MybatisPlusException("测试事务回滚");
     }
-
-    @Override
-    public void testSaveBatchNoTransactional1() {
-
-    }
-
-    @Override
-    public void testSaveBatchNoTransactional2() {
-
-    }
 }
-

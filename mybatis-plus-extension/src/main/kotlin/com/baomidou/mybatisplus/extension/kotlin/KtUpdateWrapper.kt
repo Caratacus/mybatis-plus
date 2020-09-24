@@ -21,7 +21,6 @@ import com.baomidou.mybatisplus.core.conditions.update.Update
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils
 import com.baomidou.mybatisplus.core.toolkit.StringPool
 import com.baomidou.mybatisplus.core.toolkit.StringUtils
-import com.baomidou.mybatisplus.core.toolkit.support.ColumnCache
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.stream.Collectors.joining
 import kotlin.reflect.KProperty
@@ -40,31 +39,36 @@ class KtUpdateWrapper<T : Any> : AbstractKtWrapper<T, KtUpdateWrapper<T>>, Updat
     private val sqlSet = ArrayList<String>()
 
     constructor(entity: T) {
-        this.entity = entity
-        super.initNeed()
+        this.setEntity(entity)
+        this.initNeed()
     }
 
     constructor(entityClass: Class<T>) {
         this.entityClass = entityClass
-        super.initNeed()
+        this.initEntityClass()
+        this.initNeed()
     }
 
-    internal constructor(entity: T?, paramNameSeq: AtomicInteger, paramNameValuePairs: Map<String, Any>,
-                         columnMap: Map<String, ColumnCache>, lastSql: SharedString, sqlComment: SharedString,
-                         sqlFirst: SharedString) {
-        this.entity = entity
+    internal constructor(entity: T, paramNameSeq: AtomicInteger, paramNameValuePairs: Map<String, Any>,
+                         mergeSegments: MergeSegments, lastSql: SharedString, sqlComment: SharedString) {
+        this.setEntity(entity)
         this.paramNameSeq = paramNameSeq
         this.paramNameValuePairs = paramNameValuePairs
-        this.expression = MergeSegments()
-        this.columnMap = columnMap
+        this.expression = mergeSegments
         this.lastSql = lastSql
         this.sqlComment = sqlComment
-        this.sqlFirst = sqlFirst
     }
 
     override fun getSqlSet(): String? {
         return if (CollectionUtils.isEmpty(sqlSet)) null
         else sqlSet.stream().collect(joining(StringPool.COMMA))
+    }
+
+    override fun set(condition: Boolean, column: KProperty<*>, value: Any): KtUpdateWrapper<T> {
+        if (condition) {
+            sqlSet.add(String.format("%s=%s", columnToString(column), value.toString()))
+        }
+        return typedThis
     }
 
     override fun setSql(condition: Boolean, sql: String): KtUpdateWrapper<T> {
@@ -74,20 +78,8 @@ class KtUpdateWrapper<T : Any> : AbstractKtWrapper<T, KtUpdateWrapper<T>>, Updat
         return typedThis
     }
 
-    override fun set(condition: Boolean, column: KProperty<*>, value: Any?): KtUpdateWrapper<T> {
-        if (condition) {
-            sqlSet.add(String.format("%s=%s", columnToString(column), value.toString()))
-        }
-        return typedThis
-    }
-
     override fun instance(): KtUpdateWrapper<T> {
-        return KtUpdateWrapper(entity, paramNameSeq, paramNameValuePairs, columnMap,
-            SharedString.emptyString(), SharedString.emptyString(), SharedString.emptyString())
-    }
-
-    override fun clear() {
-        super.clear()
-        sqlSet.clear()
+        return KtUpdateWrapper(entity, paramNameSeq, paramNameValuePairs, expression, SharedString.emptyString(),
+            SharedString.emptyString())
     }
 }

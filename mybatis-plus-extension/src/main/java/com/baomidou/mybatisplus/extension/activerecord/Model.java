@@ -36,6 +36,7 @@ import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import com.baomidou.mybatisplus.extension.toolkit.SqlRunner;
 
 /**
  * ActiveRecord 模式 CRUD
@@ -210,7 +211,7 @@ public abstract class Model<T extends Model<?>> implements Serializable {
      * @param page         翻页查询条件
      * @param queryWrapper 实体对象封装操作类（可以为 null）
      */
-    public <E extends IPage<T>> E selectPage(E page, Wrapper<T> queryWrapper) {
+    public IPage<T> selectPage(IPage<T> page, Wrapper<T> queryWrapper) {
         Map<String, Object> map = new HashMap<>(2);
         map.put(Constants.WRAPPER, queryWrapper);
         map.put("page", page);
@@ -237,6 +238,13 @@ public abstract class Model<T extends Model<?>> implements Serializable {
         } finally {
             closeSqlSession(sqlSession);
         }
+    }
+
+    /**
+     * 执行 SQL
+     */
+    public SqlRunner sql() {
+        return new SqlRunner(getClass());
     }
 
     /**
@@ -268,7 +276,7 @@ public abstract class Model<T extends Model<?>> implements Serializable {
      * 主键值
      */
     protected Serializable pkVal() {
-        return (Serializable) ReflectionKit.getFieldValue(this, TableInfoHelper.getTableInfo(getClass()).getKeyProperty());
+        return (Serializable) ReflectionKit.getMethodValue(this, TableInfoHelper.getTableInfo(getClass()).getKeyProperty());
     }
 
     /**

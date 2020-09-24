@@ -15,6 +15,8 @@
  */
 package com.baomidou.mybatisplus.generator.config.querys;
 
+import com.baomidou.mybatisplus.annotation.DbType;
+
 /**
  * Oracle 表数据查询
  *
@@ -24,10 +26,14 @@ package com.baomidou.mybatisplus.generator.config.querys;
 public class OracleQuery extends AbstractDbQuery {
 
     @Override
+    public DbType dbType() {
+        return DbType.ORACLE;
+    }
+
+    @Override
     public String tablesSql() {
         return "SELECT * FROM ALL_TAB_COMMENTS WHERE OWNER='%s'";
     }
-
 
     @Override
     public String tableFieldsSql() {
@@ -43,36 +49,30 @@ public class OracleQuery extends AbstractDbQuery {
             + "WHERE A.OWNER = '#schema' AND A.TABLE_NAME = '%s' ORDER BY A.COLUMN_ID ";
     }
 
-
     @Override
     public String tableName() {
         return "TABLE_NAME";
     }
-
 
     @Override
     public String tableComment() {
         return "COMMENTS";
     }
 
-
     @Override
     public String fieldName() {
         return "COLUMN_NAME";
     }
-
 
     @Override
     public String fieldType() {
         return "DATA_TYPE";
     }
 
-
     @Override
     public String fieldComment() {
         return "COMMENTS";
     }
-
 
     @Override
     public String fieldKey() {

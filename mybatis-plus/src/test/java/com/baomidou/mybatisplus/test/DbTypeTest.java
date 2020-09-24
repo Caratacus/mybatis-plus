@@ -15,35 +15,60 @@
  */
 package com.baomidou.mybatisplus.test;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
-import com.baomidou.mybatisplus.extension.plugins.pagination.DialectFactory;
-import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.DialectRegistry;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.DB2Dialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.DmDialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.H2Dialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.HSQLDialect;
 import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.KingbaseDialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.MariaDBDialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.MySqlDialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.OracleDialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.PostgreDialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.SQLServer2005Dialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.SQLServerDialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.SQLiteDialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.UnknownDialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.XuGuDialect;
 
 /**
  * @author nieqiuqiu
  */
 class DbTypeTest {
 
-    private DialectRegistry dialectRegistry = new DialectRegistry();
+    private static final Map<DbType, Class<? extends IDialect>> DIALECT_MAP = new ConcurrentHashMap<>();
+
+    static {
+        DIALECT_MAP.put(DbType.DB2, DB2Dialect.class);
+        DIALECT_MAP.put(DbType.DM, DmDialect.class);
+        DIALECT_MAP.put(DbType.H2, H2Dialect.class);
+        DIALECT_MAP.put(DbType.MYSQL, MySqlDialect.class);
+        DIALECT_MAP.put(DbType.MARIADB, MariaDBDialect.class);
+        DIALECT_MAP.put(DbType.ORACLE, OracleDialect.class);
+        DIALECT_MAP.put(DbType.POSTGRE_SQL, PostgreDialect.class);
+        DIALECT_MAP.put(DbType.SQL_SERVER, SQLServerDialect.class);
+        DIALECT_MAP.put(DbType.SQL_SERVER2005, SQLServer2005Dialect.class);
+        DIALECT_MAP.put(DbType.SQLITE, SQLiteDialect.class);
+        DIALECT_MAP.put(DbType.HSQL, HSQLDialect.class);
+        DIALECT_MAP.put(DbType.XU_GU, XuGuDialect.class);
+        DIALECT_MAP.put(DbType.KINGBASE_ES, KingbaseDialect.class);
+        DIALECT_MAP.put(DbType.OTHER, UnknownDialect.class);
+    }
 
     @Test
     void test() throws ClassNotFoundException {
         DbType[] values = DbType.values();
-        Assertions.assertEquals(values.length - 1, dialectRegistry.getDialects().size());
+        Assertions.assertEquals(values.length, DIALECT_MAP.size());
         for (DbType dbType : values) {
             Class<?> aClass = Class.forName(dbType.getDialect());
-            if (DbType.OTHER != dbType) {
-                IDialect dialect = DialectFactory.getDialect(dbType);
-                Assertions.assertEquals(dialect.getClass(), aClass);
-                Assertions.assertEquals(aClass, dialectRegistry.getDialect(dbType).getClass());
-            } else {
-                Assertions.assertThrows(MybatisPlusException.class, () -> DialectFactory.getDialect(dbType));
-            }
+            Assertions.assertEquals(aClass, DIALECT_MAP.get(dbType));
         }
     }
 

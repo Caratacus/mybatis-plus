@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.baomidou.mybatisplus.core.toolkit.ClassUtils;
 import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
@@ -62,12 +64,7 @@ public class SerializedLambda implements Serializable {
         try (ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(SerializationUtils.serialize(lambda))) {
             @Override
             protected Class<?> resolveClass(ObjectStreamClass objectStreamClass) throws IOException, ClassNotFoundException {
-                Class<?> clazz;
-                try {
-                    clazz = ClassUtils.toClassConfident(objectStreamClass.getName());
-                } catch (Exception ex) {
-                    clazz = super.resolveClass(objectStreamClass);
-                }
+                Class<?> clazz = super.resolveClass(objectStreamClass);
                 return clazz == java.lang.invoke.SerializedLambda.class ? SerializedLambda.class : clazz;
             }
         }) {
@@ -83,7 +80,7 @@ public class SerializedLambda implements Serializable {
      * @return 返回 class 名称
      */
     public String getFunctionalInterfaceClassName() {
-        return normalizedName(functionalInterfaceClass);
+        return normalName(functionalInterfaceClass);
     }
 
     /**
@@ -101,7 +98,7 @@ public class SerializedLambda implements Serializable {
      * @return 类名
      */
     public String getImplClassName() {
-        return normalizedName(implClass);
+        return normalName(implClass);
     }
 
     /**
@@ -119,16 +116,18 @@ public class SerializedLambda implements Serializable {
      * @param name 名称
      * @return 正常的类名
      */
-    private String normalizedName(String name) {
+    private String normalName(String name) {
         return name.replace('/', '.');
     }
 
-    /**
-     * @return 获取实例化方法的类型
-     */
-    public Class<?> getInstantiatedType() {
-        String instantiatedTypeName = normalizedName(instantiatedMethodType.substring(2, instantiatedMethodType.indexOf(';')));
-        return ClassUtils.toClassConfident(instantiatedTypeName);
+    private static final Pattern INSTANTIATED_METHOD_TYPE = Pattern.compile("\\(L(?<instantiatedMethodType>[\\S&&[^;)]]+);\\)L[\\S]+;");
+
+    public Class getInstantiatedMethodType() {
+        Matcher matcher = INSTANTIATED_METHOD_TYPE.matcher(instantiatedMethodType);
+        if (matcher.find()) {
+            return ClassUtils.toClassConfident(normalName(matcher.group("instantiatedMethodType")));
+        }
+        throw ExceptionUtils.mpe("无法从 %s 解析调用实例。。。", instantiatedMethodType);
     }
 
     /**
@@ -136,11 +135,7 @@ public class SerializedLambda implements Serializable {
      */
     @Override
     public String toString() {
-        String interfaceName = getFunctionalInterfaceClassName();
-        String implName = getImplClassName();
-        return String.format("%s -> %s::%s",
-            interfaceName.substring(interfaceName.lastIndexOf('.') + 1),
-            implName.substring(implName.lastIndexOf('.') + 1),
+        return String.format("%s -> %s::%s", getFunctionalInterfaceClassName(), getImplClass().getSimpleName(),
             implMethodName);
     }
 

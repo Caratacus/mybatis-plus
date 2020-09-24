@@ -55,7 +55,7 @@ public class UpdateWrapper<T> extends AbstractWrapper<T, String, UpdateWrapper<T
 
     private UpdateWrapper(T entity, List<String> sqlSet, AtomicInteger paramNameSeq,
                           Map<String, Object> paramNameValuePairs, MergeSegments mergeSegments,
-                          SharedString lastSql, SharedString sqlComment, SharedString sqlFirst) {
+                          SharedString lastSql, SharedString sqlComment) {
         super.setEntity(entity);
         this.sqlSet = sqlSet;
         this.paramNameSeq = paramNameSeq;
@@ -63,7 +63,6 @@ public class UpdateWrapper<T> extends AbstractWrapper<T, String, UpdateWrapper<T
         this.expression = mergeSegments;
         this.lastSql = lastSql;
         this.sqlComment = sqlComment;
-        this.sqlFirst = sqlFirst;
     }
 
     @Override
@@ -77,7 +76,7 @@ public class UpdateWrapper<T> extends AbstractWrapper<T, String, UpdateWrapper<T
     @Override
     public UpdateWrapper<T> set(boolean condition, String column, Object val) {
         if (condition) {
-            sqlSet.add(String.format("%s=%s", column, formatSql("{0}", val)));
+            sqlSet.add(String.format("%s=%s", column, val.toString()));
         }
         return typedThis;
     }
@@ -94,19 +93,12 @@ public class UpdateWrapper<T> extends AbstractWrapper<T, String, UpdateWrapper<T
      * 返回一个支持 lambda 函数写法的 wrapper
      */
     public LambdaUpdateWrapper<T> lambda() {
-        return new LambdaUpdateWrapper<>(getEntity(), getEntityClass(), sqlSet, paramNameSeq, paramNameValuePairs,
-            expression, lastSql, sqlComment, sqlFirst);
+        return new LambdaUpdateWrapper<>(entity, sqlSet, paramNameSeq, paramNameValuePairs, expression, lastSql, sqlComment);
     }
 
     @Override
     protected UpdateWrapper<T> instance() {
-        return new UpdateWrapper<>(getEntity(), null, paramNameSeq, paramNameValuePairs, new MergeSegments(),
-            SharedString.emptyString(), SharedString.emptyString(), SharedString.emptyString());
-    }
-
-    @Override
-    public void clear() {
-        super.clear();
-        sqlSet.clear();
+        return new UpdateWrapper<>(entity, sqlSet, paramNameSeq, paramNameValuePairs, new MergeSegments(),
+            SharedString.emptyString(), SharedString.emptyString());
     }
 }

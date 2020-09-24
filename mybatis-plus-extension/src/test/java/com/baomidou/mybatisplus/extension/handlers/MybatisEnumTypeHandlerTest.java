@@ -21,7 +21,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.apache.ibatis.type.JdbcType;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -38,8 +37,6 @@ public class MybatisEnumTypeHandlerTest extends BaseTypeHandlerTest {
     private static final MybatisEnumTypeHandler<SexEnum> SEX_ENUM_ENUM_TYPE_HANDLER = new MybatisEnumTypeHandler<>(SexEnum.class);
 
     private static final MybatisEnumTypeHandler<GradeEnum> GRADE_ENUM_ENUM_TYPE_HANDLER = new MybatisEnumTypeHandler<>(GradeEnum.class);
-
-    private static final MybatisEnumTypeHandler<CharacterEnum> CHARACTER_ENUM_MYBATIS_ENUM_TYPE_HANDLER = new MybatisEnumTypeHandler<>(CharacterEnum.class);
 
     @Getter
     @AllArgsConstructor
@@ -70,27 +67,6 @@ public class MybatisEnumTypeHandlerTest extends BaseTypeHandlerTest {
         private final String desc;
     }
 
-    @Getter
-    @AllArgsConstructor
-    enum CharacterEnum {
-        MAN('1', "男"),
-        WO_MAN('2', "女");
-
-        @EnumValue
-        char code;
-        String desc;
-    }
-
-    @Test
-    void dealEnumType() {
-        Assertions.assertFalse(MybatisEnumTypeHandler.dealEnumType(String.class).isPresent());
-        Assertions.assertTrue(MybatisEnumTypeHandler.dealEnumType(GradeEnum.class).isPresent());
-        Assertions.assertFalse(MybatisEnumTypeHandler.dealEnumType(SexEnum.class).isPresent());
-        Assertions.assertFalse(MybatisEnumTypeHandler.findEnumValueFieldName(String.class).isPresent());
-        Assertions.assertTrue(MybatisEnumTypeHandler.findEnumValueFieldName(GradeEnum.class).isPresent());
-        Assertions.assertFalse(MybatisEnumTypeHandler.findEnumValueFieldName(SexEnum.class).isPresent());
-    }
-
     @Test
     @Override
     public void setParameter() throws Exception {
@@ -118,20 +94,13 @@ public class MybatisEnumTypeHandlerTest extends BaseTypeHandlerTest {
         assertEquals(SexEnum.MAN, SEX_ENUM_ENUM_TYPE_HANDLER.getResult(resultSet, "column"));
         when(resultSet.getObject("column")).thenReturn(2);
         assertEquals(SexEnum.WO_MAN, SEX_ENUM_ENUM_TYPE_HANDLER.getResult(resultSet, "column"));
-
         when(resultSet.getObject("column")).thenReturn(null);
+
         assertNull(GRADE_ENUM_ENUM_TYPE_HANDLER.getResult(resultSet, "column"));
         when(resultSet.getObject("column")).thenReturn(1);
         assertEquals(GradeEnum.PRIMARY, GRADE_ENUM_ENUM_TYPE_HANDLER.getResult(resultSet, "column"));
         when(resultSet.getObject("column")).thenReturn(2);
         assertEquals(GradeEnum.SECONDARY, GRADE_ENUM_ENUM_TYPE_HANDLER.getResult(resultSet, "column"));
-
-        when(resultSet.getObject("column")).thenReturn(null);
-        assertNull(CHARACTER_ENUM_MYBATIS_ENUM_TYPE_HANDLER.getResult(resultSet, "column"));
-        when(resultSet.getObject("column")).thenReturn("1");
-        assertEquals(CharacterEnum.MAN, CHARACTER_ENUM_MYBATIS_ENUM_TYPE_HANDLER.getResult(resultSet, "column"));
-        when(resultSet.getObject("column")).thenReturn("2");
-        assertEquals(CharacterEnum.WO_MAN, CHARACTER_ENUM_MYBATIS_ENUM_TYPE_HANDLER.getResult(resultSet, "column"));
     }
 
     @Test

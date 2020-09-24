@@ -15,15 +15,9 @@
  */
 package com.baomidou.mybatisplus.core.metadata;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
 
 /**
  * 分页 Page 对象接口
@@ -114,29 +108,9 @@ public interface IPage<T> extends Serializable {
      * 内部什么也不干
      * <p>只是为了 json 反序列化时不报错</p>
      */
-    default IPage<T> setPages(long pages) {
+    default IPage<T> setPages(int pages) {
         // to do nothing
         return this;
-    }
-
-    /**
-     * 设置是否命中count缓存
-     *
-     * @param hit 是否命中
-     * @since 3.3.1
-     */
-    default void hitCount(boolean hit) {
-
-    }
-
-    /**
-     * 是否命中count缓存
-     *
-     * @return 是否命中count缓存
-     * @since 3.3.1
-     */
-    default boolean isHitCount() {
-        return false;
     }
 
     /**
@@ -164,14 +138,14 @@ public interface IPage<T> extends Serializable {
     IPage<T> setTotal(int total);
 
     /**
-     * 获取每页显示条数
+     * 当前分页总页数
      *
-     * @return 每页显示条数
+     * @return 总页数
      */
     int getSize();
 
     /**
-     * 设置每页显示条数
+     * 设置当前分页总页数
      */
     IPage<T> setSize(int size);
 
@@ -186,36 +160,5 @@ public interface IPage<T> extends Serializable {
      * 设置当前页
      */
     IPage<T> setCurrent(int current);
-
-    /**
-     * IPage 的泛型转换
-     *
-     * @param mapper 转换函数
-     * @param <R>    转换后的泛型
-     * @return 转换泛型后的 IPage
-     */
-    @SuppressWarnings("unchecked")
-    default <R> IPage<R> convert(Function<? super T, ? extends R> mapper) {
-        List<R> collect = this.getRecords().stream().map(mapper).collect(toList());
-        return ((IPage<R>) this).setRecords(collect);
-    }
-
-    /**
-     * 生成缓存key值
-     *
-     * @return 缓存key值
-     * @since 3.3.2
-     */
-    default String cacheKey() {
-        StringBuilder key = new StringBuilder();
-        key.append(offset()).append(StringPool.COLON).append(getSize());
-        List<OrderItem> orders = orders();
-        if (CollectionUtils.isNotEmpty(orders)) {
-            for (OrderItem item : orders) {
-                key.append(StringPool.COLON).append(item.getColumn()).append(StringPool.COLON).append(item.isAsc());
-            }
-        }
-        return key.toString();
-    }
 
 }

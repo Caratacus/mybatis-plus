@@ -15,15 +15,16 @@
  */
 package com.baomidou.mybatisplus.generator.engine;
 
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.generator.config.ConstVal;
-import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Map;
+
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.generator.config.ConstVal;
+import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 /**
  * Freemarker 模板引擎实现文件输出
@@ -44,7 +45,6 @@ public class FreemarkerTemplateEngine extends AbstractTemplateEngine {
         return this;
     }
 
-
     @Override
     public void writer(Map<String, Object> objectMap, String templatePath, String outputFile) throws Exception {
         Template template = configuration.getTemplate(templatePath);
@@ -53,7 +53,6 @@ public class FreemarkerTemplateEngine extends AbstractTemplateEngine {
         }
         logger.debug("模板:" + templatePath + ";  文件:" + outputFile);
     }
-
 
     @Override
     public String templateFilePath(String filePath) {

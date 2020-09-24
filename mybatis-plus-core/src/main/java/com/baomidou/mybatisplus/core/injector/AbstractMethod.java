@@ -38,6 +38,7 @@ import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
 
 /**
@@ -82,7 +83,7 @@ public abstract class AbstractMethod implements Constants {
      * @return sql set 片段
      */
     protected String sqlLogicSet(TableInfo table) {
-        return "SET " + table.getLogicDeleteSql(false, false);
+        return "SET " + table.getLogicDeleteSql(false, true);
     }
 
     /**
@@ -95,8 +96,7 @@ public abstract class AbstractMethod implements Constants {
      * @param prefix 前缀
      * @return sql
      */
-    protected String sqlSet(boolean logic, boolean ew, TableInfo table, boolean judgeAliasNull, final String alias,
-                            final String prefix) {
+    protected String sqlSet(boolean logic, boolean ew, TableInfo table, boolean judgeAliasNull, String alias, String prefix) {
         String sqlScript = table.getAllSqlSet(logic, prefix);
         if (judgeAliasNull) {
             sqlScript = SqlScriptUtils.convertIf(sqlScript, String.format("%s != null", alias), true);
@@ -118,16 +118,6 @@ public abstract class AbstractMethod implements Constants {
     protected String sqlComment() {
         return SqlScriptUtils.convertChoose(String.format("%s != null and %s != null", WRAPPER, Q_WRAPPER_SQL_COMMENT),
             SqlScriptUtils.unSafeParam(Q_WRAPPER_SQL_COMMENT), EMPTY);
-    }
-
-    /**
-     * SQL 注释
-     *
-     * @return sql
-     */
-    protected String sqlFirst() {
-        return SqlScriptUtils.convertChoose(String.format("%s != null and %s != null", WRAPPER, Q_WRAPPER_SQL_FIRST),
-            SqlScriptUtils.unSafeParam(Q_WRAPPER_SQL_FIRST), EMPTY);
     }
 
     /**
@@ -181,7 +171,7 @@ public abstract class AbstractMethod implements Constants {
                 " ${k} = #{v} ");
             sqlScript = SqlScriptUtils.convertForeach(sqlScript, "cm", "k", "v", "AND");
             sqlScript = SqlScriptUtils.convertIf(sqlScript, "cm != null and !cm.isEmpty", true);
-            sqlScript += (NEWLINE + table.getLogicDeleteSql(true, true));
+            sqlScript += (NEWLINE + table.getLogicDeleteSql(true, false));
             sqlScript = SqlScriptUtils.convertWhere(sqlScript);
             return sqlScript;
         } else {
@@ -207,7 +197,7 @@ public abstract class AbstractMethod implements Constants {
             String sqlScript = table.getAllSqlWhere(true, true, WRAPPER_ENTITY_DOT);
             sqlScript = SqlScriptUtils.convertIf(sqlScript, String.format("%s != null", WRAPPER_ENTITY),
                 true);
-            sqlScript += (NEWLINE + table.getLogicDeleteSql(true, true) + NEWLINE);
+            sqlScript += (NEWLINE + table.getLogicDeleteSql(true, false) + NEWLINE);
             String normalSqlScript = SqlScriptUtils.convertIf(String.format("AND ${%s}", WRAPPER_SQLSEGMENT),
                 String.format("%s != null and %s != '' and %s", WRAPPER_SQLSEGMENT, WRAPPER_SQLSEGMENT,
                     WRAPPER_NONEMPTYOFNORMAL), true);
@@ -217,7 +207,7 @@ public abstract class AbstractMethod implements Constants {
                     WRAPPER_EMPTYOFNORMAL), true);
             sqlScript += normalSqlScript;
             sqlScript = SqlScriptUtils.convertChoose(String.format("%s != null", WRAPPER), sqlScript,
-                table.getLogicDeleteSql(false, true));
+                table.getLogicDeleteSql(false, false));
             sqlScript = SqlScriptUtils.convertWhere(sqlScript);
             return newLine ? NEWLINE + sqlScript : sqlScript;
         } else {
@@ -248,17 +238,11 @@ public abstract class AbstractMethod implements Constants {
         return infoStream.map(function).collect(joining(joiningVal));
     }
 
-    /**
-     * 获取乐观锁相关
-     *
-     * @param tableInfo 表信息
-     * @return String
-     */
-    protected String optlockVersion(TableInfo tableInfo) {
-        if (tableInfo.isWithVersion()) {
-            return tableInfo.getVersionFieldInfo().getVersionOli(ENTITY, ENTITY_DOT);
-        }
-        return EMPTY;
+    protected String optlockVersion() {
+        return "<if test=\"et instanceof java.util.Map\">" +
+            " AND ${et." + Constants.MP_OPTLOCK_VERSION_COLUMN +
+            "}=#{et." + Constants.MP_OPTLOCK_VERSION_ORIGINAL + StringPool.RIGHT_BRACE +
+            "</if>";
     }
 
     /**

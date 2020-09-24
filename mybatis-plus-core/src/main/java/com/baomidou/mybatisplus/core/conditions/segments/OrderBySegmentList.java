@@ -32,11 +32,11 @@ import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
 public class OrderBySegmentList extends AbstractISegmentList {
 
     @Override
-    protected boolean transformList(List<ISqlSegment> list, ISqlSegment firstSegment, ISqlSegment lastSegment) {
+    protected boolean transformList(List<ISqlSegment> list, ISqlSegment firstSegment) {
         list.remove(0);
-        final String sql = list.stream().map(ISqlSegment::getSqlSegment).collect(joining(SPACE));
-        list.clear();
-        list.add(() -> sql);
+        if (!isEmpty()) {
+            super.add(() -> COMMA);
+        }
         return true;
     }
 
@@ -45,6 +45,6 @@ public class OrderBySegmentList extends AbstractISegmentList {
         if (isEmpty()) {
             return EMPTY;
         }
-        return this.stream().map(ISqlSegment::getSqlSegment).collect(joining(COMMA, SPACE + ORDER_BY.getSqlSegment() + SPACE, EMPTY));
+        return this.stream().map(ISqlSegment::getSqlSegment).collect(joining(SPACE, SPACE + ORDER_BY.getSqlSegment() + SPACE, EMPTY));
     }
 }

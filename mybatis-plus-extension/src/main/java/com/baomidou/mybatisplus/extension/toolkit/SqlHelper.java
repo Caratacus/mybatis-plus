@@ -18,6 +18,7 @@ package com.baomidou.mybatisplus.extension.toolkit;
 import java.util.List;
 
 import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -39,6 +40,7 @@ import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
  */
 public final class SqlHelper {
 
+    private static final Log logger = LogFactory.getLog(SqlHelper.class);
     /**
      * 主要用于 service 和 ar
      */
@@ -52,18 +54,7 @@ public final class SqlHelper {
      */
     public static SqlSession sqlSessionBatch(Class<?> clazz) {
         // TODO 暂时让能用先,但日志会显示Closing non transactional SqlSession,因为这个并没有绑定.
-        return sqlSessionFactory(clazz).openSession(ExecutorType.BATCH);
-    }
-
-    /**
-     * 获取SqlSessionFactory
-     *
-     * @param clazz 实体类
-     * @return SqlSessionFactory
-     * @since 3.3.0
-     */
-    public static SqlSessionFactory sqlSessionFactory(Class<?> clazz) {
-        return GlobalConfigUtils.currentSessionFactory(clazz);
+        return GlobalConfigUtils.currentSessionFactory(clazz).openSession(ExecutorType.BATCH);
     }
 
     /**
@@ -99,6 +90,18 @@ public final class SqlHelper {
     }
 
     /**
+     * 删除不存在的逻辑上属于成功
+     *
+     * @param result 数据库操作返回影响条数
+     * @return boolean
+     * @deprecated 3.1.1 {@link SqlHelper#retBool(java.lang.Integer)}
+     */
+    @Deprecated
+    public static boolean delBool(Integer result) {
+        return null != result && result >= 0;
+    }
+
+    /**
      * 返回SelectCount执行结果
      *
      * @param result ignore
@@ -106,6 +109,19 @@ public final class SqlHelper {
      */
     public static int retCount(Integer result) {
         return (null == result) ? 0 : result;
+    }
+
+    /**
+     * 从list中取第一条数据返回对应List中泛型的单个结果
+     *
+     * @param list ignore
+     * @param <E>  ignore
+     * @return ignore
+     * @deprecated 3.1.1
+     */
+    @Deprecated
+    public static <E> E getObject(List<E> list) {
+        return getObject(logger, list);
     }
 
     /**
@@ -131,9 +147,7 @@ public final class SqlHelper {
      * 批量插入因为无法重用sqlSession，只能新开启一个sqlSession
      *
      * @param clazz 实体类
-     * @deprecated 3.3.1
      */
-    @Deprecated
     public static void clearCache(Class<?> clazz) {
         SqlSessionFactory sqlSessionFactory = GlobalConfigUtils.currentSessionFactory(clazz);
         SqlSessionHolder sqlSessionHolder = (SqlSessionHolder) TransactionSynchronizationManager.getResource(sqlSessionFactory);

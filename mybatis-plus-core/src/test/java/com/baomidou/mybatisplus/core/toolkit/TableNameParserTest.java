@@ -471,12 +471,6 @@ public class TableNameParserTest {
         assertThat(new TableNameParser(sql).tables()).isEqualTo(asSet("foo", "bar"));
     }
 
-    @Test
-    void testSelectForUpdate() {
-        //TODO 暂时解决不能使用的问题,当碰到for update nowait这样的,后面的nowait会被当做成表但也不是很影响苗老板的动态表过滤.
-        assertThat(new TableNameParser("select * from mp where id = 1 for update").tables()).isEqualTo(asSet("mp"));
-    }
-
     private static Collection<String> asSet(String... a) {
         Set<String> result = new HashSet<String>();
         for (String item : a) {

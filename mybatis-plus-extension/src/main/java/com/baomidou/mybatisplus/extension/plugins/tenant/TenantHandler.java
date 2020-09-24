@@ -16,7 +16,6 @@
 package com.baomidou.mybatisplus.extension.plugins.tenant;
 
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.ValueListExpression;
 
 /**
  * 租户处理器（ TenantId 行级 ）
@@ -30,13 +29,11 @@ public interface TenantHandler {
      * 获取租户 ID 值表达式，支持多个 ID 条件查询
      * <p>
      * 支持自定义表达式，比如：tenant_id in (1,2) @since 2019-8-2
-     * 多参请使用 {@link ValueListExpression}
      *
-     * @param select 参数 true 表示为 select 下的 where 条件,false 表示 insert/update/delete 下的条件
-     *               只有 select 下才允许多参,否则只支持单参
+     * @param where 参数 true 表示为 where 条件 false 表示为 insert 或者 select 条件
      * @return 租户 ID 值表达式
      */
-    Expression getTenantId(boolean select);
+    Expression getTenantId(boolean where);
 
     /**
      * 获取租户字段名

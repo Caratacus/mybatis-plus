@@ -74,16 +74,4 @@ public class MergeSegments implements ISqlSegment {
         }
         return sqlSegment;
     }
-
-    /**
-     * 清理
-     *
-     * @since 3.3.1
-     */
-    public void clear() {
-        normal.clear();
-        groupBy.clear();
-        having.clear();
-        orderBy.clear();
-    }
 }

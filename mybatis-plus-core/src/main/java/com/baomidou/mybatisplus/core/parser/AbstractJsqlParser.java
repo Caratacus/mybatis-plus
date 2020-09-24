@@ -56,9 +56,7 @@ public abstract class AbstractJsqlParser implements ISqlParser {
     public SqlInfo parser(MetaObject metaObject, String sql) {
         if (this.allowProcess(metaObject)) {
             try {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Original SQL: " + sql);
-                }
+                logger.debug("Original SQL: " + sql);
                 // fixed github pull/295
                 StringBuilder sqlStringBuilder = new StringBuilder();
                 Statements statements = CCJSqlParserUtil.parseStatements(sql);
@@ -97,9 +95,7 @@ public abstract class AbstractJsqlParser implements ISqlParser {
         } else if (statement instanceof Delete) {
             this.processDelete((Delete) statement);
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("parser sql: " + statement.toString());
-        }
+        logger.debug("parser sql: " + statement.toString());
         return SqlInfo.newInstance().setSql(statement.toString());
     }
 

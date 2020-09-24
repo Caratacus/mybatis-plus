@@ -18,6 +18,8 @@ package com.baomidou.mybatisplus.generator.config.querys;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.baomidou.mybatisplus.annotation.DbType;
+
 /**
  * SqlServer 表数据查询
  *
@@ -25,15 +27,19 @@ import java.sql.SQLException;
  * @since 2018-01-16
  */
 public class SqlServerQuery extends AbstractDbQuery {
-    
+
     @Override
-    public String tablesSql() {
-        return "select * from (select cast(so.name as varchar(500)) as TABLE_NAME, " +
-            "cast(sep.value as varchar(500)) as COMMENTS from sysobjects so " +
-            "left JOIN sys.extended_properties sep on sep.major_id=so.id and sep.minor_id=0 " +
-            "where (xtype='U' or xtype='v')) a where 1=1 ";
+    public DbType dbType() {
+        return DbType.SQL_SERVER;
     }
 
+    @Override
+    public String tablesSql() {
+        return "select cast(so.name as varchar(500)) as TABLE_NAME, " +
+            "cast(sep.value as varchar(500)) as COMMENTS from sysobjects so " +
+            "left JOIN sys.extended_properties sep on sep.major_id=so.id and sep.minor_id=0 " +
+            "where (xtype='U' or xtype='v')";
+    }
 
     @Override
     public String tableFieldsSql() {
@@ -59,36 +65,30 @@ public class SqlServerQuery extends AbstractDbQuery {
         return "TABLE_NAME";
     }
 
-
     @Override
     public String tableComment() {
         return "COMMENTS";
     }
-
 
     @Override
     public String fieldName() {
         return "COLUMN_NAME";
     }
 
-
     @Override
     public String fieldType() {
         return "DATA_TYPE";
     }
-
 
     @Override
     public String fieldComment() {
         return "COMMENTS";
     }
 
-
     @Override
     public String fieldKey() {
         return "KEY";
     }
-
 
     @Override
     public boolean isKeyIdentity(ResultSet results) throws SQLException {

@@ -15,8 +15,6 @@
  */
 package com.baomidou.mybatisplus.autoconfigure;
 
-import org.apache.ibatis.session.Configuration;
-
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 
 /**
@@ -33,5 +31,5 @@ public interface ConfigurationCustomizer {
      *
      * @param configuration the configuration object to customize
      */
-    void customize(Configuration configuration);
+    void customize(MybatisConfiguration configuration);
 }

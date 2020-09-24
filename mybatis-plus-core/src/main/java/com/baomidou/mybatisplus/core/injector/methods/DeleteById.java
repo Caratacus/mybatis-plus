@@ -37,7 +37,7 @@ public class DeleteById extends AbstractMethod {
         if (tableInfo.isLogicDelete()) {
             sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), sqlLogicSet(tableInfo),
                 tableInfo.getKeyColumn(), tableInfo.getKeyProperty(),
-                tableInfo.getLogicDeleteSql(true, true));
+                tableInfo.getLogicDeleteSql(true, false));
             SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, Object.class);
             return addUpdateMappedStatement(mapperClass, modelClass, getMethod(sqlMethod), sqlSource);
         } else {

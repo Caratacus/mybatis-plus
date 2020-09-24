@@ -27,9 +27,9 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
-import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
-import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
-import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
+import com.baomidou.mybatisplus.core.incrementer.IdGenerator;
+import com.baomidou.mybatisplus.core.incrementer.SnowflakeIdGenerator;
+import com.baomidou.mybatisplus.core.injector.SqlRunnerInjector;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 
 /**
@@ -81,25 +81,26 @@ public class MybatisSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
     @Override
     public SqlSessionFactory build(Configuration config) {
         MybatisConfiguration configuration = (MybatisConfiguration) config;
-        GlobalConfig globalConfig = GlobalConfigUtils.getGlobalConfig(configuration);
-        final IdentifierGenerator identifierGenerator;
-        if (globalConfig.getIdentifierGenerator() == null) {
+        GlobalConfig globalConfig = configuration.getGlobalConfig();
+        IdGenerator idGenerator = globalConfig.getIdGenerator();
+        if (globalConfig.getIdGenerator() == null) {
             if (null != globalConfig.getWorkerId() && null != globalConfig.getDatacenterId()) {
-                identifierGenerator = new DefaultIdentifierGenerator(globalConfig.getWorkerId(), globalConfig.getDatacenterId());
+                idGenerator = new SnowflakeIdGenerator(globalConfig.getWorkerId(), globalConfig.getDatacenterId());
             } else {
-                identifierGenerator = new DefaultIdentifierGenerator();
+                idGenerator = new SnowflakeIdGenerator();
             }
-            globalConfig.setIdentifierGenerator(identifierGenerator);
-        } else {
-            identifierGenerator = globalConfig.getIdentifierGenerator();
+            globalConfig.setIdGenerator(idGenerator);
         }
         //TODO 这里只是为了兼容下,并没多大重要,方法标记过时了.
-        IdWorker.setIdentifierGenerator(identifierGenerator);
+        IdWorker.setIdGenerator(idGenerator);
+        if (globalConfig.isEnableSqlRunner()) {
+            new SqlRunnerInjector().inject(configuration);
+        }
 
         SqlSessionFactory sqlSessionFactory = super.build(configuration);
 
-        // 缓存 sqlSessionFactory
-        globalConfig.setSqlSessionFactory(sqlSessionFactory);
+        // 设置全局参数属性 以及 缓存 sqlSessionFactory
+        globalConfig.signGlobalConfig(sqlSessionFactory);
 
         return sqlSessionFactory;
     }

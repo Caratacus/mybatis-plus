@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -67,37 +68,6 @@ public final class ReflectionKit {
 
     /**
      * <p>
-     * 反射 method 方法名，例如 getId
-     * </p>
-     *
-     * @param field
-     * @param str   属性字符串内容
-     * @deprecated 3.3.0 {@link #guessGetterName(Field, String)}
-     */
-    @Deprecated
-    public static String getMethodCapitalize(Field field, final String str) {
-        Class<?> fieldType = field.getType();
-        // fix #176
-        return StringUtils.guessGetterName(str, fieldType);
-    }
-
-    /**
-     * <p>
-     * 反射 method 方法名，例如 setVersion
-     * </p>
-     *
-     * @param field Field
-     * @param str   String JavaBean类的version属性名
-     * @return version属性的setter方法名称，e.g. setVersion
-     * @deprecated 3.0.8
-     */
-    @Deprecated
-    public static String setMethodCapitalize(Field field, final String str) {
-        return StringUtils.concatCapitalize("set", str);
-    }
-
-    /**
-     * <p>
      * 获取 public get方法的值
      * </p>
      *
@@ -105,9 +75,7 @@ public final class ReflectionKit {
      * @param entity 实体
      * @param str    属性字符串内容
      * @return Object
-     * @deprecated 3.3.2
      */
-    @Deprecated
     public static Object getMethodValue(Class<?> cls, Object entity, String str) {
         Map<String, Field> fieldMaps = getFieldMap(cls);
         try {
@@ -124,33 +92,11 @@ public final class ReflectionKit {
     }
 
     /**
-     * 获取字段值
-     *
-     * @param entity    实体
-     * @param fieldName 字段名称
-     * @return 属性值
-     */
-    public static Object getFieldValue(Object entity, String fieldName) {
-        Class cls = entity.getClass();
-        Map<String, Field> fieldMaps = getFieldMap(cls);
-        try {
-            Field field = fieldMaps.get(fieldName);
-            Assert.notNull(field, "Error: NoSuchField in %s for %s.  Cause:", cls.getSimpleName(), fieldName);
-            field.setAccessible(true);
-            return field.get(entity);
-        } catch (ReflectiveOperationException e) {
-            throw ExceptionUtils.mpe("Error: Cannot read field in %s.  Cause:", e, cls.getSimpleName());
-        }
-    }
-
-    /**
      * 猜测方法名
      *
      * @param field 字段
      * @param str   属性字符串内容
-     * @deprecated 3.3.2
      */
-    @Deprecated
     private static String guessGetterName(Field field, final String str) {
         return StringUtils.guessGetterName(str, field.getType());
     }
@@ -163,9 +109,7 @@ public final class ReflectionKit {
      * @param entity 实体
      * @param str    属性字符串内容
      * @return Object
-     * @deprecated 3.3.2
      */
-    @Deprecated
     public static Object getMethodValue(Object entity, String str) {
         if (null == entity) {
             return null;
@@ -248,17 +192,21 @@ public final class ReflectionKit {
             Map<String, Field> fieldMap = excludeOverrideSuperField(clazz.getDeclaredFields(),
                 /* 处理父类字段 */
                 getFieldList(clazz.getSuperclass()));
+            List<Field> fieldList = new ArrayList<>();
             /*
              * 重写父类属性过滤后处理忽略部分，支持过滤父类属性功能
              * 场景：中间表不需要记录创建时间，忽略父类 createTime 公共属性
              * 中间表实体重写父类属性 ` private transient Date createTime; `
              */
-            return fieldMap.values().stream()
+            fieldMap.forEach((k, v) -> {
                 /* 过滤静态属性 */
-                .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                /* 过滤 transient关键字修饰的属性 */
-                .filter(f -> !Modifier.isTransient(f.getModifiers()))
-                .collect(Collectors.toList());
+                if (!Modifier.isStatic(v.getModifiers())
+                    /* 过滤 transient关键字修饰的属性 */
+                    && !Modifier.isTransient(v.getModifiers())) {
+                    fieldList.add(v);
+                }
+            });
+            return fieldList;
         } else {
             return Collections.emptyList();
         }
@@ -290,9 +238,7 @@ public final class ReflectionKit {
      * @param cls   class
      * @param field 字段
      * @return Get方法
-     * @deprecated 3.3.2
      */
-    @Deprecated
     public static Method getMethod(Class<?> cls, Field field) {
         try {
             return cls.getDeclaredMethod(ReflectionKit.guessGetterName(field, field.getName()));

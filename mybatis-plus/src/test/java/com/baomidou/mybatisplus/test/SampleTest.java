@@ -15,24 +15,23 @@
  */
 package com.baomidou.mybatisplus.test;
 
-import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaClass;
 import org.junit.jupiter.api.Test;
 
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.test.mysql.entity.CommonData;
-import com.baomidou.mybatisplus.test.mysql.entity.CommonLogicData;
+import com.baomidou.mybatisplus.test.base.entity.CommonData;
+import com.baomidou.mybatisplus.test.base.entity.CommonLogicData;
+import com.baomidou.mybatisplus.test.h2.entity.H2User;
 
 class SampleTest {
 
     @Test
     void testTableInfoHelper2() {
-        TableInfo info = TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), CommonLogicData.class);
+        TableInfo info = TableInfoHelper.initTableInfo(null, CommonLogicData.class);
 //        System.out.println("----------- AllInsertSqlColumn -----------");
 //        System.out.println(info.getAllInsertSqlColumn());
 //        System.out.println("----------- AllInsertSqlProperty -----------");
@@ -52,7 +51,7 @@ class SampleTest {
 
     @Test
     void testWrapperOrderBy() {
-        System.out.println(Wrappers.query().orderByAsc("1", "2", "3", "4").getSqlSegment());
+        System.out.println(Wrappers.<H2User>lambdaQuery().debug().eq(H2User::getName,"ppp").orderByAsc(H2User::getVersion).getSqlSegment());
         System.out.println(Wrappers.query().orderByDesc("1", "2", "3", "4").getSqlSegment());
     }
 

@@ -25,12 +25,14 @@ import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
-import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
+import com.baomidou.mybatisplus.core.incrementer.IdGenerator;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.core.mapper.Mapper;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -51,16 +53,16 @@ public class GlobalConfig implements Serializable {
     /**
      * 机器 ID 部分
      *
-     * @see #setIdentifierGenerator(IdentifierGenerator)
-     * @deprecated 3.3.0
+     * @see #setIdGenerator(IdGenerator)
+     * @deprecated 3.2.1 建议手动初始化,Spring应用直接@bean注入SnowflakeIdGenerator即可.
      */
     @Deprecated
     private Long workerId;
     /**
      * 数据标识 ID 部分
      *
-     * @see #setIdentifierGenerator(IdentifierGenerator)
-     * @deprecated 3.3.0
+     * @see #setIdGenerator(IdGenerator)
+     * @deprecated 3.2.1 建议手动初始化,Spring应用直接@bean注入SnowflakeIdGenerator即可.
      */
     @Deprecated
     private Long datacenterId;
@@ -81,8 +83,9 @@ public class GlobalConfig implements Serializable {
      */
     private Class<?> superMapperClass = Mapper.class;
     /**
-     * SqlSessionFactory
+     * 缓存当前Configuration的SqlSessionFactory
      */
+    @Setter(value = AccessLevel.NONE)
     private SqlSessionFactory sqlSessionFactory;
     /**
      * 缓存已注入CRUD的Mapper信息
@@ -95,15 +98,22 @@ public class GlobalConfig implements Serializable {
     /**
      * 主键生成器
      */
-    private IdentifierGenerator identifierGenerator;
+    private IdGenerator idGenerator;
+
+    /**
+     * 标记全局设置 (统一所有入口)
+     */
+    public void signGlobalConfig(SqlSessionFactory sqlSessionFactory) {
+        this.sqlSessionFactory = sqlSessionFactory;
+    }
 
     @Data
     public static class DbConfig {
 
         /**
-         * 主键类型
+         * 主键类型（默认 ID_WORKER）
          */
-        private IdType idType = IdType.ASSIGN_ID;
+        private IdType idType = IdType.ID_WORKER;
         /**
          * 表名前缀
          */
@@ -128,7 +138,7 @@ public class GlobalConfig implements Serializable {
          * <li> 例: `%s` </li>
          * <p> 对主键无效 </p>
          *
-         * @since 3.3.0
+         * @since 3.2.1
          */
         private String propertyFormat;
         /**

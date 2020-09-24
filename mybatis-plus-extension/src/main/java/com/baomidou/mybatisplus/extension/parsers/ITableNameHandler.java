@@ -36,9 +36,7 @@ public interface ITableNameHandler {
     default String process(MetaObject metaObject, String sql, String tableName) {
         String dynamicTableName = dynamicTableName(metaObject, sql, tableName);
         if (null != dynamicTableName && !dynamicTableName.equalsIgnoreCase(tableName)) {
-            // 直接替换字符串对于 SQL 操作是不那么好做，这里修复只能尽可能的保证处理没问题
-            String regex = "(?<=\\s)\\Q" + tableName + "\\E(?=\\s)";
-            return sql.replaceAll(regex, dynamicTableName);
+            return sql.replaceAll(tableName, dynamicTableName);
         }
         return sql;
     }

@@ -21,7 +21,6 @@ import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper
 import com.baomidou.mybatisplus.core.toolkit.ArrayUtils
-import com.baomidou.mybatisplus.core.toolkit.support.ColumnCache
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Predicate
 import kotlin.reflect.KProperty
@@ -37,31 +36,30 @@ class KtQueryWrapper<T : Any> : AbstractKtWrapper<T, KtQueryWrapper<T>>, Query<K
     /**
      * 查询字段
      */
-    private var sqlSelect: SharedString = SharedString()
+    private var sqlSelect: String? = null
 
     constructor(entity: T) {
-        this.entity = entity
-        super.initNeed()
+        this.setEntity(entity)
+        this.initNeed()
     }
 
     constructor(entityClass: Class<T>) {
         this.entityClass = entityClass
-        super.initNeed()
+        this.initEntityClass()
+        this.initNeed()
     }
 
-    internal constructor(entity: T?, entityClass: Class<T>, sqlSelect: SharedString, paramNameSeq: AtomicInteger,
-                         paramNameValuePairs: Map<String, Any>, columnMap: Map<String, ColumnCache>,
-                         lastSql: SharedString, sqlComment: SharedString, sqlFirst: SharedString) {
-        this.entity = entity
+    internal constructor(entity: T, entityClass: Class<T>?, sqlSelect: String?, paramNameSeq: AtomicInteger,
+                         paramNameValuePairs: Map<String, Any>, mergeSegments: MergeSegments,
+                         lastSql: SharedString, sqlComment: SharedString) {
+        this.setEntity(entity)
         this.paramNameSeq = paramNameSeq
         this.paramNameValuePairs = paramNameValuePairs
-        this.expression = MergeSegments()
-        this.columnMap = columnMap
+        this.expression = mergeSegments
         this.sqlSelect = sqlSelect
         this.entityClass = entityClass
         this.lastSql = lastSql
         this.sqlComment = sqlComment
-        this.sqlFirst = sqlFirst
     }
 
     /**
@@ -72,9 +70,13 @@ class KtQueryWrapper<T : Any> : AbstractKtWrapper<T, KtQueryWrapper<T>>, Query<K
     @SafeVarargs
     override fun select(vararg columns: KProperty<*>): KtQueryWrapper<T> {
         if (ArrayUtils.isNotEmpty(columns)) {
-            this.sqlSelect.stringValue = columnsToString(false, *columns)
+            this.sqlSelect = this.columnsToString(false, *columns)
         }
         return typedThis
+    }
+
+    override fun select(predicate: Predicate<TableFieldInfo>): KtQueryWrapper<T> {
+        return select(entityClass, predicate)
     }
 
     /**
@@ -96,12 +98,12 @@ class KtQueryWrapper<T : Any> : AbstractKtWrapper<T, KtQueryWrapper<T>>, Query<K
      */
     override fun select(entityClass: Class<T>, predicate: Predicate<TableFieldInfo>): KtQueryWrapper<T> {
         this.entityClass = entityClass
-        this.sqlSelect.stringValue = TableInfoHelper.getTableInfo(getEntityClass()).chooseSelect(predicate)
+        this.sqlSelect = TableInfoHelper.getTableInfo(checkEntityClass).chooseSelect(predicate)
         return typedThis
     }
 
     override fun getSqlSelect(): String? {
-        return sqlSelect.stringValue
+        return sqlSelect
     }
 
     /**
@@ -110,12 +112,7 @@ class KtQueryWrapper<T : Any> : AbstractKtWrapper<T, KtQueryWrapper<T>>, Query<K
      * 故 sqlSelect 不向下传递
      */
     override fun instance(): KtQueryWrapper<T> {
-        return KtQueryWrapper(entity, entityClass, sqlSelect, paramNameSeq, paramNameValuePairs, columnMap,
-            SharedString.emptyString(), SharedString.emptyString(), SharedString.emptyString())
-    }
-
-    override fun clear() {
-        super.clear()
-        sqlSelect.toNull()
+        return KtQueryWrapper(entity, entityClass, null, paramNameSeq, paramNameValuePairs, expression,
+            SharedString.emptyString(), SharedString.emptyString())
     }
 }

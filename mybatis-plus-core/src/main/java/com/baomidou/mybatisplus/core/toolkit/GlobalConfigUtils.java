@@ -15,7 +15,6 @@
  */
 package com.baomidou.mybatisplus.core.toolkit;
 
-import java.util.Optional;
 import java.util.Set;
 
 import org.apache.ibatis.session.Configuration;
@@ -46,7 +45,7 @@ public class GlobalConfigUtils {
     public static SqlSessionFactory currentSessionFactory(Class<?> clazz) {
         TableInfo tableInfo = TableInfoHelper.getTableInfo(clazz);
         Assert.notNull(tableInfo, ClassUtils.getUserClass(clazz).getName() + " Not Found TableInfoCache.");
-        return getGlobalConfig(tableInfo.getConfiguration()).getSqlSessionFactory();
+        return tableInfo.getConfiguration().getGlobalConfig().getSqlSessionFactory();
     }
 
     /**
@@ -79,8 +78,8 @@ public class GlobalConfigUtils {
         return getGlobalConfig(configuration).getSqlInjector();
     }
 
-    public static Optional<MetaObjectHandler> getMetaObjectHandler(Configuration configuration) {
-        return Optional.ofNullable(getGlobalConfig(configuration).getMetaObjectHandler());
+    public static MetaObjectHandler getMetaObjectHandler(Configuration configuration) {
+        return getGlobalConfig(configuration).getMetaObjectHandler();
     }
 
     public static Class<?> getSuperMapperClass(Configuration configuration) {

@@ -15,25 +15,21 @@
  */
 package com.baomidou.mybatisplus.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * 乐观锁注解
- * <p>
- * 支持的字段类型:
- * long,
- * Long,
- * int,
- * Integer,
- * java.util.Date,
- * java.sql.Timestamp,
- * java.time.LocalDateTime
+ * 乐观锁注解、标记 @Verison 在字段上
  *
  * @author TaoYu
  * @since 2016-01-23
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.FIELD})
 public @interface Version {
+
 }

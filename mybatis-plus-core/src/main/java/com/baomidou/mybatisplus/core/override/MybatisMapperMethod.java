@@ -31,8 +31,9 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
+import com.baomidou.mybatisplus.core.metadata.CachePage;
+import com.baomidou.mybatisplus.core.metadata.CachePageResult;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.metadata.PageList;
 
 /**
  * 从  {@link MapperMethod} copy 过来 </br>
@@ -96,10 +97,11 @@ public class MybatisMapperMethod {
                         }
                         assert page != null;
                         result = executeForIPage(sqlSession, args);
-                        if (result instanceof PageList) {
-                            PageList pageList = (PageList) result;
-                            page.setRecords(pageList.getRecords());
-                            page.setTotal(pageList.getTotal());
+                        if (result instanceof CachePageResult) {
+                            CachePageResult cachePageResult = (CachePageResult) result;
+                            CachePage cachePage = cachePageResult.getCachePage();
+                            page.setRecords(cachePage.getRecords());
+                            page.setTotal(cachePage.getTotal());
                             result = page;
                         } else {
                             List list = (List<Object>) result;

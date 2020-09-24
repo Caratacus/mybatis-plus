@@ -15,10 +15,8 @@
  */
 package com.baomidou.mybatisplus.extension.kotlin
 
-import com.baomidou.mybatisplus.core.MybatisConfiguration
 import com.baomidou.mybatisplus.core.conditions.ISqlSegment
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper
-import org.apache.ibatis.builder.MapperBuilderAssistant
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -26,7 +24,7 @@ class WrapperTest {
 
     @BeforeEach
     fun beforeInit() {
-        TableInfoHelper.initTableInfo(MapperBuilderAssistant(MybatisConfiguration(), ""), User::class.java)
+        TableInfoHelper.initTableInfo(null, User::class.java)
     }
 
     private fun logSqlSegment(explain: String, sqlSegment: ISqlSegment) {
