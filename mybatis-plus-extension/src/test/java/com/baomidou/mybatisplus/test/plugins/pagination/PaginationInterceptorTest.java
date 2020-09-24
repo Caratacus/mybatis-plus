@@ -1,11 +1,7 @@
 package com.baomidou.mybatisplus.test.plugins.pagination;
 
-import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.extension.parsers.BlockAttackSqlParser;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.DB2Dialect;
-import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.MySqlDialect;
-import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
+import java.util.Properties;
+
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Properties;
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.extension.parsers.BlockAttackSqlParser;
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.DB2Dialect;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.MySqlDialect;
+import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
 
 
 /**
@@ -21,7 +22,7 @@ import java.util.Properties;
  */
 @ExtendWith(MockitoExtension.class)
 class PaginationInterceptorTest {
-    
+
     @Test
     void testSetCountSqlParser() {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
@@ -34,7 +35,7 @@ class PaginationInterceptorTest {
         paginationInterceptor.setCountSqlParser(new TenantSqlParser());
         Assertions.assertEquals(metaObject.getValue("countSqlParser").getClass().getName(), TenantSqlParser.class.getName());
     }
-    
+
     @Test
     void testSetOverflow() {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
@@ -47,7 +48,7 @@ class PaginationInterceptorTest {
         paginationInterceptor.setOverflow(false);
         Assertions.assertFalse((Boolean) metaObject.getValue("overflow"));
     }
-    
+
     @Test
     void testSetDbType() {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
@@ -62,7 +63,7 @@ class PaginationInterceptorTest {
         paginationInterceptor.setDialectType("mysql");
         Assertions.assertEquals(DbType.MYSQL, metaObject.getValue("dbType"));
     }
-    
+
     @Test
     void testSetDialect() {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
@@ -77,18 +78,18 @@ class PaginationInterceptorTest {
         paginationInterceptor.setDialectClazz(MySqlDialect.class.getName());
         Assertions.assertEquals(MySqlDialect.class.getName(), metaObject.getValue("dialect").getClass().getName());
     }
-    
+
     @Test
     void testSetLimit(){
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
         MetaObject metaObject = SystemMetaObject.forObject(paginationInterceptor);
-        Assertions.assertEquals(500L, metaObject.getValue("limit"));
+        Assertions.assertEquals(500, metaObject.getValue("limit"));
         Properties properties = new Properties();
         properties.setProperty("limit", "10086");
         paginationInterceptor.setProperties(properties);
-        Assertions.assertEquals(10086L, metaObject.getValue("limit"));
-        paginationInterceptor.setLimit(10010L);
-        Assertions.assertEquals(10010L, metaObject.getValue("limit"));
+        Assertions.assertEquals(10086, metaObject.getValue("limit"));
+        paginationInterceptor.setLimit(10010);
+        Assertions.assertEquals(10010, metaObject.getValue("limit"));
     }
-    
+
 }

@@ -1,25 +1,26 @@
 package com.baomidou.mybatisplus.test.toolkit;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.metadata.OrderItem;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.core.toolkit.ParameterUtils;
-import org.apache.ibatis.binding.MapperMethod;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.ibatis.binding.MapperMethod;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.core.toolkit.ParameterUtils;
+
 
 class ParameterUtilsTest {
 
     static class Page<T> implements IPage<T> {
-        private long current = 1;
-        private long total = 0;
-        private long size = 10;
+        private int current = 1;
+        private int total = 0;
+        private int size = 10;
         private List<T> records = Collections.emptyList();
         private List<OrderItem> orders = new ArrayList<>();
 
@@ -40,34 +41,34 @@ class ParameterUtilsTest {
         }
 
         @Override
-        public long getTotal() {
+        public int getTotal() {
             return this.total;
         }
 
         @Override
-        public Page<T> setTotal(long total) {
+        public Page<T> setTotal(int total) {
             this.total = total;
             return this;
         }
 
         @Override
-        public long getSize() {
+        public int getSize() {
             return this.size;
         }
 
         @Override
-        public Page<T> setSize(long size) {
+        public Page<T> setSize(int size) {
             this.size = size;
             return this;
         }
 
         @Override
-        public long getCurrent() {
+        public int getCurrent() {
             return this.current;
         }
 
         @Override
-        public Page<T> setCurrent(long current) {
+        public Page<T> setCurrent(int current) {
             this.current = current;
             return this;
         }

@@ -15,10 +15,10 @@
  */
 package com.baomidou.mybatisplus.core.executor;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.metadata.PageList;
-import com.baomidou.mybatisplus.core.toolkit.ParameterUtils;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.cache.TransactionalCacheManager;
@@ -26,7 +26,12 @@ import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.ExecutorException;
-import org.apache.ibatis.mapping.*;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ParameterMapping;
+import org.apache.ibatis.mapping.ParameterMode;
+import org.apache.ibatis.mapping.SqlCommandType;
+import org.apache.ibatis.mapping.StatementType;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
@@ -34,9 +39,10 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.PageList;
+import com.baomidou.mybatisplus.core.toolkit.ParameterUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 
 /**
  * copy org.apache.ibatis.executor.CachingExecutor 主要修改了分页缓存逻辑
@@ -120,7 +126,7 @@ public class MybatisCachingExecutor implements Executor {
                             Number count = (Number) tcm.getObject(cache, countCacheKey);
                             if (count != null) {
                                 page.hitCount(true);
-                                page.setTotal(count.longValue());
+                                page.setTotal(count.intValue());
                             }
                         }
                         // 切勿将这提取至上方,如果先查的话,需要提前将boundSql拷贝一份
@@ -146,7 +152,7 @@ public class MybatisCachingExecutor implements Executor {
                             Number count = (Number) tcm.getObject(cache, cacheKey);
                             if (count != null) {
                                 page.hitCount(true);
-                                return new PageList((List) result, count.longValue());
+                                return new PageList((List) result, count.intValue());
                             } else {
                                 // 某些特殊情况,比如先不查count,缓存了list数据或者count缓存数据被淘汰(这几率比较小),就再查一次算了。
                                 result = delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
@@ -155,7 +161,7 @@ public class MybatisCachingExecutor implements Executor {
                                 return records;
                             }
                         }
-                        return new PageList((List) result, 0L);
+                        return new PageList((List) result, 0);
                     } else {
                         return (List<E>) result;
                     }
