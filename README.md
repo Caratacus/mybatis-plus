@@ -35,3 +35,12 @@ sqlSet.add(String.format("%s=%s", columnToString(column), formatSql("{0}", val))
 sqlSet.add(String.format("%s=%s", columnToString(column), val.toString()));
 ```
 - 分页数量相关数据类型从`long`修改为`int`
+- `com.baomidou.mybatisplus.core.mapper.BaseMapper`精简
+- `com.baomidou.mybatisplus.extension.conditions`包下所有类修改
+- com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
+```java
+//原
+sqlSet.add(String.format("%s=%s", columnToString(column), formatSql("{0}", val)));
+//现
+sqlSet.add(String.format("%s=%s", columnToString(column), val.toString()));
+```
