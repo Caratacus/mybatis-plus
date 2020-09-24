@@ -13,14 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.baomidou.mybatisplus.starter.mapper;
+package com.baomidou.mybatisplus.test.entity;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.starter.entity.Test;
+import lombok.Data;
 
 /**
  * @author nieqiurong 2019/5/4.
  */
-public interface TestMapper extends BaseMapper<Test> {
-
+@Data
+public class Test {
+    
+    private Long id;
+    
+    private String name;
+    
 }

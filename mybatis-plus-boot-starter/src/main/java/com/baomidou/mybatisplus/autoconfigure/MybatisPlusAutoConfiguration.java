@@ -15,19 +15,21 @@
  */
 package com.baomidou.mybatisplus.autoconfigure;
 
+
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.type.TypeHandler;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -68,8 +70,7 @@ import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
-import com.baomidou.mybatisplus.core.incrementer.IdGenerator;
-import com.baomidou.mybatisplus.core.incrementer.SnowflakeIdGenerator;
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 
@@ -115,6 +116,7 @@ public class MybatisPlusAutoConfiguration implements InitializingBean {
     private final List<MybatisPlusPropertiesCustomizer> mybatisPlusPropertiesCustomizers;
 
     private final ApplicationContext applicationContext;
+
 
     public MybatisPlusAutoConfiguration(MybatisPlusProperties properties,
                                         ObjectProvider<Interceptor[]> interceptorsProvider,
@@ -185,9 +187,12 @@ public class MybatisPlusAutoConfiguration implements InitializingBean {
         if (!ObjectUtils.isEmpty(this.typeHandlers)) {
             factory.setTypeHandlers(this.typeHandlers);
         }
-        if (!ObjectUtils.isEmpty(this.properties.resolveMapperLocations())) {
-            factory.setMapperLocations(this.properties.resolveMapperLocations());
+        Resource[] mapperLocations = this.properties.resolveMapperLocations();
+        if (!ObjectUtils.isEmpty(mapperLocations)) {
+            factory.setMapperLocations(mapperLocations);
         }
+        // TODO 修改源码支持定义 TransactionFactory
+        this.getBeanThen(TransactionFactory.class, factory::setTransactionFactory);
 
         // TODO 对源码做了一定的修改(因为源码适配了老旧的mybatis版本,但我们不需要适配)
         Class<? extends LanguageDriver> defaultLanguageDriver = this.properties.getDefaultScriptingLanguageDriver();
@@ -203,28 +208,29 @@ public class MybatisPlusAutoConfiguration implements InitializingBean {
         // TODO 此处必为非 NULL
         GlobalConfig globalConfig = this.properties.getGlobalConfig();
         // TODO 注入填充器
-        if (this.applicationContext.getBeanNamesForType(MetaObjectHandler.class,
-            false, false).length > 0) {
-            MetaObjectHandler metaObjectHandler = this.applicationContext.getBean(MetaObjectHandler.class);
-            globalConfig.setMetaObjectHandler(metaObjectHandler);
-        }
+        this.getBeanThen(MetaObjectHandler.class, globalConfig::setMetaObjectHandler);
         // TODO 注入主键生成器
-        if (this.applicationContext.getBeanNamesForType(IKeyGenerator.class, false,
-            false).length > 0) {
-            IKeyGenerator keyGenerator = this.applicationContext.getBean(IKeyGenerator.class);
-            globalConfig.getDbConfig().setKeyGenerator(keyGenerator);
-        }
+        this.getBeanThen(IKeyGenerator.class, i -> globalConfig.getDbConfig().setKeyGenerator(i));
         // TODO 注入sql注入器
-        if (this.applicationContext.getBeanNamesForType(ISqlInjector.class, false,
-            false).length > 0) {
-            ISqlInjector iSqlInjector = this.applicationContext.getBean(ISqlInjector.class);
-            globalConfig.setSqlInjector(iSqlInjector);
-        }
-        IdGenerator idGenerator = this.applicationContext.getBean(IdGenerator.class);
-        globalConfig.setIdGenerator(idGenerator);
+        this.getBeanThen(ISqlInjector.class, globalConfig::setSqlInjector);
+        // TODO 注入ID生成器
+        this.getBeanThen(IdentifierGenerator.class, globalConfig::setIdentifierGenerator);
         // TODO 设置 GlobalConfig 到 MybatisSqlSessionFactoryBean
         factory.setGlobalConfig(globalConfig);
         return factory.getObject();
+    }
+
+    /**
+     * 检查spring容器里是否有对应的bean,有则进行消费
+     *
+     * @param clazz    class
+     * @param consumer 消费
+     * @param <T>      泛型
+     */
+    private <T> void getBeanThen(Class<T> clazz, Consumer<T> consumer) {
+        if (this.applicationContext.getBeanNamesForType(clazz, false, false).length > 0) {
+            consumer.accept(this.applicationContext.getBean(clazz));
+        }
     }
 
     // TODO 入参使用 MybatisSqlSessionFactoryBean
@@ -253,15 +259,6 @@ public class MybatisPlusAutoConfiguration implements InitializingBean {
         }
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public IdGenerator idGenerator() {
-        GlobalConfig globalConfig = this.properties.getGlobalConfig();
-        if (globalConfig.getWorkerId() != null && globalConfig.getDatacenterId() != null) {
-            return new SnowflakeIdGenerator(globalConfig.getWorkerId(), globalConfig.getDatacenterId());
-        }
-        return new SnowflakeIdGenerator(RandomUtils.nextLong(0, 31), RandomUtils.nextLong(0, 31));
-    }
 
     /**
      * This will just scan the same base package as Spring Boot does. If you want more power, you can explicitly use

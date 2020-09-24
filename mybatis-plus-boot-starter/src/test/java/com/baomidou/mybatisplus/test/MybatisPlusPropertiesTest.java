@@ -13,12 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.baomidou.mybatisplus.starter;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+package com.baomidou.mybatisplus.test;
 
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * 属性测试
@@ -26,7 +25,7 @@ import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
  * @author nieqiurong 2019/5/4.
  */
 class MybatisPlusPropertiesTest {
-
+    
     @Test
     void resolveMapperLocationsTest() {
         MybatisPlusProperties mybatisPlusProperties = new MybatisPlusProperties();
@@ -37,5 +36,5 @@ class MybatisPlusPropertiesTest {
         mybatisPlusProperties.setMapperLocations(new String[]{"classpath:mybatis-plus/*.xml"});
         Assertions.assertEquals(mybatisPlusProperties.resolveMapperLocations().length, 0);
     }
-
+    
 }

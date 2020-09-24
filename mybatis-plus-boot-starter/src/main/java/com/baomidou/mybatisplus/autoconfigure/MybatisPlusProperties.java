@@ -15,11 +15,12 @@
  */
 package com.baomidou.mybatisplus.autoconfigure;
 
-import java.io.IOException;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.stream.Stream;
-
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
+import lombok.Data;
+import lombok.experimental.Accessors;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.ExecutorType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -28,13 +29,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
-import com.baomidou.mybatisplus.core.config.GlobalConfig;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
-
-import lombok.Data;
-import lombok.experimental.Accessors;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.stream.Stream;
 
 /**
  * Configuration properties for MyBatis.
@@ -118,10 +116,10 @@ public class MybatisPlusProperties {
     @NestedConfigurationProperty
     private GlobalConfig globalConfig = GlobalConfigUtils.defaults();
 
+
     public Resource[] resolveMapperLocations() {
         return Stream.of(Optional.ofNullable(this.mapperLocations).orElse(new String[0]))
-            .flatMap(location -> Stream.of(getResources(location)))
-            .toArray(Resource[]::new);
+            .flatMap(location -> Stream.of(getResources(location))).toArray(Resource[]::new);
     }
 
     private Resource[] getResources(String location) {
