@@ -88,7 +88,7 @@ ext {
 
 allprojects {
     group = 'io.github.Caratacus'
-    version = "1.0.8-SNAPSHOT"
+    version = "1.0.9-SNAPSHOT"
 }
 
 description = "Mybatis 增强工具包 - 只做增强不做改变，简化CRUD操作"
@@ -204,8 +204,8 @@ subprojects {
     publishing {
         repositories {
             maven {
-                def userName = System.getProperty("un")
-                def passWord = System.getProperty("ps")
+                def userName = "caratacus"
+                def passWord = "8VF5Nmqk.@.7TKz"
                 def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
                 def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
                 url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
