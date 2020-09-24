@@ -22,7 +22,6 @@ package com.baomidou.mybatisplus.annotation;
  * @since 2018-01-05
  */
 public class SqlCondition {
-
     /**
      * 等于
      */
