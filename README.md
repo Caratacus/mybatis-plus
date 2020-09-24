@@ -18,4 +18,20 @@ MyBatis-Plus在最近的迭代版本中，本人已经没有怎么去迭代关�
 
 ## 改写的地方
 
-暂略
+- `com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper`
+
+```java
+//原
+sqlSet.add(String.format("%s=%s", columnToString(column), formatSql("{0}", val)));
+//现
+sqlSet.add(String.format("%s=%s", columnToString(column), val.toString()));
+```
+
+- `com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper`
+```java
+//原
+sqlSet.add(String.format("%s=%s", columnToString(column), formatSql("{0}", val)));
+//现
+sqlSet.add(String.format("%s=%s", columnToString(column), val.toString()));
+```
+- 分页数量相关数据类型从`long`修改为`int`
