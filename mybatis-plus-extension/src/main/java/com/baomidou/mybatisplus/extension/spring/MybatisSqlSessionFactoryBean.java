@@ -73,12 +73,11 @@ import com.baomidou.mybatisplus.core.MybatisPlusVersion;
 import com.baomidou.mybatisplus.core.MybatisSqlSessionFactoryBuilder;
 import com.baomidou.mybatisplus.core.MybatisXMLConfigBuilder;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
-import com.baomidou.mybatisplus.core.enums.IEnum;
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
+import com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.extension.handlers.MybatisEnumTypeHandler;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 
 import lombok.Setter;
@@ -143,7 +142,9 @@ public class MybatisSqlSessionFactoryBean implements FactoryBean<SqlSessionFacto
 
     private ObjectWrapperFactory objectWrapperFactory;
 
-    // TODO 自定义枚举包
+    /**
+     * TODO 自定义枚举包
+     */
     @Setter
     private String typeEnumsPackage;
 
@@ -326,6 +327,10 @@ public class MybatisSqlSessionFactoryBean implements FactoryBean<SqlSessionFacto
         this.configuration = configuration;
     }
 
+    public MybatisConfiguration getConfiguration() {
+        return this.configuration;
+    }
+
     /**
      * Set locations of MyBatis mapper files that are going to be merged into the {@code SqlSessionFactory} configuration
      * at runtime.
@@ -442,7 +447,7 @@ public class MybatisSqlSessionFactoryBean implements FactoryBean<SqlSessionFacto
      */
     protected SqlSessionFactory buildSqlSessionFactory() throws Exception {
 
-        final MybatisConfiguration targetConfiguration;
+        final Configuration targetConfiguration;
 
         // TODO 使用 MybatisXmlConfigBuilder 而不是 XMLConfigBuilder
         MybatisXMLConfigBuilder xmlConfigBuilder = null;
@@ -469,7 +474,7 @@ public class MybatisSqlSessionFactoryBean implements FactoryBean<SqlSessionFacto
         this.globalConfig.setDbConfig(Optional.ofNullable(this.globalConfig.getDbConfig()).orElseGet(GlobalConfig.DbConfig::new));
 
         // TODO 初始化 id-work 以及 打印骚东西
-        targetConfiguration.setGlobalConfig(this.globalConfig);
+        GlobalConfigUtils.setGlobalConfig(targetConfiguration, this.globalConfig);
 
         // TODO 自定义枚举类扫描处理
         if (hasLength(this.typeEnumsPackage)) {
@@ -502,7 +507,7 @@ public class MybatisSqlSessionFactoryBean implements FactoryBean<SqlSessionFacto
             TypeHandlerRegistry typeHandlerRegistry = targetConfiguration.getTypeHandlerRegistry();
             classes.stream()
                 .filter(Class::isEnum)
-                .filter(cls -> IEnum.class.isAssignableFrom(cls) || MybatisEnumTypeHandler.dealEnumType(cls).isPresent())
+                .filter(MybatisEnumTypeHandler::isMpEnums)
                 .forEach(cls -> typeHandlerRegistry.register(cls, MybatisEnumTypeHandler.class));
         }
 
@@ -533,7 +538,6 @@ public class MybatisSqlSessionFactoryBean implements FactoryBean<SqlSessionFacto
         if (hasLength(this.typeHandlersPackage)) {
             scanClasses(this.typeHandlersPackage, TypeHandler.class).stream().filter(clazz -> !clazz.isAnonymousClass())
                 .filter(clazz -> !clazz.isInterface()).filter(clazz -> !Modifier.isAbstract(clazz.getModifiers()))
-                .filter(clazz -> ClassUtils.getConstructorIfAvailable(clazz) != null)
                 .forEach(targetConfiguration.getTypeHandlerRegistry()::register);
         }
 
@@ -553,7 +557,7 @@ public class MybatisSqlSessionFactoryBean implements FactoryBean<SqlSessionFacto
 
         Optional.ofNullable(this.defaultScriptingLanguageDriver).ifPresent(targetConfiguration::setDefaultScriptingLanguage);
 
-        if (this.databaseIdProvider != null) {//fix #64 set databaseId before parse mapper xmls
+        if (this.databaseIdProvider != null) {// fix #64 set databaseId before parse mapper xmls
             try {
                 targetConfiguration.setDatabaseId(this.databaseIdProvider.getDatabaseId(this.dataSource));
             } catch (SQLException e) {

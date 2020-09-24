@@ -21,6 +21,6 @@ package com.baomidou.mybatisplus.extension.plugins.pagination.dialects;
  * @author https://github.com/mj7788
  * @since 2019-08-29
  */
+@Deprecated
 public class XuGuDialect extends MySqlDialect {
-
 }

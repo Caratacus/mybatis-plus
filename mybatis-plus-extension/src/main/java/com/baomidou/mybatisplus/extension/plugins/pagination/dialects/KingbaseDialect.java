@@ -21,6 +21,6 @@ package com.baomidou.mybatisplus.extension.plugins.pagination.dialects;
  * @author kingbase
  * @since 2019-10-12
  */
+@Deprecated
 public class KingbaseDialect extends PostgreDialect {
-
 }

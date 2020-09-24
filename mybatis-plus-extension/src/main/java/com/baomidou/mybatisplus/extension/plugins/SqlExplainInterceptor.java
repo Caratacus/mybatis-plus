@@ -15,8 +15,6 @@
  */
 package com.baomidou.mybatisplus.extension.plugins;
 
-import java.util.Properties;
-
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.logging.Log;
@@ -33,29 +31,28 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.RowBounds;
 
 import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
+import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-// TODO 苗神来改个名
 
 /**
  * 防止全表更新与删除
  *
  * @author hubin
  * @since 2016-08-16
+ * @deprecated 3.4.0 please use {@link MybatisPlusInterceptor} {@link BlockAttackInnerInterceptor}
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
+@Deprecated
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
 public class SqlExplainInterceptor extends AbstractSqlParserHandler implements Interceptor {
 
     @SuppressWarnings("unused")
     private static final Log logger = LogFactory.getLog(SqlExplainInterceptor.class);
-
-    private Properties properties;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -77,10 +74,5 @@ public class SqlExplainInterceptor extends AbstractSqlParserHandler implements I
             return Plugin.wrap(target, this);
         }
         return target;
-    }
-
-    @Override
-    public void setProperties(Properties prop) {
-        this.properties = prop;
     }
 }

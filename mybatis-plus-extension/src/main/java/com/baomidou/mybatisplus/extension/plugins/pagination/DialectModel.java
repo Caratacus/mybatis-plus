@@ -34,7 +34,6 @@ import lombok.Getter;
  * @since 2018-10-31
  */
 public class DialectModel {
-
     private static final String FIRST_PARAM_NAME = "mybatis_plus_first";
     private static final String SECOND_PARAM_NAME = "mybatis_plus_second";
 
@@ -75,6 +74,14 @@ public class DialectModel {
      * 提供 第二个值
      */
     private final long secondParam;
+
+    public DialectModel(String dialectSql) {
+        this(dialectSql, 0, 0);
+    }
+
+    public DialectModel(String dialectSql, long firstParam) {
+        this(dialectSql, firstParam, 0);
+    }
 
     public DialectModel(String dialectSql, long firstParam, long secondParam) {
         this.dialectSql = dialectSql;

@@ -15,7 +15,7 @@
  */
 package com.baomidou.mybatisplus.extension.plugins.pagination.optimize;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,8 +58,7 @@ import net.sf.jsqlparser.statement.select.SelectItem;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JsqlParserCountOptimize implements ISqlParser {
-
-    private static final List<SelectItem> COUNT_SELECT_ITEM = countSelectItem();
+    private static final List<SelectItem> COUNT_SELECT_ITEM = Collections.singletonList(defaultCountSelectItem());
     private final Log logger = LogFactory.getLog(JsqlParserCountOptimize.class);
 
     private boolean optimizeJoin = false;
@@ -67,19 +66,12 @@ public class JsqlParserCountOptimize implements ISqlParser {
     /**
      * 获取jsqlparser中count的SelectItem
      */
-    private static List<SelectItem> countSelectItem() {
+    private static SelectItem defaultCountSelectItem() {
         Function function = new Function();
+        ExpressionList expressionList = new ExpressionList(Collections.singletonList(new LongValue(1)));
         function.setName("COUNT");
-        List<Expression> expressions = new ArrayList<>();
-        LongValue longValue = new LongValue(1);
-        ExpressionList expressionList = new ExpressionList();
-        expressions.add(longValue);
-        expressionList.setExpressions(expressions);
         function.setParameters(expressionList);
-        List<SelectItem> selectItems = new ArrayList<>();
-        SelectExpressionItem selectExpressionItem = new SelectExpressionItem(function);
-        selectItems.add(selectExpressionItem);
-        return selectItems;
+        return new SelectExpressionItem(function);
     }
 
     @Override

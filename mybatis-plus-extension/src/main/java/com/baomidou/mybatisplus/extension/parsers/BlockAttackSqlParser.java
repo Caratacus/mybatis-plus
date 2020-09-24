@@ -17,7 +17,6 @@ package com.baomidou.mybatisplus.extension.parsers;
 
 import com.baomidou.mybatisplus.core.parser.AbstractJsqlParser;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
-
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.SelectBody;
@@ -27,8 +26,9 @@ import net.sf.jsqlparser.statement.update.Update;
  * 攻击 SQL 阻断解析器
  *
  * @author hubin
- * @since 2018-07-17
+ * @since 2018-07-17 use {@link com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor}
  */
+@Deprecated
 public class BlockAttackSqlParser extends AbstractJsqlParser {
 
     @Override

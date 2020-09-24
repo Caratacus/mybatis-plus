@@ -25,7 +25,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
  * @since 2016-01-23
  */
 public interface IDialect {
-
     /**
      * 这俩没什么特殊意义
      * 只是为了实现类方便使用,以及区分分页 sql 的参数

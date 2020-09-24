@@ -15,7 +15,6 @@
  */
 package com.baomidou.mybatisplus.extension.toolkit;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.assist.ISqlRunner;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 
@@ -109,7 +109,7 @@ public class SqlRunner implements ISqlRunner {
      * @return ignore
      */
     private Map<String, String> sqlMap(String sql, Object... args) {
-        Map<String, String> sqlMap = new HashMap<>();
+        Map<String, String> sqlMap = CollectionUtils.newHashMapWithExpectedSize(1);
         sqlMap.put(SQL, StringUtils.sqlArgsFill(sql, args));
         return sqlMap;
     }
@@ -123,7 +123,7 @@ public class SqlRunner implements ISqlRunner {
      * @return ignore
      */
     private Map<String, Object> sqlMap(String sql, IPage page, Object... args) {
-        Map<String, Object> sqlMap = new HashMap<>();
+        Map<String, Object> sqlMap = CollectionUtils.newHashMapWithExpectedSize(2);
         sqlMap.put(PAGE, page);
         sqlMap.put(SQL, StringUtils.sqlArgsFill(sql, args));
         return sqlMap;
@@ -204,9 +204,8 @@ public class SqlRunner implements ISqlRunner {
         return SqlHelper.getObject(log, selectList(sql, args));
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public IPage<Map<String, Object>> selectPage(IPage page, String sql, Object... args) {
+    public <E extends IPage<Map<String, Object>>> E selectPage(E page, String sql, Object... args) {
         if (null == page) {
             return null;
         }

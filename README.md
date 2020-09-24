@@ -16,7 +16,7 @@ MyBatis-Plus在最近的迭代版本中，本人已经没有怎么去迭代关�
 
 文档之类的参照之前的MyBatis-Plus官网
 
-## 改写的地方
+## 改写的地方（基于MP3.4.0）
 
 - `com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper`
 
@@ -34,7 +34,7 @@ sqlSet.add(String.format("%s=%s", columnToString(column), formatSql("{0}", val))
 //现
 sqlSet.add(String.format("%s=%s", columnToString(column), val.toString()));
 ```
-- 分页数量相关数据类型从`long`修改为`int`
+- `com.baomidou.mybatisplus.core.metadata.IPage` 分页相关数据类型从`long`修改为`int`
 - `com.baomidou.mybatisplus.core.mapper.BaseMapper`精简
 - `com.baomidou.mybatisplus.extension.conditions`包下所有类修改
 - com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
@@ -44,3 +44,7 @@ sqlSet.add(String.format("%s=%s", columnToString(column), formatSql("{0}", val))
 //现
 sqlSet.add(String.format("%s=%s", columnToString(column), val.toString()));
 ```
+- `com.baomidou.mybatisplus.extension.plugins.pagination.Page` 分页相关数据类型从`long`修改为`int`
+- `com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor` 分页相关数据类型从`long`修改为`int`
+- `com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor` 分页相关数据类型从`long`修改为`int`
+- 添加方法`com.baomidou.mybatisplus.core.toolkit.StringUtils#resolveFieldName`

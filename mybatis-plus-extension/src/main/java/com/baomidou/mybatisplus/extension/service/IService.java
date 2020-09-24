@@ -34,10 +34,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.delete.LambdaDeleteChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.additional.delete.LambdaDeleteChainWrapper;
-import com.baomidou.mybatisplus.extension.service.additional.query.LambdaQueryChainWrapper;
-import com.baomidou.mybatisplus.extension.service.additional.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 
 /**

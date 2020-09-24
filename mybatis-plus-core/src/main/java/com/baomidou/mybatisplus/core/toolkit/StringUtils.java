@@ -526,4 +526,19 @@ public final class StringUtils {
         return buf.toString();
     }
 
+    /**
+     * 解析 getMethodName -> propertyName
+     *
+     * @param getMethodName 需要解析的
+     * @return 返回解析后的字段名称
+     */
+    public static String resolveFieldName(String getMethodName) {
+        if (getMethodName.startsWith("get")) {
+            getMethodName = getMethodName.substring(3);
+        } else if (getMethodName.startsWith(IS)) {
+            getMethodName = getMethodName.substring(2);
+        }
+        // 小写第一个字母
+        return StringUtils.firstToLowerCase(getMethodName);
+    }
 }

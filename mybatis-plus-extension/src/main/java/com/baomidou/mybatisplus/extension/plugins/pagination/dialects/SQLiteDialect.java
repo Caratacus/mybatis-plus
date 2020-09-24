@@ -21,6 +21,6 @@ package com.baomidou.mybatisplus.extension.plugins.pagination.dialects;
  * @author hubin
  * @since 2016-01-23
  */
+@Deprecated
 public class SQLiteDialect extends PostgreDialect {
-
 }

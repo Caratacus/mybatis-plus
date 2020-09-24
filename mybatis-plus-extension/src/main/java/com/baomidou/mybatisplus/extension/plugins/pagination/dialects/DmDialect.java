@@ -21,6 +21,6 @@ package com.baomidou.mybatisplus.extension.plugins.pagination.dialects;
  * @author hubin
  * @since 2018-08-21
  */
+@Deprecated
 public class DmDialect extends OracleDialect {
-
 }
