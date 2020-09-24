@@ -15,13 +15,11 @@
  */
 package com.baomidou.mybatisplus.core.injector;
 
-import static java.util.stream.Collectors.joining;
-
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
+import com.baomidou.mybatisplus.core.enums.SqlMethod;
+import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
@@ -34,12 +32,12 @@ import org.apache.ibatis.mapping.StatementType;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
 
-import com.baomidou.mybatisplus.core.enums.SqlMethod;
-import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * 抽象的注入方法类
@@ -48,7 +46,6 @@ import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
  * @since 2018-04-06
  */
 public abstract class AbstractMethod implements Constants {
-
     protected static final Log logger = LogFactory.getLog(AbstractMethod.class);
 
     protected Configuration configuration;
@@ -83,7 +80,7 @@ public abstract class AbstractMethod implements Constants {
      * @return sql set 片段
      */
     protected String sqlLogicSet(TableInfo table) {
-        return "SET " + table.getLogicDeleteSql(false, true);
+        return "SET " + table.getLogicDeleteSql(false, false);
     }
 
     /**
@@ -96,7 +93,8 @@ public abstract class AbstractMethod implements Constants {
      * @param prefix 前缀
      * @return sql
      */
-    protected String sqlSet(boolean logic, boolean ew, TableInfo table, boolean judgeAliasNull, String alias, String prefix) {
+    protected String sqlSet(boolean logic, boolean ew, TableInfo table, boolean judgeAliasNull, final String alias,
+                            final String prefix) {
         String sqlScript = table.getAllSqlSet(logic, prefix);
         if (judgeAliasNull) {
             sqlScript = SqlScriptUtils.convertIf(sqlScript, String.format("%s != null", alias), true);
@@ -121,6 +119,16 @@ public abstract class AbstractMethod implements Constants {
     }
 
     /**
+     * SQL 注释
+     *
+     * @return sql
+     */
+    protected String sqlFirst() {
+        return SqlScriptUtils.convertChoose(String.format("%s != null and %s != null", WRAPPER, Q_WRAPPER_SQL_FIRST),
+            SqlScriptUtils.unSafeParam(Q_WRAPPER_SQL_FIRST), EMPTY);
+    }
+
+    /**
      * SQL 查询所有表字段
      *
      * @param table        表信息
@@ -128,10 +136,10 @@ public abstract class AbstractMethod implements Constants {
      * @return sql 脚本
      */
     protected String sqlSelectColumns(TableInfo table, boolean queryWrapper) {
-        /* 假设存在 resultMap 映射返回 */
+        /* 假设存在用户自定义的 resultMap 映射返回 */
         String selectColumns = ASTERISK;
-        if (table.getResultMap() == null || (table.getResultMap() != null && table.isInitResultMap())) {
-            /* 普通查询 */
+        if (table.getResultMap() == null || table.isAutoInitResultMap()) {
+            /* 未设置 resultMap 或者 resultMap 是自动构建的,视为属于mp的规则范围内 */
             selectColumns = table.getAllSqlSelect();
         }
         if (!queryWrapper) {
@@ -165,13 +173,13 @@ public abstract class AbstractMethod implements Constants {
      * SQL map 查询条件
      */
     protected String sqlWhereByMap(TableInfo table) {
-        if (table.isLogicDelete()) {
+        if (table.isWithLogicDelete()) {
             // 逻辑删除
             String sqlScript = SqlScriptUtils.convertChoose("v == null", " ${k} IS NULL ",
                 " ${k} = #{v} ");
             sqlScript = SqlScriptUtils.convertForeach(sqlScript, "cm", "k", "v", "AND");
             sqlScript = SqlScriptUtils.convertIf(sqlScript, "cm != null and !cm.isEmpty", true);
-            sqlScript += (NEWLINE + table.getLogicDeleteSql(true, false));
+            sqlScript += (NEWLINE + table.getLogicDeleteSql(true, true));
             sqlScript = SqlScriptUtils.convertWhere(sqlScript);
             return sqlScript;
         } else {
@@ -193,11 +201,11 @@ public abstract class AbstractMethod implements Constants {
      * @return String
      */
     protected String sqlWhereEntityWrapper(boolean newLine, TableInfo table) {
-        if (table.isLogicDelete()) {
+        if (table.isWithLogicDelete()) {
             String sqlScript = table.getAllSqlWhere(true, true, WRAPPER_ENTITY_DOT);
             sqlScript = SqlScriptUtils.convertIf(sqlScript, String.format("%s != null", WRAPPER_ENTITY),
                 true);
-            sqlScript += (NEWLINE + table.getLogicDeleteSql(true, false) + NEWLINE);
+            sqlScript += (NEWLINE + table.getLogicDeleteSql(true, true) + NEWLINE);
             String normalSqlScript = SqlScriptUtils.convertIf(String.format("AND ${%s}", WRAPPER_SQLSEGMENT),
                 String.format("%s != null and %s != '' and %s", WRAPPER_SQLSEGMENT, WRAPPER_SQLSEGMENT,
                     WRAPPER_NONEMPTYOFNORMAL), true);
@@ -207,7 +215,7 @@ public abstract class AbstractMethod implements Constants {
                     WRAPPER_EMPTYOFNORMAL), true);
             sqlScript += normalSqlScript;
             sqlScript = SqlScriptUtils.convertChoose(String.format("%s != null", WRAPPER), sqlScript,
-                table.getLogicDeleteSql(false, false));
+                table.getLogicDeleteSql(false, true));
             sqlScript = SqlScriptUtils.convertWhere(sqlScript);
             return newLine ? NEWLINE + sqlScript : sqlScript;
         } else {
@@ -238,11 +246,17 @@ public abstract class AbstractMethod implements Constants {
         return infoStream.map(function).collect(joining(joiningVal));
     }
 
-    protected String optlockVersion() {
-        return "<if test=\"et instanceof java.util.Map\">" +
-            " AND ${et." + Constants.MP_OPTLOCK_VERSION_COLUMN +
-            "}=#{et." + Constants.MP_OPTLOCK_VERSION_ORIGINAL + StringPool.RIGHT_BRACE +
-            "</if>";
+    /**
+     * 获取乐观锁相关
+     *
+     * @param tableInfo 表信息
+     * @return String
+     */
+    protected String optlockVersion(TableInfo tableInfo) {
+        if (tableInfo.isWithVersion()) {
+            return tableInfo.getVersionFieldInfo().getVersionOli(ENTITY, ENTITY_DOT);
+        }
+        return EMPTY;
     }
 
     /**

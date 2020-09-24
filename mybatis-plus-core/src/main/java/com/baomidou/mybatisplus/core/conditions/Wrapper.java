@@ -56,6 +56,10 @@ public abstract class Wrapper<T> implements ISqlSegment {
         return null;
     }
 
+    public String getSqlFirst() {
+        return null;
+    }
+
     /**
      * 获取 MergeSegments
      */
@@ -63,12 +67,14 @@ public abstract class Wrapper<T> implements ISqlSegment {
 
     /**
      * 获取自定义SQL 简化自定义XML复杂情况
-     * <p>使用方法</p>
-     * <p>`自定义sql` + ${ew.customSqlSegment}</p>
-     * <p>1.逻辑删除需要自己拼接条件 (之前自定义也同样)</p>
-     * <p>2.不支持wrapper中附带实体的情况 (wrapper自带实体会更麻烦)</p>
-     * <p>3.用法 ${ew.customSqlSegment} (不需要where标签包裹,切记!)</p>
-     * <p>4.ew是wrapper定义别名,可自行替换</p>
+     * <p>
+     * 使用方法: `select xxx from table` + ${ew.customSqlSegment}
+     * <p>
+     * 注意事项:
+     * 1. 逻辑删除需要自己拼接条件 (之前自定义也同样)
+     * 2. 不支持wrapper中附带实体的情况 (wrapper自带实体会更麻烦)
+     * 3. 用法 ${ew.customSqlSegment} (不需要where标签包裹,切记!)
+     * 4. ew是wrapper定义别名,不能使用其他的替换
      */
     public String getCustomSqlSegment() {
         MergeSegments expression = getExpression();
@@ -131,7 +137,7 @@ public abstract class Wrapper<T> implements ISqlSegment {
         if (tableInfo.getFieldList().stream().anyMatch(e -> fieldStrategyMatch(entity, e))) {
             return true;
         }
-        return StringUtils.isNotBlank(tableInfo.getKeyProperty()) ? Objects.nonNull(ReflectionKit.getMethodValue(entity, tableInfo.getKeyProperty())) : false;
+        return StringUtils.isNotBlank(tableInfo.getKeyProperty()) ? Objects.nonNull(ReflectionKit.getFieldValue(entity, tableInfo.getKeyProperty())) : false;
     }
 
     /**
@@ -140,15 +146,15 @@ public abstract class Wrapper<T> implements ISqlSegment {
     private boolean fieldStrategyMatch(T entity, TableFieldInfo e) {
         switch (e.getWhereStrategy()) {
             case NOT_NULL:
-                return Objects.nonNull(ReflectionKit.getMethodValue(entity, e.getProperty()));
+                return Objects.nonNull(ReflectionKit.getFieldValue(entity, e.getProperty()));
             case IGNORED:
                 return true;
             case NOT_EMPTY:
-                return StringUtils.checkValNotNull(ReflectionKit.getMethodValue(entity, e.getProperty()));
+                return StringUtils.checkValNotNull(ReflectionKit.getFieldValue(entity, e.getProperty()));
             case NEVER:
                 return false;
             default:
-                return Objects.nonNull(ReflectionKit.getMethodValue(entity, e.getProperty()));
+                return Objects.nonNull(ReflectionKit.getFieldValue(entity, e.getProperty()));
         }
     }
 
@@ -160,4 +166,21 @@ public abstract class Wrapper<T> implements ISqlSegment {
     public boolean isEmptyOfEntity() {
         return !nonEmptyOfEntity();
     }
+
+    /**
+     * 获取格式化后的执行sql
+     *
+     * @return sql
+     * @since 3.3.1
+     */
+    public String getTargetSql() {
+        return getSqlSegment().replaceAll("#\\{.+?}", "?");
+    }
+
+    /**
+     * 条件清空
+     *
+     * @since 3.3.1
+     */
+    abstract public void clear();
 }

@@ -15,14 +15,13 @@
  */
 package com.baomidou.mybatisplus.core.injector.methods;
 
-import java.util.Map;
-
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlSource;
-
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.SqlSource;
+
+import java.util.Map;
 
 /**
  * 根据columnMap 条件删除记录
@@ -36,7 +35,7 @@ public class DeleteByMap extends AbstractMethod {
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         String sql;
         SqlMethod sqlMethod = SqlMethod.LOGIC_DELETE_BY_MAP;
-        if (tableInfo.isLogicDelete()) {
+        if (tableInfo.isWithLogicDelete()) {
             sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), sqlLogicSet(tableInfo), sqlWhereByMap(tableInfo));
             SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, Map.class);
             return addUpdateMappedStatement(mapperClass, Map.class, getMethod(sqlMethod), sqlSource);

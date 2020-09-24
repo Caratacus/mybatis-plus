@@ -42,6 +42,7 @@ public class SqlRunnerInjector {
     protected Configuration configuration;
     protected LanguageDriver languageDriver;
 
+
     public void inject(Configuration configuration) {
         this.configuration = configuration;
         this.languageDriver = configuration.getDefaultScriptingLanguageInstance();

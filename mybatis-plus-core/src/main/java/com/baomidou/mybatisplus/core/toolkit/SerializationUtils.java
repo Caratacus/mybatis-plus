@@ -15,15 +15,11 @@
  */
 package com.baomidou.mybatisplus.core.toolkit;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
+
 
 /**
- * <p>copy from org.springframework.util.SerializationUtils</p>
+ * <p> copy from spring-core#org.springframework.util.SerializationUtils version 5.2.2 </p>
  *
  * @since 1.0
  */
@@ -61,8 +57,7 @@ public class SerializationUtils {
             return null;
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(object);
             oos.flush();
         } catch (IOException ex) {
@@ -81,8 +76,7 @@ public class SerializationUtils {
         if (bytes == null) {
             return null;
         }
-        try {
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
             return ois.readObject();
         } catch (IOException ex) {
             throw new IllegalArgumentException("Failed to deserialize object", ex);

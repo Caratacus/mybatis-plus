@@ -39,7 +39,9 @@ public interface Query<Children, T, R> extends Serializable {
      * ignore
      * <p>注意只有内部有 entity 才能使用该方法</p>
      */
-    Children select(Predicate<TableFieldInfo> predicate);
+    default Children select(Predicate<TableFieldInfo> predicate) {
+        return select(null, predicate);
+    }
 
     /**
      * 过滤查询的字段信息(主键除外!)

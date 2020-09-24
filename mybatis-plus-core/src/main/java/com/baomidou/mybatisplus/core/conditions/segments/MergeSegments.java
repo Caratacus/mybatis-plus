@@ -15,14 +15,13 @@
  */
 package com.baomidou.mybatisplus.core.conditions.segments;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
-
 import lombok.AccessLevel;
 import lombok.Getter;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 合并 SQL 片段
@@ -73,5 +72,17 @@ public class MergeSegments implements ISqlSegment {
             sqlSegment = normal.getSqlSegment() + groupBy.getSqlSegment() + having.getSqlSegment() + orderBy.getSqlSegment();
         }
         return sqlSegment;
+    }
+
+    /**
+     * 清理
+     *
+     * @since 3.3.1
+     */
+    public void clear() {
+        normal.clear();
+        groupBy.clear();
+        having.clear();
+        orderBy.clear();
     }
 }

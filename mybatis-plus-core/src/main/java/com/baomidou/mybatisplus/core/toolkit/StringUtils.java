@@ -27,7 +27,7 @@ import com.baomidou.mybatisplus.core.toolkit.support.BiIntFunction;
 /**
  * String 工具类
  *
- * @author D.Yang
+ * @author D.Yang, hcl
  * @author hcl
  * @since 2016-08-18
  */
@@ -59,38 +59,16 @@ public final class StringUtils {
      */
     private static final Pattern CAPITAL_MODE = Pattern.compile("^[0-9A-Z/_]+$");
 
-    private StringUtils() {
-    }
-
     /**
-     * 安全的进行字符串 format
+     * 判断字符串中是否全是空白字符
      *
-     * @param target 目标字符串
-     * @param params format 参数
-     * @return format 后的
+     * @param cs 需要判断的字符串
+     * @return 如果字符串序列是 null 或者全是空白，返回 true
      */
-    public static String format(String target, Object... params) {
-        return String.format(target, params);
-    }
-
-    /**
-     * 判断字符串是否为空
-     *
-     * @param cs 需要判断字符串
-     * @return 判断结果
-     */
-    @Deprecated
-    public static boolean isEmpty(CharSequence cs) {
-        return isBlank(cs);
-    }
-
-    public static boolean isBlank(final CharSequence cs) {
-        if (cs == null) {
-            return true;
-        }
-        int l = cs.length();
-        if (l > 0) {
-            for (int i = 0; i < l; i++) {
+    public static boolean isBlank(CharSequence cs) {
+        if (cs != null) {
+            int length = cs.length();
+            for (int i = 0; i < length; i++) {
                 if (!Character.isWhitespace(cs.charAt(i))) {
                     return false;
                 }
@@ -100,45 +78,20 @@ public final class StringUtils {
     }
 
     /**
-     * 判断字符串是否不为空
+     * 对象转为字符串去除左右空格
      *
-     * @param cs 需要判断字符串
-     * @return 判断结果
+     * @param o 带转换对象
+     * @return
      */
-    @Deprecated
-    public static boolean isNotEmpty(final CharSequence cs) {
-        return !isEmpty(cs);
+    public static String toStringTrim(Object o) {
+        return String.valueOf(o).trim();
     }
 
-    public static boolean isNotBlank(final CharSequence cs) {
+    /**
+     * @see #isBlank(CharSequence)
+     */
+    public static boolean isNotBlank(CharSequence cs) {
         return !isBlank(cs);
-    }
-
-    /**
-     * 猜测方法属性对应的 Getter 名称，具体规则请参考 JavaBeans 规范
-     *
-     * @param name 属性名称
-     * @param type 属性类型
-     * @return 返回猜测的名称
-     */
-    public static String guessGetterName(String name, Class<?> type) {
-        if (ClassUtils.isBoolean(type)) {
-            return name.startsWith("is") ? name : "is" + upperFirst(name);
-        }
-        return "get" + upperFirst(name);
-    }
-
-    /**
-     * 大写第一个字母
-     *
-     * @param src 源字符串
-     * @return 返回第一个大写后的字符串
-     */
-    public static String upperFirst(String src) {
-        if (Character.isLowerCase(src.charAt(0))) {
-            return 1 == src.length() ? src.toUpperCase() : Character.toUpperCase(src.charAt(0)) + src.substring(1);
-        }
-        return src;
     }
 
     /**
@@ -151,10 +104,7 @@ public final class StringUtils {
      * @return 结果
      */
     public static boolean isCamel(String str) {
-        if (str.contains(StringPool.UNDERSCORE)) {
-            return false;
-        }
-        return Character.isLowerCase(str.charAt(0));
+        return Character.isLowerCase(str.charAt(0)) && !str.contains(StringPool.UNDERSCORE);
     }
 
     /**
@@ -305,9 +255,6 @@ public final class StringUtils {
 
     /**
      * 获取SQL PARAMS字符串
-     *
-     * @param obj
-     * @return
      */
     public static String sqlParam(Object obj) {
         String repStr;
@@ -366,7 +313,7 @@ public final class StringUtils {
     }
 
     /**
-     * 判断对象是否为空
+     * 判断对象是否不为空
      *
      * @param object ignore
      * @return ignore
@@ -425,6 +372,7 @@ public final class StringUtils {
     }
 
     /**
+     * 判断是否以某个字符串结尾（区分大小写）
      * Check if a String ends with a specified suffix.
      * <p>
      * <code>null</code>s are handled without exceptions. Two <code>null</code>
@@ -485,37 +433,6 @@ public final class StringUtils {
     }
 
     /**
-     * 去除boolean类型is开头的字符串
-     *
-     * @param propertyName 字段名
-     * @param propertyType 字段类型
-     */
-    public static String removeIsPrefixIfBoolean(String propertyName, Class<?> propertyType) {
-        if (ClassUtils.isBoolean(propertyType) && propertyName.startsWith(IS)) {
-            String property = propertyName.replaceFirst(IS, EMPTY);
-            if (isBlank(property)) {
-                return propertyName;
-            } else {
-                String firstCharToLowerStr = firstCharToLower(property);
-                return property.equals(firstCharToLowerStr) ? propertyName : firstCharToLowerStr;
-            }
-        }
-        return propertyName;
-    }
-
-    /**
-     * 第一个首字母小写，之后字符大小写的不变
-     * <p>StringUtils.firstCharToLower( "UserService" )     = userService</p>
-     * <p>StringUtils.firstCharToLower( "UserServiceImpl" ) = userServiceImpl</p>
-     *
-     * @param rawString 需要处理的字符串
-     * @return ignore
-     */
-    public static String firstCharToLower(String rawString) {
-        return prefixToLower(rawString, 1);
-    }
-
-    /**
      * 前n个首字母小写,之后字符大小写的不变
      *
      * @param rawString 需要处理的字符串
@@ -554,14 +471,10 @@ public final class StringUtils {
     }
 
     private static String wordsAndHyphenAndCamelToConstantCase(String input) {
-        boolean betweenUpperCases = false;
-        boolean containsLowerCase = containsLowerCase(input);
-
         StringBuilder buf = new StringBuilder();
         char previousChar = ' ';
         char[] chars = input.toCharArray();
         for (char c : chars) {
-            boolean isUpperCaseAndPreviousIsUpperCase = (Character.isUpperCase(previousChar)) && (Character.isUpperCase(c));
             boolean isUpperCaseAndPreviousIsLowerCase = (Character.isLowerCase(previousChar)) && (Character.isUpperCase(c));
 
             boolean previousIsWhitespace = Character.isWhitespace(previousChar);
@@ -583,15 +496,6 @@ public final class StringUtils {
             buf.append(StringPool.UNDERSCORE);
         }
         return buf.toString();
-    }
-
-    public static boolean containsLowerCase(String s) {
-        for (char c : s.toCharArray()) {
-            if (Character.isLowerCase(c)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private static boolean shouldReplace(char c) {
@@ -622,33 +526,4 @@ public final class StringUtils {
         return buf.toString();
     }
 
-    /**
-     * 从字符串中移除一个单词及随后的一个逗号
-     *
-     * @param s 原字符串
-     * @param p 移除的单词
-     * @return ignore
-     * @deprecated 3.1.1
-     */
-    @Deprecated
-    public static String removeWordWithComma(String s, String p) {
-        String match = "\\s*" + p + "\\s*,{0,1}";
-        return s.replaceAll(match, "");
-    }
-
-    /**
-     * 解析 getMethodName -> propertyName
-     *
-     * @param getMethodName 需要解析的
-     * @return 返回解析后的字段名称
-     */
-    public static String resolveFieldName(String getMethodName) {
-        if (getMethodName.startsWith("get")) {
-            getMethodName = getMethodName.substring(3);
-        } else if (getMethodName.startsWith(IS)) {
-            getMethodName = getMethodName.substring(2);
-        }
-        // 小写第一个字母
-        return StringUtils.firstToLowerCase(getMethodName);
-    }
 }

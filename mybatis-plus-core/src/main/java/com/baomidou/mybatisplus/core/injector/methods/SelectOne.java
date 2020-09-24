@@ -15,12 +15,11 @@
  */
 package com.baomidou.mybatisplus.core.injector.methods;
 
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlSource;
-
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.SqlSource;
 
 /**
  * 查询满足条件一条数据
@@ -34,9 +33,8 @@ public class SelectOne extends AbstractMethod {
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         SqlMethod sqlMethod = SqlMethod.SELECT_ONE;
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, String.format(sqlMethod.getSql(),
-            this.sqlSelectColumns(tableInfo, true), tableInfo.getTableName(),
-            this.sqlWhereEntityWrapper(true, tableInfo), sqlComment()),
-            modelClass);
+            sqlFirst(), sqlSelectColumns(tableInfo, true), tableInfo.getTableName(),
+            sqlWhereEntityWrapper(true, tableInfo), sqlComment()), modelClass);
         return this.addSelectMappedStatementForTable(mapperClass, getMethod(sqlMethod), sqlSource, tableInfo);
     }
 }

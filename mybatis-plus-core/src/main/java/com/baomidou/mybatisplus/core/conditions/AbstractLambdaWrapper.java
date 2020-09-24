@@ -22,11 +22,9 @@ import java.util.Map;
 
 import org.apache.ibatis.reflection.property.PropertyNamer;
 
-import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.ColumnCache;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.core.toolkit.support.SerializedLambda;
@@ -43,28 +41,7 @@ public abstract class AbstractLambdaWrapper<T, Children extends AbstractLambdaWr
     extends AbstractWrapper<T, SFunction<T, ?>, Children> {
 
     private Map<String, ColumnCache> columnMap = null;
-
     private boolean initColumnMap = false;
-
-    private boolean debug = false;
-
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public Children debug() {
-        this.debug = true;
-        return typedThis;
-    }
-
-    @Override
-    protected void initEntityClass() {
-        super.initEntityClass();
-        if (entityClass != null) {
-            columnMap = LambdaUtils.getColumnMap(entityClass);
-            initColumnMap = true;
-        }
-    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -98,20 +75,30 @@ public abstract class AbstractLambdaWrapper<T, Children extends AbstractLambdaWr
      * @see SerializedLambda#getImplClass()
      * @see SerializedLambda#getImplMethodName()
      */
-    private String getColumn(SerializedLambda lambda, boolean onlyColumn) throws MybatisPlusException {
-        if (isDebug()) {
-            return StringUtils.resolveFieldName(lambda.getImplMethodName());
-        }
+    private String getColumn(SerializedLambda lambda, boolean onlyColumn) {
+        Class<?> aClass = lambda.getInstantiatedType();
+        tryInitCache(aClass);
         String fieldName = PropertyNamer.methodToProperty(lambda.getImplMethodName());
-        Class aClass = lambda.getInstantiatedMethodType();
-        if (!initColumnMap) {
-            columnMap = LambdaUtils.getColumnMap(aClass);
-        }
-        Assert.notNull(columnMap, "can not find lambda cache for this entity [%s]", aClass.getName());
-        ColumnCache columnCache = columnMap.get(LambdaUtils.formatKey(fieldName));
-        Assert.notNull(columnCache, "can not find lambda cache for this property [%s] of entity [%s]",
-            fieldName, aClass.getName());
+        ColumnCache columnCache = getColumnCache(fieldName, aClass);
         return onlyColumn ? columnCache.getColumn() : columnCache.getColumnSelect();
     }
 
+    private void tryInitCache(Class<?> lambdaClass) {
+        if (!initColumnMap) {
+            final Class<T> entityClass = getEntityClass();
+            if (entityClass != null) {
+                lambdaClass = entityClass;
+            }
+            columnMap = LambdaUtils.getColumnMap(lambdaClass);
+            initColumnMap = true;
+        }
+        Assert.notNull(columnMap, "can not find lambda cache for this entity [%s]", lambdaClass.getName());
+    }
+
+    private ColumnCache getColumnCache(String fieldName, Class<?> lambdaClass) {
+        ColumnCache columnCache = columnMap.get(LambdaUtils.formatKey(fieldName));
+        Assert.notNull(columnCache, "can not find lambda cache for this property [%s] of entity [%s]",
+            fieldName, lambdaClass.getName());
+        return columnCache;
+    }
 }

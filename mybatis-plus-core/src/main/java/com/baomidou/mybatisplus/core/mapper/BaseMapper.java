@@ -1,22 +1,17 @@
 /*
- * Copyright (c) 2018-2022 Caratacus, (caratacus@qq.com).
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * Copyright (c) 2011-2020, baomidou (jobob@qq.com).
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * <p>
+ * https://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package com.baomidou.mybatisplus.core.mapper;
 
@@ -30,45 +25,86 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 
+/*
+
+               :`
+                    .:,
+                     :::,,.
+             ::      `::::::
+             ::`    `,:,` .:`
+             `:: `::::::::.:`      `:';,`
+              ::::,     .:::`   `@++++++++:
+               ``        :::`  @+++++++++++#
+                         :::, #++++++++++++++`
+                 ,:      `::::::;'##++++++++++
+                 .@#@;`   ::::::::::::::::::::;
+                  #@####@, :::::::::::::::+#;::.
+                  @@######+@:::::::::::::.  #@:;
+           ,      @@########':::::::::::: .#''':`
+           ;##@@@+:##########@::::::::::: @#;.,:.
+            #@@@######++++#####'::::::::: .##+,:#`
+            @@@@@#####+++++'#####+::::::::` ,`::@#:`
+            `@@@@#####++++++'#####+#':::::::::::@.
+             @@@@######+++++''#######+##';::::;':,`
+              @@@@#####+++++'''#######++++++++++`
+               #@@#####++++++''########++++++++'
+               `#@######+++++''+########+++++++;
+                `@@#####+++++''##########++++++,
+                 @@######+++++'##########+++++#`
+                @@@@#####+++++############++++;
+              ;#@@@@@####++++##############+++,
+             @@@@@@@@@@@###@###############++'
+           @#@@@@@@@@@@@@###################+:
+        `@#@@@@@@@@@@@@@@###################'`
+      :@#@@@@@@@@@@@@@@@@@##################,
+      ,@@@@@@@@@@@@@@@@@@@@################;
+       ,#@@@@@@@@@@@@@@@@@@@##############+`
+        .#@@@@@@@@@@@@@@@@@@#############@,
+          @@@@@@@@@@@@@@@@@@@###########@,
+           :#@@@@@@@@@@@@@@@@##########@,
+            `##@@@@@@@@@@@@@@@########+,
+              `+@@@@@@@@@@@@@@@#####@:`
+                `:@@@@@@@@@@@@@@##@;.
+                   `,'@@@@##@@@+;,`
+                        ``...``
+
+ _ _     /_ _ _/_. ____  /    _
+/ / //_//_//_|/ /_\  /_///_/_\      Talk is cheap. Show me the code.
+     _/             /
+ */
+
 /**
- * BaseMapper 基于 MP 删减
+ * Mapper 继承该接口后，无需编写 mapper.xml 文件，即可获得CRUD功能
+ * <p>这个 Mapper 支持 id 泛型</p>
  *
- * @author Caratacus
- * @see com.baomidou.mybatisplus.core.mapper.BaseMapper
+ * @author hubin
+ * @since 2016-01-23
  */
 public interface BaseMapper<T> extends Mapper<T> {
 
     /**
-     * <p>
      * 插入一条记录
-     * </p>
      *
      * @param entity 实体对象
      */
     int insert(T entity);
 
     /**
-     * <p>
      * 根据 ID 删除
-     * </p>
      *
      * @param id 主键ID
      */
     int deleteById(Serializable id);
 
     /**
-     * <p>
      * 根据 entity 条件，删除记录
-     * </p>
      *
-     * @param queryWrapper 实体对象封装操作类（可以为 null）
+     * @param wrapper 实体对象封装操作类（可以为 null）
      */
-    int delete(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
+    int delete(@Param(Constants.WRAPPER) Wrapper<T> wrapper);
 
     /**
-     * <p>
      * 根据 ID 修改
-     * </p>
      *
      * @param entity 实体对象
      */
@@ -84,37 +120,29 @@ public interface BaseMapper<T> extends Mapper<T> {
     int alwaysUpdateSomeColumnById(@Param(Constants.ENTITY) T entity);
 
     /**
-     * <p>
      * 根据 whereEntity 条件，更新记录
-     * </p>
      *
-     * @param entity        实体对象 (set 条件值,不能为 null)
+     * @param entity        实体对象 (set 条件值,可以为 null)
      * @param updateWrapper 实体对象封装操作类（可以为 null,里面的 entity 用于生成 where 语句）
      */
     int update(@Param(Constants.ENTITY) T entity, @Param(Constants.WRAPPER) Wrapper<T> updateWrapper);
 
     /**
-     * <p>
      * 根据 ID 查询
-     * </p>
      *
      * @param id 主键ID
      */
     T selectById(Serializable id);
 
     /**
-     * <p>
      * 根据 Wrapper 条件，查询总记录数
-     * </p>
      *
-     * @param queryWrapper 实体对象
+     * @param queryWrapper 实体对象封装操作类（可以为 null）
      */
     Integer selectCount(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
 
     /**
-     * <p>
      * 根据 entity 条件，查询全部记录
-     * </p>
      *
      * @param queryWrapper 实体对象封装操作类（可以为 null）
      */
@@ -143,6 +171,6 @@ public interface BaseMapper<T> extends Mapper<T> {
      * @param page         分页查询条件（可以为 RowBounds.DEFAULT）
      * @param queryWrapper 实体对象封装操作类（可以为 null）
      */
-    IPage<T> selectPage(IPage<T> page, @Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
+    <E extends IPage<T>> E selectPage(E page, @Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
 
 }

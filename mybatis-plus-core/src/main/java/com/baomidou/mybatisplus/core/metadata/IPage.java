@@ -19,6 +19,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
+
 /**
  * 分页 Page 对象接口
  *
@@ -26,28 +29,6 @@ import java.util.Map;
  * @since 2018-06-09
  */
 public interface IPage<T> extends Serializable {
-
-    /**
-     * 降序字段数组
-     *
-     * @return order by desc 的字段数组
-     * @see #orders()
-     */
-    @Deprecated
-    default String[] descs() {
-        return null;
-    }
-
-    /**
-     * 升序字段数组
-     *
-     * @return order by asc 的字段数组
-     * @see #orders()
-     */
-    @Deprecated
-    default String[] ascs() {
-        return null;
-    }
 
     /**
      * 获取排序信息，排序的字段和正反序
@@ -60,7 +41,9 @@ public interface IPage<T> extends Serializable {
      * KEY/VALUE 条件
      *
      * @return ignore
+     * @deprecated 3.4.0 @2020-06-30
      */
+    @Deprecated
     default Map<Object, Object> condition() {
         return null;
     }
@@ -87,7 +70,20 @@ public interface IPage<T> extends Serializable {
      * 计算当前分页偏移量
      */
     default int offset() {
-        return getCurrent() > 0 ? (getCurrent() - 1) * getSize() : 0;
+        int current = getCurrent();
+        if (current <= 1) {
+            return 0;
+        }
+        return (current - 1) * getSize();
+    }
+
+    /**
+     * 最大每页分页数限制,优先级高于分页插件内的 maxLimit
+     *
+     * @since 3.4.0 @2020-07-17
+     */
+    default Integer maxLimit() {
+        return null;
     }
 
     /**
@@ -111,6 +107,30 @@ public interface IPage<T> extends Serializable {
     default IPage<T> setPages(int pages) {
         // to do nothing
         return this;
+    }
+
+    /**
+     * 设置是否命中count缓存
+     *
+     * @param hit 是否命中
+     * @since 3.3.1
+     * @deprecated 3.4.0 @2020-06-30 缓存遵循mybatis的一或二缓
+     */
+    @Deprecated
+    default void hitCount(boolean hit) {
+
+    }
+
+    /**
+     * 是否命中count缓存
+     *
+     * @return 是否命中count缓存
+     * @since 3.3.1
+     * @deprecated 3.4.0 @2020-06-30 缓存遵循mybatis的一或二缓
+     */
+    @Deprecated
+    default boolean isHitCount() {
+        return false;
     }
 
     /**
@@ -138,19 +158,19 @@ public interface IPage<T> extends Serializable {
     IPage<T> setTotal(int total);
 
     /**
-     * 当前分页总页数
+     * 获取每页显示条数
      *
-     * @return 总页数
+     * @return 每页显示条数
      */
     int getSize();
 
     /**
-     * 设置当前分页总页数
+     * 设置每页显示条数
      */
     IPage<T> setSize(int size);
 
     /**
-     * 当前页，默认 1
+     * 当前页
      *
      * @return 当前页
      */
@@ -160,5 +180,37 @@ public interface IPage<T> extends Serializable {
      * 设置当前页
      */
     IPage<T> setCurrent(int current);
+
+    /**
+     * 老分页插件不支持
+     * <p>
+     * MappedStatement 的 id
+     *
+     * @return id
+     * @since 3.4.0 @2020-06-19
+     */
+    default String countId() {
+        return null;
+    }
+
+    /**
+     * 生成缓存key值
+     *
+     * @return 缓存key值
+     * @since 3.3.2
+     * @deprecated 3.4.0 @2020-06-30
+     */
+    @Deprecated
+    default String cacheKey() {
+        StringBuilder key = new StringBuilder();
+        key.append(offset()).append(StringPool.COLON).append(getSize());
+        List<OrderItem> orders = orders();
+        if (CollectionUtils.isNotEmpty(orders)) {
+            for (OrderItem item : orders) {
+                key.append(StringPool.COLON).append(item.getColumn()).append(StringPool.COLON).append(item.isAsc());
+            }
+        }
+        return key.toString();
+    }
 
 }

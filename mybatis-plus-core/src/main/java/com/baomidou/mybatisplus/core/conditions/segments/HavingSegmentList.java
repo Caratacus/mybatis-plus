@@ -15,13 +15,13 @@
  */
 package com.baomidou.mybatisplus.core.conditions.segments;
 
-import static com.baomidou.mybatisplus.core.enums.SqlKeyword.HAVING;
-import static java.util.stream.Collectors.joining;
+import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
+import com.baomidou.mybatisplus.core.enums.SqlKeyword;
 
 import java.util.List;
 
-import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
-import com.baomidou.mybatisplus.core.enums.SqlKeyword;
+import static com.baomidou.mybatisplus.core.enums.SqlKeyword.HAVING;
+import static java.util.stream.Collectors.joining;
 
 /**
  * Having SQL 片段
@@ -33,7 +33,7 @@ import com.baomidou.mybatisplus.core.enums.SqlKeyword;
 public class HavingSegmentList extends AbstractISegmentList {
 
     @Override
-    protected boolean transformList(List<ISqlSegment> list, ISqlSegment firstSegment) {
+    protected boolean transformList(List<ISqlSegment> list, ISqlSegment firstSegment, ISqlSegment lastSegment) {
         if (!isEmpty()) {
             this.add(SqlKeyword.AND);
         }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import org.apache.ibatis.mapping.ResultFlag;
@@ -30,11 +31,9 @@ import org.apache.ibatis.session.Configuration;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.KeySequence;
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
 
@@ -76,14 +75,10 @@ public class TableInfo implements Constants {
      */
     private boolean autoInitResultMap;
     /**
-     * 是否是自动生成的 resultMap
-     */
-    private boolean initResultMap;
-    /**
      * 主键是否有存在字段名与属性名关联
      * <p>true: 表示要进行 as</p>
      */
-    private boolean keyRelated = false;
+    private boolean keyRelated;
     /**
      * 表主键ID 字段名
      */
@@ -112,15 +107,13 @@ public class TableInfo implements Constants {
      * MybatisConfiguration 标记 (Configuration内存地址值)
      */
     @Getter
-    private MybatisConfiguration configuration;
-    /**
-     * 是否开启逻辑删除
-     */
-    private boolean logicDelete = false;
+    private Configuration configuration;
     /**
      * 是否开启下划线转驼峰
+     * <p>
+     * 未注解指定字段名的情况下,用于自动从 property 推算 column 的命名
      */
-    private boolean underCamel = true;
+    private boolean underCamel;
     /**
      * 缓存包含主键及字段的 sql select
      */
@@ -133,6 +126,54 @@ public class TableInfo implements Constants {
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.NONE)
     private String sqlSelect;
+    /**
+     * 表字段是否启用了插入填充
+     *
+     * @since 3.3.0
+     */
+    @Getter
+    @Setter(AccessLevel.NONE)
+    private boolean withInsertFill;
+    /**
+     * 表字段是否启用了更新填充
+     *
+     * @since 3.3.0
+     */
+    @Getter
+    @Setter(AccessLevel.NONE)
+    private boolean withUpdateFill;
+    /**
+     * 表字段是否启用了逻辑删除
+     *
+     * @since 3.4.0
+     */
+    @Getter
+    @Setter(AccessLevel.NONE)
+    private boolean withLogicDelete;
+    /**
+     * 逻辑删除字段
+     *
+     * @since 3.4.0
+     */
+    @Getter
+    @Setter(AccessLevel.NONE)
+    private TableFieldInfo logicDeleteFieldInfo;
+    /**
+     * 表字段是否启用了乐观锁
+     *
+     * @since 3.3.1
+     */
+    @Getter
+    @Setter(AccessLevel.NONE)
+    private boolean withVersion;
+    /**
+     * 乐观锁字段
+     *
+     * @since 3.3.1
+     */
+    @Getter
+    @Setter(AccessLevel.NONE)
+    private TableFieldInfo versionFieldInfo;
 
     public TableInfo(Class<?> entityType) {
         this.entityType = entityType;
@@ -143,7 +184,9 @@ public class TableInfo implements Constants {
      *
      * @param sqlMethod MybatisPlus 支持 SQL 方法
      * @return SQL Statement
+     * @deprecated 3.4.0 如果存在的多mapper共用一个实体的情况，这里可能会出现获取命名空间错误的情况
      */
+    @Deprecated
     public String getSqlStatement(String sqlMethod) {
         return currentNamespace + DOT + sqlMethod;
     }
@@ -153,17 +196,17 @@ public class TableInfo implements Constants {
      */
     void setConfiguration(Configuration configuration) {
         Assert.notNull(configuration, "Error: You need Initialize MybatisConfiguration !");
-        this.configuration = (MybatisConfiguration) configuration;
+        this.configuration = configuration;
         this.underCamel = configuration.isMapUnderscoreToCamelCase();
     }
 
     /**
-     * 设置逻辑删除
+     * 是否有主键
+     *
+     * @return 是否有
      */
-    void setLogicDelete(boolean logicDelete) {
-        if (logicDelete) {
-            this.logicDelete = true;
-        }
+    public boolean havePK() {
+        return StringUtils.isNotBlank(keyColumn);
     }
 
     /**
@@ -175,9 +218,9 @@ public class TableInfo implements Constants {
         if (sqlSelect != null) {
             return sqlSelect;
         }
-        if (StringUtils.isNotBlank(keyProperty)) {
+        if (havePK()) {
             sqlSelect = keyColumn;
-            if (keyRelated) {
+            if (resultMap == null && keyRelated) {
                 sqlSelect += (" AS " + keyProperty);
             }
         } else {
@@ -226,7 +269,7 @@ public class TableInfo implements Constants {
      */
     public String getKeyInsertSqlProperty(final String prefix, final boolean newLine) {
         final String newPrefix = prefix == null ? EMPTY : prefix;
-        if (StringUtils.isNotBlank(keyProperty)) {
+        if (havePK()) {
             if (idType == IdType.AUTO) {
                 return EMPTY;
             }
@@ -243,7 +286,7 @@ public class TableInfo implements Constants {
      * @return sql 脚本片段
      */
     public String getKeyInsertSqlColumn(final boolean newLine) {
-        if (StringUtils.isNotBlank(keyColumn)) {
+        if (havePK()) {
             if (idType == IdType.AUTO) {
                 return EMPTY;
             }
@@ -276,8 +319,9 @@ public class TableInfo implements Constants {
      *
      * @return sql 脚本片段
      */
-    public String getAllInsertSqlColumnMaybeIf() {
-        return getKeyInsertSqlColumn(true) + fieldList.stream().map(TableFieldInfo::getInsertSqlColumnMaybeIf)
+    public String getAllInsertSqlColumnMaybeIf(final String prefix) {
+        final String newPrefix = prefix == null ? EMPTY : prefix;
+        return getKeyInsertSqlColumn(true) + fieldList.stream().map(i -> i.getInsertSqlColumnMaybeIf(newPrefix))
             .filter(Objects::nonNull).collect(joining(NEWLINE));
     }
 
@@ -294,7 +338,7 @@ public class TableInfo implements Constants {
         String filedSqlScript = fieldList.stream()
             .filter(i -> {
                 if (ignoreLogicDelFiled) {
-                    return !(isLogicDelete() && i.isLogicDelete());
+                    return !(isWithLogicDelete() && i.isLogicDelete());
                 }
                 return true;
             })
@@ -320,7 +364,7 @@ public class TableInfo implements Constants {
         return fieldList.stream()
             .filter(i -> {
                 if (ignoreLogicDelFiled) {
-                    return !(isLogicDelete() && i.isLogicDelete());
+                    return !(isWithLogicDelete() && i.isLogicDelete());
                 }
                 return true;
             }).map(i -> i.getSqlSet(newPrefix)).filter(Objects::nonNull).collect(joining(NEWLINE));
@@ -330,14 +374,12 @@ public class TableInfo implements Constants {
      * 获取逻辑删除字段的 sql 脚本
      *
      * @param startWithAnd 是否以 and 开头
-     * @param deleteValue  是否需要的是逻辑删除值
+     * @param isWhere      是否需要的是逻辑删除值
      * @return sql 脚本
      */
-    public String getLogicDeleteSql(boolean startWithAnd, boolean deleteValue) {
-        if (logicDelete) {
-            TableFieldInfo field = fieldList.stream().filter(TableFieldInfo::isLogicDelete).findFirst()
-                .orElseThrow(() -> ExceptionUtils.mpe("can't find the logicFiled from table {%s}", tableName));
-            String logicDeleteSql = formatLogicDeleteSql(field, deleteValue);
+    public String getLogicDeleteSql(boolean startWithAnd, boolean isWhere) {
+        if (withLogicDelete) {
+            String logicDeleteSql = formatLogicDeleteSql(isWhere);
             if (startWithAnd) {
                 logicDeleteSql = " AND " + logicDeleteSql;
             }
@@ -350,16 +392,23 @@ public class TableInfo implements Constants {
      * format logic delete SQL, can be overrided by subclass
      * github #1386
      *
-     * @param field       TableFieldInfo
-     * @param deleteValue true: logicDeleteValue, false: logicNotDeleteValue
-     * @return
+     * @param isWhere true: logicDeleteValue, false: logicNotDeleteValue
+     * @return sql
      */
-    protected String formatLogicDeleteSql(TableFieldInfo field, boolean deleteValue) {
-        String value = deleteValue ? field.getLogicDeleteValue() : field.getLogicNotDeleteValue();
+    private String formatLogicDeleteSql(boolean isWhere) {
+        final String value = isWhere ? logicDeleteFieldInfo.getLogicNotDeleteValue() : logicDeleteFieldInfo.getLogicDeleteValue();
+        if (isWhere) {
+            if (NULL.equalsIgnoreCase(value)) {
+                return logicDeleteFieldInfo.getColumn() + " IS NULL";
+            } else {
+                return logicDeleteFieldInfo.getColumn() + EQUALS + String.format(logicDeleteFieldInfo.isCharSequence() ? "'%s'" : "%s", value);
+            }
+        }
+        final String targetStr = logicDeleteFieldInfo.getColumn() + EQUALS;
         if (NULL.equalsIgnoreCase(value)) {
-            return field.getColumn() + " is NULL";
+            return targetStr + NULL;
         } else {
-            return field.getColumn() + EQUALS + String.format(field.isCharSequence() ? "'%s'" : "%s", value);
+            return targetStr + String.format(logicDeleteFieldInfo.isCharSequence() ? "'%s'" : "%s", value);
         }
     }
 
@@ -370,7 +419,7 @@ public class TableInfo implements Constants {
         if (autoInitResultMap && null == resultMap) {
             String id = currentNamespace + DOT + MYBATIS_PLUS + UNDERSCORE + entityType.getSimpleName();
             List<ResultMapping> resultMappings = new ArrayList<>();
-            if (keyType != null) {
+            if (havePK()) {
                 ResultMapping idMapping = new ResultMapping.Builder(configuration, keyProperty, keyColumn, keyType)
                     .flags(Collections.singletonList(ResultFlag.ID)).build();
                 resultMappings.add(idMapping);
@@ -382,5 +431,41 @@ public class TableInfo implements Constants {
             configuration.addResultMap(resultMap);
             this.resultMap = id;
         }
+    }
+
+    void setFieldList(List<TableFieldInfo> fieldList) {
+        this.fieldList = fieldList;
+        AtomicInteger logicDeleted = new AtomicInteger();
+        AtomicInteger version = new AtomicInteger();
+        fieldList.forEach(i -> {
+            if (i.isLogicDelete()) {
+                this.withLogicDelete = true;
+                this.logicDeleteFieldInfo = i;
+                logicDeleted.getAndAdd(1);
+            }
+            if (i.isWithInsertFill()) {
+                this.withInsertFill = true;
+            }
+            if (i.isWithUpdateFill()) {
+                this.withUpdateFill = true;
+            }
+            if (i.isVersion()) {
+                this.withVersion = true;
+                this.versionFieldInfo = i;
+                version.getAndAdd(1);
+            }
+        });
+        /* 校验字段合法性 */
+        Assert.isTrue(logicDeleted.get() <= 1, "@TableLogic not support more than one in Class: \"%s\"", entityType.getName());
+        Assert.isTrue(version.get() <= 1, "@Version not support more than one in Class: \"%s\"", entityType.getName());
+    }
+
+    public List<TableFieldInfo> getFieldList() {
+        return Collections.unmodifiableList(fieldList);
+    }
+
+    @Deprecated
+    public boolean isLogicDelete() {
+        return withLogicDelete;
     }
 }

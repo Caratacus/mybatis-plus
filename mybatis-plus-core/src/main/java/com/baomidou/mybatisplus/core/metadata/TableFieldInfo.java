@@ -16,9 +16,13 @@
 package com.baomidou.mybatisplus.core.metadata;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 
 import org.apache.ibatis.mapping.ResultMapping;
+import org.apache.ibatis.reflection.Reflector;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeAliasRegistry;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.apache.ibatis.type.UnknownTypeHandler;
@@ -29,7 +33,6 @@ import com.baomidou.mybatisplus.annotation.SqlCondition;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.Version;
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -53,6 +56,12 @@ import lombok.ToString;
 public class TableFieldInfo implements Constants {
 
     /**
+     * 属性
+     *
+     * @since 3.3.1
+     */
+    private final Field field;
+    /**
      * 字段名
      */
     private final String column;
@@ -68,6 +77,12 @@ public class TableFieldInfo implements Constants {
      * 属性类型
      */
     private final Class<?> propertyType;
+    /**
+     * 是否是基本数据类型
+     *
+     * @since 3.4.0 @2020-6-19
+     */
+    private final boolean isPrimitive;
     /**
      * 属性是否是 CharSequence 类型
      */
@@ -94,14 +109,18 @@ public class TableFieldInfo implements Constants {
      */
     private final FieldStrategy whereStrategy;
     /**
+     * 是否是乐观锁字段
+     */
+    private final boolean version;
+    /**
      * 是否进行 select 查询
      * <p>大字段可设置为 false 不加入 select 查询范围</p>
      */
     private boolean select = true;
     /**
-     * 是否是乐观锁字段
+     * 是否是逻辑删除字段
      */
-    private boolean version;
+    private boolean logicDelete = false;
     /**
      * 逻辑删除值
      */
@@ -123,6 +142,18 @@ public class TableFieldInfo implements Constants {
      */
     private FieldFill fieldFill = FieldFill.DEFAULT;
     /**
+     * 表字段是否启用了插入填充
+     *
+     * @since 3.3.0
+     */
+    private boolean withInsertFill;
+    /**
+     * 表字段是否启用了更新填充
+     *
+     * @since 3.3.0
+     */
+    private boolean withUpdateFill;
+    /**
      * 缓存 sql select
      */
     @Setter(AccessLevel.NONE)
@@ -143,13 +174,19 @@ public class TableFieldInfo implements Constants {
     /**
      * 全新的 存在 TableField 注解时使用的构造函数
      */
-    @SuppressWarnings("unchecked")
-    public TableFieldInfo(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field, TableField tableField) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public TableFieldInfo(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field, TableField tableField,
+                          Reflector reflector, boolean existTableLogic) {
+        field.setAccessible(true);
+        this.field = field;
         this.version = field.getAnnotation(Version.class) != null;
         this.property = field.getName();
-        this.propertyType = field.getType();
+        this.propertyType = reflector.getGetterType(this.property);
+        this.isPrimitive = this.propertyType.isPrimitive();
         this.isCharSequence = StringUtils.isCharSequence(this.propertyType);
         this.fieldFill = tableField.fill();
+        this.withInsertFill = this.fieldFill == FieldFill.INSERT || this.fieldFill == FieldFill.INSERT_UPDATE;
+        this.withUpdateFill = this.fieldFill == FieldFill.UPDATE || this.fieldFill == FieldFill.INSERT_UPDATE;
         this.update = tableField.update();
         JdbcType jdbcType = tableField.jdbcType();
         final Class<? extends TypeHandler> typeHandler = tableField.typeHandler();
@@ -161,13 +198,29 @@ public class TableFieldInfo implements Constants {
         }
         if (UnknownTypeHandler.class != typeHandler) {
             this.typeHandler = (Class<? extends TypeHandler<?>>) typeHandler;
+            if (tableField.javaType()) {
+                String javaType = null;
+                TypeAliasRegistry registry = tableInfo.getConfiguration().getTypeAliasRegistry();
+                Map<String, Class<?>> typeAliases = registry.getTypeAliases();
+                for (Map.Entry<String, Class<?>> entry : typeAliases.entrySet()) {
+                    if (entry.getValue().equals(propertyType)) {
+                        javaType = entry.getKey();
+                        break;
+                    }
+                }
+                if (javaType == null) {
+                    javaType = propertyType.getName();
+                    registry.registerAlias(javaType, propertyType);
+                }
+                el += (COMMA + "javaType=" + javaType);
+            }
             el += (COMMA + "typeHandler=" + typeHandler.getName());
         }
         if (StringUtils.isNotBlank(numericScale)) {
             el += (COMMA + "numericScale=" + numericScale);
         }
         this.el = el;
-        tableInfo.setLogicDelete(this.initLogicDelete(dbConfig, field));
+        this.initLogicDelete(dbConfig, field, existTableLogic);
 
         String column = tableField.value();
         if (StringUtils.isBlank(column)) {
@@ -188,7 +241,9 @@ public class TableFieldInfo implements Constants {
 
         this.column = column;
         this.sqlSelect = column;
-        if (TableInfoHelper.checkRelated(tableInfo.isUnderCamel(), this.property, this.column)) {
+        if (tableInfo.getResultMap() == null && !tableInfo.isAutoInitResultMap() &&
+            TableInfoHelper.checkRelated(tableInfo.isUnderCamel(), this.property, this.column)) {
+            /* 未设置 resultMap 也未开启自动构建 resultMap, 字段规则又不符合 mybatis 的自动封装规则 */
             String propertyFormat = dbConfig.getPropertyFormat();
             String asProperty = this.property;
             if (StringUtils.isNotBlank(propertyFormat)) {
@@ -197,30 +252,9 @@ public class TableFieldInfo implements Constants {
             this.sqlSelect += (" AS " + asProperty);
         }
 
-        /*
-         * 优先使用单个字段注解，否则使用全局配置
-         */
-        if (tableField.insertStrategy() == FieldStrategy.DEFAULT) {
-            this.insertStrategy = dbConfig.getInsertStrategy();
-        } else {
-            this.insertStrategy = tableField.insertStrategy();
-        }
-        /*
-         * 优先使用单个字段注解，否则使用全局配置
-         */
-        if (tableField.updateStrategy() == FieldStrategy.DEFAULT) {
-            this.updateStrategy = dbConfig.getUpdateStrategy();
-        } else {
-            this.updateStrategy = tableField.updateStrategy();
-        }
-        /*
-         * 优先使用单个字段注解，否则使用全局配置
-         */
-        if (tableField.whereStrategy() == FieldStrategy.DEFAULT) {
-            this.whereStrategy = dbConfig.getSelectStrategy();
-        } else {
-            this.whereStrategy = tableField.whereStrategy();
-        }
+        this.insertStrategy = this.chooseFieldStrategy(tableField.insertStrategy(), dbConfig.getInsertStrategy());
+        this.updateStrategy = this.chooseFieldStrategy(tableField.updateStrategy(), dbConfig.getUpdateStrategy());
+        this.whereStrategy = this.chooseFieldStrategy(tableField.whereStrategy(), dbConfig.getSelectStrategy());
 
         if (StringUtils.isNotBlank(tableField.condition())) {
             // 细粒度条件控制
@@ -232,20 +266,31 @@ public class TableFieldInfo implements Constants {
     }
 
     /**
+     * 优先使用单个字段注解，否则使用全局配置
+     */
+    private FieldStrategy chooseFieldStrategy(FieldStrategy fromAnnotation, FieldStrategy fromDbConfig) {
+        return fromAnnotation == FieldStrategy.DEFAULT ? fromDbConfig : fromAnnotation;
+    }
+
+    /**
      * 不存在 TableField 注解时, 使用的构造函数
      */
-    public TableFieldInfo(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field) {
+    public TableFieldInfo(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field, Reflector reflector,
+                          boolean existTableLogic) {
+        field.setAccessible(true);
+        this.field = field;
         this.version = field.getAnnotation(Version.class) != null;
         this.property = field.getName();
-        this.propertyType = field.getType();
+        this.propertyType = reflector.getGetterType(this.property);
+        this.isPrimitive = this.propertyType.isPrimitive();
         this.isCharSequence = StringUtils.isCharSequence(this.propertyType);
         this.el = this.property;
         this.insertStrategy = dbConfig.getInsertStrategy();
         this.updateStrategy = dbConfig.getUpdateStrategy();
         this.whereStrategy = dbConfig.getSelectStrategy();
-        tableInfo.setLogicDelete(this.initLogicDelete(dbConfig, field));
+        this.initLogicDelete(dbConfig, field, existTableLogic);
 
-        String column = field.getName();
+        String column = this.property;
         if (tableInfo.isUnderCamel()) {
             /* 开启字段下划线申明 */
             column = StringUtils.camelToUnderline(column);
@@ -261,9 +306,10 @@ public class TableFieldInfo implements Constants {
         }
 
         this.column = column;
-        if (!TableInfoHelper.checkRelated(tableInfo.isUnderCamel(), this.property, this.column)) {
-            this.sqlSelect = column;
-        } else {
+        this.sqlSelect = column;
+        if (tableInfo.getResultMap() == null && !tableInfo.isAutoInitResultMap() &&
+            TableInfoHelper.checkRelated(tableInfo.isUnderCamel(), this.property, this.column)) {
+            /* 未设置 resultMap 也未开启自动构建 resultMap, 字段规则又不符合 mybatis 的自动封装规则 */
             String propertyFormat = dbConfig.getPropertyFormat();
             String asProperty = this.property;
             if (StringUtils.isNotBlank(propertyFormat)) {
@@ -279,7 +325,7 @@ public class TableFieldInfo implements Constants {
      * @param dbConfig 数据库全局配置
      * @param field    字段属性对象
      */
-    private boolean initLogicDelete(GlobalConfig.DbConfig dbConfig, Field field) {
+    private void initLogicDelete(GlobalConfig.DbConfig dbConfig, Field field, boolean existTableLogic) {
         /* 获取注解属性，逻辑处理字段 */
         TableLogic tableLogic = field.getAnnotation(TableLogic.class);
         if (null != tableLogic) {
@@ -293,23 +339,15 @@ public class TableFieldInfo implements Constants {
             } else {
                 this.logicDeleteValue = dbConfig.getLogicDeleteValue();
             }
-            return true;
-        } else {
-            String globalLogicDeleteField = dbConfig.getLogicDeleteField();
-            if (StringUtils.isNotBlank(globalLogicDeleteField) && globalLogicDeleteField.equalsIgnoreCase(field.getName())) {
+            this.logicDelete = true;
+        } else if (!existTableLogic) {
+            String deleteField = dbConfig.getLogicDeleteField();
+            if (StringUtils.isNotBlank(deleteField) && this.property.equals(deleteField)) {
                 this.logicNotDeleteValue = dbConfig.getLogicNotDeleteValue();
                 this.logicDeleteValue = dbConfig.getLogicDeleteValue();
-                return true;
+                this.logicDelete = true;
             }
         }
-        return false;
-    }
-
-    /**
-     * 是否注解了逻辑删除
-     */
-    public boolean isLogicDelete() {
-        return StringUtils.isNotBlank(logicDeleteValue);
     }
 
     /**
@@ -336,11 +374,12 @@ public class TableFieldInfo implements Constants {
      * @return sql 脚本片段
      */
     public String getInsertSqlPropertyMaybeIf(final String prefix) {
-        String sqlScript = getInsertSqlProperty(prefix);
-        if (fieldFill == FieldFill.INSERT || fieldFill == FieldFill.INSERT_UPDATE) {
+        final String newPrefix = prefix == null ? EMPTY : prefix;
+        String sqlScript = getInsertSqlProperty(newPrefix);
+        if (withInsertFill) {
             return sqlScript;
         }
-        return convertIf(sqlScript, property, insertStrategy);
+        return convertIf(sqlScript, newPrefix + property, insertStrategy);
     }
 
     /**
@@ -365,12 +404,13 @@ public class TableFieldInfo implements Constants {
      *
      * @return sql 脚本片段
      */
-    public String getInsertSqlColumnMaybeIf() {
+    public String getInsertSqlColumnMaybeIf(final String prefix) {
+        final String newPrefix = prefix == null ? EMPTY : prefix;
         final String sqlScript = getInsertSqlColumn();
-        if (fieldFill == FieldFill.INSERT || fieldFill == FieldFill.INSERT_UPDATE) {
+        if (withInsertFill) {
             return sqlScript;
         }
-        return convertIf(sqlScript, property, insertStrategy);
+        return convertIf(sqlScript, newPrefix + property, insertStrategy);
     }
 
     /**
@@ -403,11 +443,11 @@ public class TableFieldInfo implements Constants {
         if (ignoreIf) {
             return sqlSet;
         }
-        if (fieldFill == FieldFill.UPDATE || fieldFill == FieldFill.INSERT_UPDATE) {
+        if (withUpdateFill) {
             // 不进行 if 包裹
             return sqlSet;
         }
-        return convertIf(sqlSet, convertIfProperty(prefix, property), updateStrategy);
+        return convertIf(sqlSet, convertIfProperty(newPrefix, property), updateStrategy);
     }
 
     private String convertIfProperty(String prefix, String property) {
@@ -434,7 +474,7 @@ public class TableFieldInfo implements Constants {
      * @param configuration MybatisConfiguration
      * @return ResultMapping
      */
-    ResultMapping getResultMapping(final MybatisConfiguration configuration) {
+    ResultMapping getResultMapping(final Configuration configuration) {
         ResultMapping.Builder builder = new ResultMapping.Builder(configuration, property,
             StringUtils.getTargetColumn(column), propertyType);
         TypeHandlerRegistry registry = configuration.getTypeHandlerRegistry();
@@ -452,6 +492,16 @@ public class TableFieldInfo implements Constants {
         return builder.build();
     }
 
+    public String getVersionOli(final String alias, final String prefix) {
+        final String oli = " AND " + column + EQUALS + SqlScriptUtils.safeParam(MP_OPTLOCK_VERSION_ORIGINAL);
+        final String ognlStr = convertIfProperty(prefix, property);
+        if (isCharSequence) {
+            return SqlScriptUtils.convertIf(oli, String.format("%s != null and %s != null and %s != ''", alias, ognlStr, ognlStr), false);
+        } else {
+            return SqlScriptUtils.convertIf(oli, String.format("%s != null and %s != null", alias, ognlStr), false);
+        }
+    }
+
     /**
      * 转换成 if 标签的脚本片段
      *
@@ -464,7 +514,7 @@ public class TableFieldInfo implements Constants {
         if (fieldStrategy == FieldStrategy.NEVER) {
             return null;
         }
-        if (fieldStrategy == FieldStrategy.IGNORED) {
+        if (isPrimitive || fieldStrategy == FieldStrategy.IGNORED) {
             return sqlScript;
         }
         if (fieldStrategy == FieldStrategy.NOT_EMPTY && isCharSequence) {

@@ -20,9 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.ToString;
-import lombok.experimental.Accessors;
+import lombok.NoArgsConstructor;
 
 /**
  * 排序元素载体
@@ -31,16 +31,15 @@ import lombok.experimental.Accessors;
  * Create at 2019/5/27
  */
 @Data
-@Accessors(chain = true)
-@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderItem implements Serializable {
-
     private static final long serialVersionUID = 1L;
+
     /**
      * 需要进行排序的字段
      */
     private String column;
-
     /**
      * 是否正序排列，默认 true
      */
@@ -63,9 +62,6 @@ public class OrderItem implements Serializable {
     }
 
     private static OrderItem build(String column, boolean asc) {
-        OrderItem item = new OrderItem();
-        item.setColumn(column);
-        item.setAsc(asc);
-        return item;
+        return new OrderItem(column, asc);
     }
 }

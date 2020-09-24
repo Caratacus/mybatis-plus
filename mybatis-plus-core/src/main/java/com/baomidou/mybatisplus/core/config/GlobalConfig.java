@@ -25,14 +25,12 @@ import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
-import com.baomidou.mybatisplus.core.incrementer.IdGenerator;
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.core.mapper.Mapper;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -53,16 +51,16 @@ public class GlobalConfig implements Serializable {
     /**
      * 机器 ID 部分
      *
-     * @see #setIdGenerator(IdGenerator)
-     * @deprecated 3.2.1 建议手动初始化,Spring应用直接@bean注入SnowflakeIdGenerator即可.
+     * @see #setIdentifierGenerator(IdentifierGenerator)
+     * @deprecated 3.3.0
      */
     @Deprecated
     private Long workerId;
     /**
      * 数据标识 ID 部分
      *
-     * @see #setIdGenerator(IdGenerator)
-     * @deprecated 3.2.1 建议手动初始化,Spring应用直接@bean注入SnowflakeIdGenerator即可.
+     * @see #setIdentifierGenerator(IdentifierGenerator)
+     * @deprecated 3.3.0
      */
     @Deprecated
     private Long datacenterId;
@@ -83,9 +81,8 @@ public class GlobalConfig implements Serializable {
      */
     private Class<?> superMapperClass = Mapper.class;
     /**
-     * 缓存当前Configuration的SqlSessionFactory
+     * 仅用于缓存 SqlSessionFactory(外部勿进行set,set了也没用)
      */
-    @Setter(value = AccessLevel.NONE)
     private SqlSessionFactory sqlSessionFactory;
     /**
      * 缓存已注入CRUD的Mapper信息
@@ -98,22 +95,14 @@ public class GlobalConfig implements Serializable {
     /**
      * 主键生成器
      */
-    private IdGenerator idGenerator;
-
-    /**
-     * 标记全局设置 (统一所有入口)
-     */
-    public void signGlobalConfig(SqlSessionFactory sqlSessionFactory) {
-        this.sqlSessionFactory = sqlSessionFactory;
-    }
+    private IdentifierGenerator identifierGenerator;
 
     @Data
     public static class DbConfig {
-
         /**
-         * 主键类型（默认 ID_WORKER）
+         * 主键类型
          */
-        private IdType idType = IdType.ID_WORKER;
+        private IdType idType = IdType.ASSIGN_ID;
         /**
          * 表名前缀
          */
@@ -133,20 +122,20 @@ public class GlobalConfig implements Serializable {
          */
         private String columnFormat;
         /**
-         * entity字段 format,
+         * entity 的字段(property)的 format,
          * 只有在 column as property 这种情况下生效
          * <li> 例: `%s` </li>
          * <p> 对主键无效 </p>
          *
-         * @since 3.2.1
+         * @since 3.3.0
          */
         private String propertyFormat;
         /**
-         * 表名、是否使用下划线命名（默认 true:默认数据库表下划线命名）
+         * 表名是否使用驼峰转下划线命名,只对表名生效
          */
         private boolean tableUnderline = true;
         /**
-         * 大写命名
+         * 大写命名,对表名和字段名均生效
          */
         private boolean capitalMode = false;
         /**
@@ -154,7 +143,7 @@ public class GlobalConfig implements Serializable {
          */
         private IKeyGenerator keyGenerator;
         /**
-         * 逻辑删除全局字段 (默认无 设置会自动扫描实体字段)
+         * 逻辑删除全局属性名
          */
         private String logicDeleteField;
         /**
