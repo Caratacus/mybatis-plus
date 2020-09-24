@@ -48,7 +48,7 @@ public class TemplateConfig {
     public String getEntity(boolean kotlin) {
         return kotlin ? entityKt : entity;
     }
-
+    
     /**
      * 禁用模板
      *
@@ -80,5 +80,5 @@ public class TemplateConfig {
         }
         return this;
     }
-
+    
 }

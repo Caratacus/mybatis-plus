@@ -15,11 +15,11 @@
  */
 package com.baomidou.mybatisplus.generator.config.querys;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.generator.config.IDbQuery;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * @author nieqiuqiu
@@ -42,6 +42,8 @@ public class DbQueryRegistry {
         db_query_enum_map.put(DbType.KINGBASE_ES, new KingbaseESQuery());
         db_query_enum_map.put(DbType.MYSQL, new MySqlQuery());
         db_query_enum_map.put(DbType.GAUSS, new GaussQuery());
+        db_query_enum_map.put(DbType.OSCAR, new OscarQuery());
+        db_query_enum_map.put(DbType.FIREBIRD, new FirebirdQuery());
     }
 
     public IDbQuery getDbQuery(DbType dbType) {

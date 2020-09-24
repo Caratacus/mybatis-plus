@@ -19,6 +19,7 @@ import com.baomidou.mybatisplus.generator.config.querys.KingbaseESQuery;
 
 public class MyKingbaseESQuery extends KingbaseESQuery {
 
+
     @Override
     public String tableFieldsSql() {
         // 固定 abc  def 内容，实际可以查询字段大小等信息
@@ -26,6 +27,7 @@ public class MyKingbaseESQuery extends KingbaseESQuery {
             "FROM sys_attribute A LEFT JOIN sys_constraint C ON A.attnum = C.conkey[1] AND A.attrelid = C.conrelid " +
             "WHERE  A.attrelid = '%s.%s'::regclass AND A.attnum > 0 AND NOT A.attisdropped ORDER  BY A.attnum";
     }
+
 
     @Override
     public String[] fieldCustom() {

@@ -22,7 +22,7 @@ package com.baomidou.mybatisplus.generator.config;
  * @since 3.3.2
  */
 public enum TemplateType {
-
+    
     ENTITY, SERVICE, CONTROLLER, MAPPER, XML
-
+    
 }

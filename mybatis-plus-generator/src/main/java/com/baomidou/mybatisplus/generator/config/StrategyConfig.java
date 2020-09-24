@@ -15,22 +15,21 @@
  */
 package com.baomidou.mybatisplus.generator.config;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.ClassUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.generator.config.po.LikeTable;
 import com.baomidou.mybatisplus.generator.config.po.TableFill;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 策略配置项
@@ -41,7 +40,6 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class StrategyConfig {
-
     /**
      * 是否大写命名
      */
@@ -130,7 +128,7 @@ public class StrategyConfig {
      */
     @Deprecated
     private boolean entityBuilderModel = false;
-
+    
     /**
      * 【实体】是否为链式模型（默认 false）<br>
      * -----------------------------------<br>
@@ -139,7 +137,7 @@ public class StrategyConfig {
      * @since 3.3.2
      */
     private boolean chainModel = false;
-
+    
     /**
      * 【实体】是否为lombok模型（默认 false）<br>
      * <a href="https://projectlombok.org/">document</a>
@@ -207,7 +205,7 @@ public class StrategyConfig {
     public boolean isCapitalModeNaming(String word) {
         return isCapitalMode && StringUtils.isCapitalMode(word);
     }
-
+    
     /**
      * 表名称包含指定前缀
      *
@@ -224,7 +222,7 @@ public class StrategyConfig {
         }
         return false;
     }
-
+    
     /**
      * 表名称匹配表前缀
      *
@@ -240,7 +238,7 @@ public class StrategyConfig {
         }
         return false;
     }
-
+    
     public NamingStrategy getColumnNaming() {
         // 未指定以 naming 策略为准
         return Optional.ofNullable(columnNaming).orElse(naming);
@@ -284,12 +282,16 @@ public class StrategyConfig {
      *
      * @param superEntityClass 类全名称
      * @return this
-     * @deprecated 3.3.2 {@link #setSuperEntityClass(Class)}
      */
-    @Deprecated
     public StrategyConfig setSuperEntityClass(String superEntityClass) {
-        return setSuperEntityClass(ClassUtils.toClassConfident(superEntityClass));
+        try {
+            return setSuperEntityClass(ClassUtils.toClassConfident(superEntityClass));
+        } catch (Exception e) {
+            this.superEntityClass = superEntityClass;
+        }
+        return this;
     }
+
 
     /**
      * <p>
@@ -335,17 +337,17 @@ public class StrategyConfig {
         this.superServiceClass = superServiceClass;
         return this;
     }
-
+    
     public StrategyConfig setSuperServiceImplClass(Class<?> clazz) {
         this.superServiceImplClass = clazz.getName();
         return this;
     }
-
+    
     public StrategyConfig setSuperServiceImplClass(String superServiceImplClass) {
         this.superServiceImplClass = superServiceImplClass;
         return this;
     }
-
+    
     public StrategyConfig setSuperControllerClass(Class<?> clazz) {
         this.superControllerClass = clazz.getName();
         return this;
@@ -372,7 +374,8 @@ public class StrategyConfig {
             return StringUtils.camelToUnderline(field.getName());
         }).distinct().toArray(String[]::new);
     }
-
+    
+    
     /**
      * 是否为构建者模型
      *
@@ -383,7 +386,7 @@ public class StrategyConfig {
     public boolean isEntityBuilderModel() {
         return isChainModel();
     }
-
+    
     /**
      * 设置是否为构建者模型
      *
@@ -395,5 +398,5 @@ public class StrategyConfig {
     public StrategyConfig setEntityBuilderModel(boolean entityBuilderModel) {
         return setChainModel(entityBuilderModel);
     }
-
+    
 }

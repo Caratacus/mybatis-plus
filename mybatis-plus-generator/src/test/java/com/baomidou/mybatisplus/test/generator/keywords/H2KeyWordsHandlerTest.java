@@ -1,18 +1,17 @@
 package com.baomidou.mybatisplus.test.generator.keywords;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import com.baomidou.mybatisplus.generator.keywords.H2KeyWordsHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.baomidou.mybatisplus.generator.keywords.H2KeyWordsHandler;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author nieqiurong 2020/5/8.
  */
 class H2KeyWordsHandlerTest {
-
+    
     @Test
     void test() {
         H2KeyWordsHandler keyWordsHandler = new H2KeyWordsHandler();
@@ -21,12 +20,12 @@ class H2KeyWordsHandlerTest {
         Assertions.assertFalse(keyWordsHandler.isKeyWords("USER_NAME"));
         Assertions.assertFalse(keyWordsHandler.isKeyWords("user_name"));
         Assertions.assertEquals(keyWordsHandler.formatColumn("CHECK"), "\"CHECK\"");
-
+    
         keyWordsHandler.getKeyWords().remove("CHECK");
         Assertions.assertFalse(keyWordsHandler.isKeyWords("CHECK"));
         Assertions.assertFalse(keyWordsHandler.isKeyWords("check"));
-
-        keyWordsHandler = new H2KeyWordsHandler(new ArrayList<>(Arrays.asList("TEST", "AAA")));
+    
+        keyWordsHandler = new H2KeyWordsHandler(new ArrayList<>(Arrays.asList("TEST","AAA")));
         Assertions.assertTrue(keyWordsHandler.isKeyWords("TEST"));
         Assertions.assertTrue(keyWordsHandler.isKeyWords("test"));
         Assertions.assertTrue(keyWordsHandler.isKeyWords("AAA"));
@@ -34,5 +33,5 @@ class H2KeyWordsHandlerTest {
         Assertions.assertFalse(keyWordsHandler.isKeyWords("FILE"));
         Assertions.assertFalse(keyWordsHandler.isKeyWords("file"));
     }
-
+    
 }

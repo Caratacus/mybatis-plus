@@ -15,20 +15,19 @@
  */
 package com.baomidou.mybatisplus.test.generator.pom;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import jodd.io.FileUtil;
 import jodd.jerry.Jerry;
 import jodd.lagarto.dom.LagartoDOMBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 检查pom依赖
@@ -40,7 +39,6 @@ class GeneratePomTest {
     @Data
     @AllArgsConstructor
     private static class Dependency {
-
         private String artifactId;
         private String scope;
         private boolean optional;

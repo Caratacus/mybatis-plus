@@ -28,6 +28,7 @@ public class OracleQuery extends AbstractDbQuery {
         return "SELECT * FROM ALL_TAB_COMMENTS WHERE OWNER='%s'";
     }
 
+
     @Override
     public String tableFieldsSql() {
         return "SELECT A.COLUMN_NAME, CASE WHEN A.DATA_TYPE='NUMBER' THEN "
@@ -42,30 +43,36 @@ public class OracleQuery extends AbstractDbQuery {
             + "WHERE A.OWNER = '#schema' AND A.TABLE_NAME = '%s' ORDER BY A.COLUMN_ID ";
     }
 
+
     @Override
     public String tableName() {
         return "TABLE_NAME";
     }
+
 
     @Override
     public String tableComment() {
         return "COMMENTS";
     }
 
+
     @Override
     public String fieldName() {
         return "COLUMN_NAME";
     }
+
 
     @Override
     public String fieldType() {
         return "DATA_TYPE";
     }
 
+
     @Override
     public String fieldComment() {
         return "COMMENTS";
     }
+
 
     @Override
     public String fieldKey() {

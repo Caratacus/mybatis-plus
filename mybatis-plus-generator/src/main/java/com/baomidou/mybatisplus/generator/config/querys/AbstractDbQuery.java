@@ -28,10 +28,12 @@ import com.baomidou.mybatisplus.generator.config.IDbQuery;
  */
 public abstract class AbstractDbQuery implements IDbQuery {
 
+
     @Override
     public boolean isKeyIdentity(ResultSet results) throws SQLException {
         return false;
     }
+
 
     @Override
     public String[] fieldCustom() {

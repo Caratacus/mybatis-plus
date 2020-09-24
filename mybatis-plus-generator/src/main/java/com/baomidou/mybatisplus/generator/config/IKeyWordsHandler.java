@@ -24,21 +24,21 @@ import java.util.List;
  * @since 3.3.2
  */
 public interface IKeyWordsHandler {
-
+    
     /**
      * 获取关键字
      *
      * @return 关键字集合
      */
     List<String> getKeyWords();
-
+    
     /**
      * 格式化关键字格式
      *
      * @return 格式
      */
     String formatStyle();
-
+    
     /**
      * 是否为关键字
      *
@@ -46,7 +46,7 @@ public interface IKeyWordsHandler {
      * @return 是否为关键字
      */
     boolean isKeyWords(String columnName);
-
+    
     /**
      * 格式化字段
      *
@@ -56,5 +56,5 @@ public interface IKeyWordsHandler {
     default String formatColumn(String columnName) {
         return String.format(formatStyle(), columnName);
     }
-
+    
 }

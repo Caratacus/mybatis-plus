@@ -27,7 +27,7 @@ import java.util.List;
  * @since 3.3.2
  */
 public class H2KeyWordsHandler extends BaseKeyWordsHandler {
-
+    
     private static List<String> KEY_WORDS = new ArrayList<>(Arrays.asList(
         "ALL",
         "AND",
@@ -110,18 +110,18 @@ public class H2KeyWordsHandler extends BaseKeyWordsHandler {
         "WINDOW",
         "WITH"
     ));
-
+    
     public H2KeyWordsHandler() {
         super(KEY_WORDS);
     }
-
+    
     public H2KeyWordsHandler(List<String> keyWords) {
         super(keyWords);
     }
-
+    
     @Override
     public String formatStyle() {
         return "\"%s\"";
     }
-
+    
 }

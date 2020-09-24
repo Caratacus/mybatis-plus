@@ -15,10 +15,10 @@
  */
 package com.baomidou.mybatisplus.generator.keywords;
 
+import com.baomidou.mybatisplus.generator.config.IKeyWordsHandler;
+
 import java.util.List;
 import java.util.Locale;
-
-import com.baomidou.mybatisplus.generator.config.IKeyWordsHandler;
 
 /**
  * 基类关键字处理
@@ -27,18 +27,18 @@ import com.baomidou.mybatisplus.generator.config.IKeyWordsHandler;
  * @since 3.3.2
  */
 public abstract class BaseKeyWordsHandler implements IKeyWordsHandler {
-
+    
     public List<String> keyWords;
-
+    
     public BaseKeyWordsHandler(List<String> keyWords) {
         this.keyWords = keyWords;
     }
-
+    
     @Override
     public List<String> getKeyWords() {
         return keyWords;
     }
-
+    
     public boolean isKeyWords(String columnName) {
         return getKeyWords().contains(columnName.toUpperCase(Locale.ENGLISH));
     }

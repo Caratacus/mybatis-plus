@@ -1,18 +1,17 @@
 package com.baomidou.mybatisplus.test.generator.keywords;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import com.baomidou.mybatisplus.generator.keywords.MySqlKeyWordsHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.baomidou.mybatisplus.generator.keywords.MySqlKeyWordsHandler;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author nieqiurong 2020/5/8.
  */
 class MySqlKeyWordsHandlerTest {
-
+    
     @Test
     void test() {
         MySqlKeyWordsHandler keyWordsHandler = new MySqlKeyWordsHandler();
@@ -21,12 +20,12 @@ class MySqlKeyWordsHandlerTest {
         Assertions.assertFalse(keyWordsHandler.isKeyWords("USER_NAME"));
         Assertions.assertFalse(keyWordsHandler.isKeyWords("user_name"));
         Assertions.assertEquals(keyWordsHandler.formatColumn("FILE"), "`FILE`");
-
+    
         keyWordsHandler.getKeyWords().remove("FILE");
         Assertions.assertFalse(keyWordsHandler.isKeyWords("FILE"));
         Assertions.assertFalse(keyWordsHandler.isKeyWords("file"));
-
-        keyWordsHandler = new MySqlKeyWordsHandler(new ArrayList<>(Arrays.asList("TEST", "AAA")));
+        
+        keyWordsHandler = new MySqlKeyWordsHandler(new ArrayList<>(Arrays.asList("TEST","AAA")));
         Assertions.assertTrue(keyWordsHandler.isKeyWords("TEST"));
         Assertions.assertTrue(keyWordsHandler.isKeyWords("test"));
         Assertions.assertTrue(keyWordsHandler.isKeyWords("AAA"));
@@ -34,5 +33,5 @@ class MySqlKeyWordsHandlerTest {
         Assertions.assertFalse(keyWordsHandler.isKeyWords("FILE"));
         Assertions.assertFalse(keyWordsHandler.isKeyWords("file"));
     }
-
+    
 }

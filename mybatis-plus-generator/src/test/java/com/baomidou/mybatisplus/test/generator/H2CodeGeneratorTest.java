@@ -1,8 +1,5 @@
 package com.baomidou.mybatisplus.test.generator;
 
-import org.h2.Driver;
-import org.junit.jupiter.api.Test;
-
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
@@ -11,6 +8,8 @@ import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.po.LikeTable;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+import org.h2.Driver;
+import org.junit.jupiter.api.Test;
 
 /**
  * H2代码生成
@@ -90,25 +89,25 @@ class H2CodeGeneratorTest {
     }
 
     @Test
-    void testLikeAndInclude() {
+    void testLikeAndInclude(){
         new AutoGenerator()
             .setGlobalConfig(globalConfig())
             .setDataSource(dataSourceConfig())
-            .setStrategy(strategyConfig().setLikeTable(new LikeTable("TABLE")).setInclude("TABLE_PRIVILEGES", "TABLE_TYPES"))
+            .setStrategy(strategyConfig().setLikeTable(new LikeTable("TABLE")).setInclude("TABLE_PRIVILEGES","TABLE_TYPES"))
             .execute();
     }
 
     @Test
-    void testLikeAndExclude() {
+    void testLikeAndExclude(){
         new AutoGenerator()
             .setGlobalConfig(globalConfig())
             .setDataSource(dataSourceConfig())
-            .setStrategy(strategyConfig().setLikeTable(new LikeTable("TABLE")).setExclude("TABLE_PRIVILEGES", "TABLE_TYPES"))
+            .setStrategy(strategyConfig().setLikeTable(new LikeTable("TABLE")).setExclude("TABLE_PRIVILEGES","TABLE_TYPES"))
             .execute();
     }
 
     @Test
-    void testNotLikeAndInclude() {
+    void testNotLikeAndInclude(){
         new AutoGenerator()
             .setGlobalConfig(globalConfig())
             .setDataSource(dataSourceConfig())
@@ -117,7 +116,7 @@ class H2CodeGeneratorTest {
     }
 
     @Test
-    void testNotLikeAndExclude() {
+    void testNotLikeAndExclude(){
         new AutoGenerator()
             .setGlobalConfig(globalConfig())
             .setDataSource(dataSourceConfig())
