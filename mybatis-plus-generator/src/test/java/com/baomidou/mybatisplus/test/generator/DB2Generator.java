@@ -72,7 +72,7 @@ public class DB2Generator {
     }
 
     @SuppressWarnings("unused")
-    private void generateByTables(String packageName, String... tableNames) {
+	private void generateByTables(String packageName, String... tableNames) {
         generateByTables(true, packageName, tableNames);
     }
 

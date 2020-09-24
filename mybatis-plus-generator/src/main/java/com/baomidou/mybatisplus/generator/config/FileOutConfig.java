@@ -16,7 +16,6 @@
 package com.baomidou.mybatisplus.generator.config;
 
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
 

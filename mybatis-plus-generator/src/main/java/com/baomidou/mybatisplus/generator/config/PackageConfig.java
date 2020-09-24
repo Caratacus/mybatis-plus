@@ -15,13 +15,13 @@
  */
 package com.baomidou.mybatisplus.generator.config;
 
-import java.util.Map;
 
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.util.Map;
 
 /**
  * 跟包相关的配置项
@@ -41,7 +41,7 @@ public class PackageConfig {
     /**
      * 父包模块名
      */
-    private String moduleName = null;
+    private String moduleName = "";
     /**
      * Entity包名
      */

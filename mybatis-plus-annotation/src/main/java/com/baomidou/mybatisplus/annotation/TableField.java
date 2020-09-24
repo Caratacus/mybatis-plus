@@ -15,17 +15,13 @@
  */
 package com.baomidou.mybatisplus.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.ResultMapping;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
+
+import java.lang.annotation.*;
 
 /**
  * 表字段标识
@@ -35,11 +31,16 @@ import org.apache.ibatis.type.UnknownTypeHandler;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 public @interface TableField {
 
     /**
-     * 字段值（驼峰命名方式,该值可无）
+     * 数据库字段值,
+     * 不需要配置该值的情况:
+     * <li> 当 {@link com.baomidou.mybatisplus.core.MybatisConfiguration#mapUnderscoreToCamelCase} 为 true 时,
+     * (mp下默认是true,mybatis默认是false), 数据库字段值.replace("_","").toUpperCase() == 实体属性名.toUpperCase() </li>
+     * <li> 当 {@link com.baomidou.mybatisplus.core.MybatisConfiguration#mapUnderscoreToCamelCase} 为 false 时,
+     * 数据库字段值.toUpperCase() == 实体属性名.toUpperCase()</li>
      */
     String value() default "";
 
@@ -51,7 +52,7 @@ public @interface TableField {
 
     /**
      * 字段 where 实体查询比较条件
-     * 默认 `=` 等值
+     * 默认 {@link SqlCondition.EQUAL}
      */
     String condition() default "";
 
@@ -137,6 +138,16 @@ public @interface TableField {
      * @since 3.1.2
      */
     Class<? extends TypeHandler> typeHandler() default UnknownTypeHandler.class;
+
+    /**
+     * 只在使用了 {@link #typeHandler()} 时判断是否辅助追加 javaType
+     * <p>
+     * 一般情况下不推荐使用
+     * {@link ParameterMapping#javaType}
+     *
+     * @since 3.4.0 @2020-07-23
+     */
+    boolean javaType() default false;
 
     /**
      * 指定小数点后保留的位数,
