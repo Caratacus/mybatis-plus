@@ -84,8 +84,8 @@ public class H2UserServiceImpl extends ServiceImpl<H2UserMapper, H2User> impleme
     }
 
     @Override
-    public List<Map<?, ?>> mySelectMaps() {
-        Page<H2User> page = new Page<>(1, 3);
+    public List<Map<?,?>> mySelectMaps() {
+        Page<H2User> page = new Page<>(1,3);
         page.addOrder(OrderItem.asc("name"));
         return baseMapper.mySelectMaps(page);
     }
@@ -106,11 +106,12 @@ public class H2UserServiceImpl extends ServiceImpl<H2UserMapper, H2User> impleme
         throw new MybatisPlusException("测试普通插入事务回滚");
     }
 
+
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public void testSaveOrUpdateBatchTransactional() {
-        saveOrUpdateBatch(Arrays.asList(new H2User("savOrUpdate1", 0), new H2User("savOrUpdate2", 0), new H2User("savOrUpdate3", 0)));
-        saveOrUpdateBatch(Arrays.asList(new H2User("savOrUpdate4", 0), new H2User("savOrUpdate5", 0), new H2User("savOrUpdate6", 0)));
+        saveOrUpdateBatch(Arrays.asList(new H2User("savOrUpdate1", 0), new H2User("savOrUpdate2", 0), new H2User("savOrUpdate3", 0)), 1);
+        saveOrUpdateBatch(Arrays.asList(new H2User("savOrUpdate4", 0), new H2User("savOrUpdate5", 0), new H2User("savOrUpdate6", 0)), 1);
         throw new MybatisPlusException("测试普通插入事务回滚");
     }
 
@@ -118,8 +119,20 @@ public class H2UserServiceImpl extends ServiceImpl<H2UserMapper, H2User> impleme
     @Transactional(rollbackFor = RuntimeException.class)
     public void testSimpleAndBatchTransactional() {
         save(new H2User("simpleAndBatchTx1", 0));
-        saveBatch(Arrays.asList(new H2User("simpleAndBatchTx2", 0), new H2User("simpleAndBatchTx3", 0), new H2User("simpleAndBatchTx4", 0)));
-        saveOrUpdateBatch(Arrays.asList(new H2User("simpleAndBatchTx5", 0), new H2User("simpleAndBatchTx6", 0), new H2User("simpleAndBatchTx7", 0)));
+        saveBatch(Arrays.asList(new H2User("simpleAndBatchTx2", 0), new H2User("simpleAndBatchTx3", 0), new H2User("simpleAndBatchTx4", 0)), 1);
+        saveOrUpdateBatch(Arrays.asList(new H2User("simpleAndBatchTx5", 0), new H2User("simpleAndBatchTx6", 0), new H2User("simpleAndBatchTx7", 0)), 1);
         throw new MybatisPlusException("测试事务回滚");
+    }
+
+    @Override
+    public void testSaveBatchNoTransactional1() {
+        saveBatch(Arrays.asList(new H2User("testSaveBatchNoTransactional1", 0), new H2User("testSaveBatchNoTransactional1", 0), new H2User("testSaveBatchNoTransactional1", 0)), 1);
+    }
+
+    @Override
+    public void testSaveBatchNoTransactional2() {
+        //非事物下，制造一个批量主键冲突
+        save(new H2User(1577431655447L, "testSaveBatchNoTransactional2"));
+        saveBatch(Arrays.asList(new H2User("testSaveBatchNoTransactional2", 0), new H2User("testSaveBatchNoTransactional2", 0), new H2User(1577431655447L, "testSaveBatchNoTransactional2")), 1);
     }
 }

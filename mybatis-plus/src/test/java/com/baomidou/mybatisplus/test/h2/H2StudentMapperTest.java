@@ -15,11 +15,16 @@
  */
 package com.baomidou.mybatisplus.test.h2;
 
-import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Assert;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.test.h2.entity.H2Student;
+import com.baomidou.mybatisplus.test.h2.enums.GenderEnum;
+import com.baomidou.mybatisplus.test.h2.enums.GradeEnum;
+import com.baomidou.mybatisplus.test.h2.mapper.H2StudentMapper;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -28,14 +33,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Assert;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.test.h2.entity.H2Student;
-import com.baomidou.mybatisplus.test.h2.enums.GenderEnum;
-import com.baomidou.mybatisplus.test.h2.enums.GradeEnum;
-import com.baomidou.mybatisplus.test.h2.mapper.H2StudentMapper;
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Mybatis Plus H2 Junit Test
@@ -82,6 +82,15 @@ class H2StudentMapperTest extends BaseTest {
         Assert.notNull(updateStu.getGrade(), "grade should updated");
         Assert.notNull(updateStu.getGender(), "gender should updated");
 
+    }
+
+    @Test
+    @Order(Integer.MAX_VALUE)
+    void pageCountZeroTest() {
+        IPage<H2Student> page = studentMapper.selectPage(new Page<>(), Wrappers.<H2Student>query().eq("name", "无"));
+        if (null != page) {
+            System.out.println("total: " + page.getTotal());
+        }
     }
 
     /**

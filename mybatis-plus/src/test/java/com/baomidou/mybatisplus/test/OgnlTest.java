@@ -1,13 +1,12 @@
 package com.baomidou.mybatisplus.test;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import lombok.Data;
 import org.apache.ibatis.scripting.xmltags.OgnlCache;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import lombok.Data;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author nieqiuqiu
@@ -16,7 +15,6 @@ class OgnlTest {
 
     @Data
     private static class Bean {
-
         private String name;
         private Map<String, Object> properties;
     }

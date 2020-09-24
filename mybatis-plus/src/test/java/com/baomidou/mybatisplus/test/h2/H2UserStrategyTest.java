@@ -15,19 +15,14 @@
  */
 package com.baomidou.mybatisplus.test.h2;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.test.h2.entity.H2UserStrategy;
+import com.baomidou.mybatisplus.test.h2.mapper.H2UserStrategyMapper;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.test.h2.entity.H2UserStrategy;
-import com.baomidou.mybatisplus.test.h2.mapper.H2UserStrategyMapper;
 
 /**
  * Mybatis Plus H2 Junit Test
@@ -66,5 +61,6 @@ class H2UserStrategyTest extends BaseTest {
         Assertions.assertNull(selectUser.getTestType(), "handle: strategy=IGNORED, should be set test_type=null when updateById ");
 
     }
+
 
 }

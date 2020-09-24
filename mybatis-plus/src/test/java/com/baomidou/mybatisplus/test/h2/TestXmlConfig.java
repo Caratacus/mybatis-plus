@@ -15,6 +15,8 @@
  */
 package com.baomidou.mybatisplus.test.h2;
 
+import com.baomidou.mybatisplus.test.h2.entity.H2User;
+import com.baomidou.mybatisplus.test.h2.service.IH2UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,12 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.baomidou.mybatisplus.test.h2.entity.H2User;
-import com.baomidou.mybatisplus.test.h2.service.IH2UserService;
-
 /**
  * 测试XML配置
- *
  * @author nieqiurong 2018/8/14 13:30.
  */
 @ExtendWith(SpringExtension.class)
