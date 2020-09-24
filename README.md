@@ -35,6 +35,7 @@ sqlSet.add(String.format("%s=%s", columnToString(column), formatSql("{0}", val))
 sqlSet.add(String.format("%s=%s", columnToString(column), val.toString()));
 ```
 - `com.baomidou.mybatisplus.core.metadata.IPage` 分页相关数据类型从`long`修改为`int`
+- `com.baomidou.mybatisplus.core.metadata.IPage` 去除`convert`方法
 - `com.baomidou.mybatisplus.core.mapper.BaseMapper`精简
 - `com.baomidou.mybatisplus.extension.conditions`包下所有类修改
 - com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
@@ -45,6 +46,7 @@ sqlSet.add(String.format("%s=%s", columnToString(column), formatSql("{0}", val))
 sqlSet.add(String.format("%s=%s", columnToString(column), val.toString()));
 ```
 - `com.baomidou.mybatisplus.extension.plugins.pagination.Page` 分页相关数据类型从`long`修改为`int`
+- `com.baomidou.mybatisplus.extension.plugins.pagination.Page` 添加`convert`方法
 - `com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor` 分页相关数据类型从`long`修改为`int`
 - `com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor` 分页相关数据类型从`long`修改为`int`
 - 添加方法`com.baomidou.mybatisplus.core.toolkit.StringUtils#resolveFieldName`
