@@ -50,3 +50,5 @@ sqlSet.add(String.format("%s=%s", columnToString(column), val.toString()));
 - `com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor` 分页相关数据类型从`long`修改为`int`
 - `com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor` 分页相关数据类型从`long`修改为`int`
 - 添加方法`com.baomidou.mybatisplus.core.toolkit.StringUtils#resolveFieldName`
+- `com.baomidou.mybatisplus.core.executor.MybatisCachingExecutor` 分页相关数据类型从`long`修改为`int`
+- `com.baomidou.mybatisplus.extension.service.additional`包下相关类删除
